@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
@@ -42,6 +43,14 @@ export default function RegisterScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+
+  const normalizeDigits = (text: string): string => {
+    // Convert Arabic-Indic numerals (٠١٢٣٤٥٦٧٨٩) to Latin (0123456789)
+    const latinized = text.replace(/[٠-٩]/g, (d) =>
+      String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x0030)
+    );
+    return latinized.replace(/[^0-9]/g, '');
+  };
 
   useEffect(() => {
     fetchCities();
@@ -159,7 +168,11 @@ export default function RegisterScreen() {
         </View>
 
         <View style={styles.header}>
-          <Text style={styles.title}>{t('auth.register.title')}</Text>
+          <Image
+            source={require('../../assets/images/logo/header-logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>{t('auth.register.subtitle')}</Text>
         </View>
 
@@ -184,21 +197,23 @@ export default function RegisterScreen() {
             autoComplete="email"
           />
 
-          {/* Phone with +218 prefix */}
-          <View style={styles.fieldContainer}>
+          {/* Phone with +218 prefix - always LTR */}
+          <View style={styles.phoneFieldContainer}>
             <Text style={[styles.label, isRTL && styles.rtlText]}>{t('auth.register.phone_label')}</Text>
-            <View style={[styles.phoneRow, isRTL && styles.phoneRowRTL]}>
-              <View style={[styles.phonePrefix, isRTL && styles.phonePrefixRTL]}>
+            <View style={styles.phoneRow}>
+              <View style={styles.phonePrefix}>
                 <Text style={styles.phonePrefixText}>+218</Text>
               </View>
               <View style={styles.phoneInputWrapper}>
                 <Input
                   placeholder={t('auth.register.phone_placeholder')}
                   value={phone}
-                  onChangeText={setPhone}
-                  keyboardType="phone-pad"
+                  onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ''))}
+                  keyboardType="number-pad"
                   autoComplete="tel"
-                  style={[styles.phoneInput, isRTL && styles.phoneInputRTL]}
+                  textAlign="left"
+                  writingDirection="ltr"
+                  style={styles.phoneInput}
                 />
               </View>
             </View>
@@ -394,11 +409,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing[8],
   },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontFamily: fonts.bold,
-    color: colors.primary.DEFAULT,
-    marginBottom: spacing[1],
+  logo: {
+    width: 180,
+    height: 60,
+    marginBottom: spacing[3],
   },
   subtitle: {
     fontSize: typography.fontSize.lg,
@@ -435,12 +449,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     color: colors.muted.foreground,
   },
+  phoneFieldContainer: {
+    marginBottom: 0,
+  },
   phoneRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-  },
-  phoneRowRTL: {
-    flexDirection: 'row-reverse',
   },
   phonePrefix: {
     height: 44,
@@ -454,14 +468,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: radius.lg,
     borderRightWidth: 0,
   },
-  phonePrefixRTL: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    borderTopRightRadius: radius.lg,
-    borderBottomRightRadius: radius.lg,
-    borderRightWidth: 1,
-    borderLeftWidth: 0,
-  },
   phonePrefixText: {
     fontSize: 14,
     fontFamily: fonts.bold,
@@ -473,12 +479,6 @@ const styles = StyleSheet.create({
   phoneInput: {
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-  },
-  phoneInputRTL: {
-    borderTopLeftRadius: radius.lg,
-    borderBottomLeftRadius: radius.lg,
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
   },
   pickerButton: {
     height: 44,

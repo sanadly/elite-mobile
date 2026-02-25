@@ -6,12 +6,14 @@ import { useProduct } from '../../src/hooks/useProducts';
 import { useCartStore } from '../../src/store/cartStore';
 import { colors, typography, fonts, spacing, radius } from '../../src/theme';
 import { Button, Card } from '../../src/components/ui';
+import { useRTL } from '../../src/hooks/useRTL';
 
 const { width } = Dimensions.get('window');
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation();
+  const isRTL = useRTL();
   const { data: product, isLoading } = useProduct(id);
   const { addItem } = useCartStore();
   const router = useRouter();
@@ -53,12 +55,12 @@ export default function ProductDetailScreen() {
       </ScrollView>
 
       <View style={styles.content}>
-        <Text style={styles.brand}>{product.brand}</Text>
-        <Text style={styles.name}>{product.name?.en || product.model}</Text>
-        <Text style={styles.price}>€{product.price.toFixed(2)}</Text>
+        <Text style={[styles.brand, isRTL && styles.rtlText]}>{product.brand}</Text>
+        <Text style={[styles.name, isRTL && styles.rtlText]}>{product.name?.en || product.model}</Text>
+        <Text style={[styles.price, isRTL && styles.rtlText]}>€{product.price.toFixed(2)}</Text>
 
         <Card style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('products.select_color')}</Text>
+          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('products.select_color')}</Text>
           <ScrollView horizontal>
             {product.variants?.map((v, i) => (
               <Pressable
@@ -73,7 +75,7 @@ export default function ProductDetailScreen() {
         </Card>
 
         <Card style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('products.select_size')}</Text>
+          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('products.select_size')}</Text>
           <View style={styles.sizeGrid}>
             {availableSizes.map(s => (
               <Pressable
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
   brand: { fontSize: typography.fontSize.sm, color: colors.primary.DEFAULT, textTransform: 'uppercase', fontFamily: fonts.regular },
   name: { fontSize: typography.fontSize['2xl'], fontFamily: fonts.bold, marginTop: spacing[1] },
   price: { fontSize: typography.fontSize['3xl'], fontFamily: fonts.bold, color: colors.primary.DEFAULT, marginTop: spacing[2] },
+  rtlText: { textAlign: 'right', writingDirection: 'rtl' },
   section: { marginTop: spacing[4] },
   sectionTitle: { fontSize: typography.fontSize.base, fontFamily: fonts.semibold, marginBottom: spacing[2] },
   sizeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing[2] },

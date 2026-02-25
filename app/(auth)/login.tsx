@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, AuthLanguageToggle } from '../../src/components/ui';
 import { colors, typography, fonts, spacing } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
 import { useAuthStore } from '../../src/store/authStore';
+import { useRTL } from '../../src/hooks/useRTL';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -15,6 +16,7 @@ export default function LoginScreen() {
 
   const router = useRouter();
   const { t } = useTranslation();
+  const isRTL = useRTL();
   const { setUser, setSession } = useAuthStore();
 
   const handleLogin = async () => {
@@ -61,9 +63,12 @@ export default function LoginScreen() {
 
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.title}>Elite Style</Text>
-            <Text style={styles.subtitle}>إيليت ستايل</Text>
-            <Text style={styles.welcome}>{t('auth.login.title')}</Text>
+            <Image
+              source={require('../../assets/images/logo/header-logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <Text style={[styles.welcome, isRTL && styles.rtlText]}>{t('auth.login.title')}</Text>
           </View>
 
           <View style={styles.form}>
@@ -86,7 +91,7 @@ export default function LoginScreen() {
               autoComplete="password"
             />
 
-            {error ? <Text style={styles.error}>{error}</Text> : null}
+            {error ? <Text style={[styles.error, isRTL && styles.rtlText]}>{error}</Text> : null}
 
             <Button
               title={loading ? t('auth.login.loading') : t('auth.login.submit')}
@@ -137,22 +142,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing[10],
   },
-  title: {
-    fontSize: typography.fontSize['4xl'],
-    fontFamily: fonts.bold,
-    color: colors.primary.DEFAULT,
-    marginBottom: spacing[1],
-  },
-  subtitle: {
-    fontSize: typography.fontSize['2xl'],
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-    marginBottom: spacing[3],
+  logo: {
+    width: 200,
+    height: 70,
+    marginBottom: spacing[4],
   },
   welcome: {
     fontSize: typography.fontSize.lg,
     fontFamily: fonts.regular,
     color: colors.foreground,
+    lineHeight: 30,
   },
   form: {
     width: '100%',
@@ -182,5 +181,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     marginBottom: spacing[2],
     textAlign: 'center',
+  },
+  rtlText: {
+    textAlign: 'right',
+    writingDirection: 'rtl',
   },
 });
