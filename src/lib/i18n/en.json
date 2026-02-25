@@ -1,0 +1,249 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "refresh": "Refresh",
+    "continue": "Continue",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "apply": "Apply",
+    "clear": "Clear",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "optional": "Optional",
+    "or": "or"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your account",
+      "email_label": "Email",
+      "email_placeholder": "Enter your email",
+      "password_label": "Password",
+      "password_placeholder": "Enter your password",
+      "submit": "Sign In",
+      "loading": "Signing in...",
+      "no_account": "Don't have an account?",
+      "create_account": "Create Account",
+      "forgot_password": "Forgot Password?",
+      "error": {
+        "invalid_credentials": "Invalid email or password",
+        "network": "Network error. Please try again."
+      }
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join Elite Style",
+      "name_label": "Full Name",
+      "name_placeholder": "Enter your full name",
+      "email_label": "Email",
+      "email_placeholder": "Enter your email",
+      "phone_label": "Phone Number",
+      "phone_placeholder": "9XXXXXXXX",
+      "city_label": "City",
+      "city_placeholder": "Select your city",
+      "dob_label": "Date of Birth",
+      "dob_placeholder": "Select your date of birth",
+      "birthday_incentive": "Share your birthday for a special surprise from us!",
+      "password_label": "Password",
+      "password_placeholder": "Create a password",
+      "confirm_label": "Confirm Password",
+      "confirm_placeholder": "Re-enter your password",
+      "submit": "Create Account",
+      "loading": "Creating account...",
+      "have_account": "Already have an account?",
+      "sign_in": "Sign In",
+      "success": "Account created! Please check your email to verify.",
+      "error": {
+        "validation": "Please fill all required fields",
+        "email_exists": "Email already registered",
+        "weak_password": "Password must be at least 8 characters",
+        "password_complexity": "Password must contain uppercase, lowercase, and a number",
+        "passwords_mismatch": "Passwords do not match",
+        "network": "Network error. Please try again."
+      }
+    },
+    "logout": "Logout"
+  },
+  "products": {
+    "title": "Shop",
+    "search_placeholder": "Search products, brands...",
+    "no_results": "No products found",
+    "no_results_subtitle": "Try adjusting your search or filters",
+    "loading": "Loading products...",
+    "load_more": "Load More",
+    "delivery": {
+      "immediate": "Immediate Delivery",
+      "preorder": "Pre-order (7-14 days)"
+    },
+    "out_of_stock": "Out of Stock",
+    "select_color": "Select Color",
+    "select_size": "Select Size",
+    "add_to_cart": "Add to Cart",
+    "added_to_cart": "Added to cart!",
+    "product_detail": "Product Details"
+  },
+  "product_card": {
+    "immediate_delivery": "IMMEDIATE DELIVERY",
+    "out_of_stock": "OUT OF STOCK",
+    "no_image": "No Image",
+    "price": "Price",
+    "colors_available": "{{count}} colors available",
+    "only_x_left": "Only {{count}} left!"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "empty_subtitle": "Start shopping to add items to your cart",
+    "continue_shopping": "Continue Shopping",
+    "item_count": "{{count}} item",
+    "item_count_plural": "{{count}} items",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "discount": "Discount",
+    "total": "Total",
+    "proceed_to_checkout": "Proceed to Checkout",
+    "remove": "Remove",
+    "update_quantity": "Update quantity",
+    "max_stock_reached": "Maximum stock reached"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping_info": "Shipping Information",
+    "full_name_label": "Full Name",
+    "full_name_placeholder": "Enter your full name",
+    "phone_label": "Phone Number",
+    "phone_placeholder": "+218...",
+    "city_label": "City",
+    "city_select": "Select your city",
+    "address_label": "Address (Optional)",
+    "address_placeholder": "Street, building, apartment...",
+    "coupon": {
+      "label": "Coupon Code",
+      "placeholder": "Enter coupon code",
+      "apply": "Apply",
+      "applied": "Coupon applied!",
+      "invalid": "Invalid coupon code",
+      "remove": "Remove"
+    },
+    "order_summary": "Order Summary",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "shipping_fee": "Shipping Fee",
+    "deposit": "Deposit Required",
+    "deposit_info": "{{percent}}% deposit for concierge items",
+    "total": "Total",
+    "payment_method": "Payment Method",
+    "payment_cod": "Cash on Delivery (COD)",
+    "place_order": "Place Order",
+    "placing_order": "Placing order...",
+    "error": {
+      "validation": "Please fill all required fields",
+      "network": "Network error. Please try again.",
+      "out_of_stock": "Some items are out of stock"
+    }
+  },
+  "order_success": {
+    "title": "Order Placed!",
+    "subtitle": "Thank you for your order",
+    "order_number": "Order Number",
+    "message": "We've received your order and will contact you shortly to confirm delivery details.",
+    "payment_info": "Payment Method: Cash on Delivery (COD)",
+    "continue_shopping": "Continue Shopping",
+    "view_orders": "View My Orders"
+  },
+  "orders": {
+    "title": "My Orders",
+    "empty": "No Orders Yet",
+    "empty_subtitle": "Start shopping to place your first order",
+    "order_number": "Order #{{number}}",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "status_timeline": {
+      "pending": "Order Placed",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    },
+    "view_details": "View Details",
+    "total": "Total",
+    "items": "{{count}} item",
+    "items_plural": "{{count}} items",
+    "detail": {
+      "title": "Order Details",
+      "order_status": "Order Status",
+      "shipping_info": "Shipping Information",
+      "order_items": "Order Items",
+      "order_summary": "Order Summary",
+      "quantity": "Qty: {{quantity}}",
+      "payment_method": "Payment Method",
+      "help_title": "Need Help?",
+      "help_text": "If you have any questions about your order, please contact our customer support.",
+      "not_found": "Order not found",
+      "back_to_orders": "Back to Orders",
+      "cancelled_message": "Order Cancelled"
+    }
+  },
+  "account": {
+    "title": "Account",
+    "guest": {
+      "title": "Welcome to Elite Style",
+      "subtitle": "Sign in to access your account and orders",
+      "sign_in": "Sign In",
+      "create_account": "Create Account"
+    },
+    "menu": {
+      "orders": "My Orders",
+      "profile": "Profile Settings",
+      "addresses": "Addresses",
+      "language": "Language"
+    },
+    "logout": "Logout"
+  },
+  "loyalty": {
+    "title": "Loyalty Program",
+    "tier": {
+      "classic": "Classic",
+      "prestige": "Prestige",
+      "black": "Black"
+    },
+    "total_spend": "Total Spend",
+    "next_tier": "Next Tier",
+    "unlock": "€{{amount}} to unlock",
+    "max_tier": "Maximum Tier Achieved!",
+    "benefits": {
+      "title": "Your Benefits",
+      "free_shipping": "Free Shipping",
+      "concierge": "Concierge Service",
+      "deposit_classic": "50% Deposit",
+      "deposit_prestige": "30% Deposit",
+      "deposit_black": "No Deposit Required",
+      "priority_support": "Priority Support"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "network": "Network error. Please check your connection.",
+    "not_found": "Not found",
+    "unauthorized": "Please sign in to continue",
+    "try_again": "Try Again",
+    "offline": "No internet connection"
+  },
+  "accessibility": {
+    "tap_to_view_product": "Double tap to view product details",
+    "tap_to_view_details": "Double tap to view details"
+  }
+}

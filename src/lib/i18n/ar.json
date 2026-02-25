@@ -1,0 +1,249 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "refresh": "تحديث",
+    "continue": "متابعة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "search": "بحث",
+    "filter": "تصفية",
+    "sort": "ترتيب",
+    "apply": "تطبيق",
+    "clear": "مسح",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "back": "رجوع",
+    "optional": "اختياري",
+    "or": "أو"
+  },
+  "auth": {
+    "login": {
+      "title": "مرحباً بك",
+      "subtitle": "سجل دخول إلى حسابك",
+      "email_label": "البريد الإلكتروني",
+      "email_placeholder": "أدخل بريدك الإلكتروني",
+      "password_label": "كلمة المرور",
+      "password_placeholder": "أدخل كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "loading": "جاري تسجيل الدخول...",
+      "no_account": "ليس لديك حساب؟",
+      "create_account": "إنشاء حساب",
+      "forgot_password": "نسيت كلمة المرور؟",
+      "error": {
+        "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+        "network": "خطأ في الشبكة. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "register": {
+      "title": "إنشاء حساب",
+      "subtitle": "انضم إلى إليت ستايل",
+      "name_label": "الاسم الكامل",
+      "name_placeholder": "أدخل اسمك الكامل",
+      "email_label": "البريد الإلكتروني",
+      "email_placeholder": "أدخل بريدك الإلكتروني",
+      "phone_label": "رقم الهاتف",
+      "phone_placeholder": "9XXXXXXXX",
+      "city_label": "المدينة",
+      "city_placeholder": "اختر مدينتك",
+      "dob_label": "تاريخ الميلاد",
+      "dob_placeholder": "اختر تاريخ ميلادك",
+      "birthday_incentive": "شاركنا تاريخ ميلادك لتحصل على مفاجأة خاصة!",
+      "password_label": "كلمة المرور",
+      "password_placeholder": "أنشئ كلمة مرور",
+      "confirm_label": "تأكيد كلمة المرور",
+      "confirm_placeholder": "أعد إدخال كلمة المرور",
+      "submit": "إنشاء حساب",
+      "loading": "جاري إنشاء الحساب...",
+      "have_account": "لديك حساب بالفعل؟",
+      "sign_in": "تسجيل الدخول",
+      "success": "تم إنشاء الحساب! يرجى التحقق من بريدك الإلكتروني للتأكيد.",
+      "error": {
+        "validation": "يرجى ملء جميع الحقول المطلوبة",
+        "email_exists": "البريد الإلكتروني مسجل مسبقاً",
+        "weak_password": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+        "password_complexity": "يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم",
+        "passwords_mismatch": "كلمتا المرور غير متطابقتين",
+        "network": "خطأ في الشبكة. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "logout": "تسجيل الخروج"
+  },
+  "products": {
+    "title": "المنتجات",
+    "search_placeholder": "ابحث عن المنتجات، العلامات التجارية...",
+    "no_results": "لم يتم العثور على منتجات",
+    "no_results_subtitle": "حاول تعديل البحث أو الفلاتر",
+    "loading": "جاري تحميل المنتجات...",
+    "load_more": "تحميل المزيد",
+    "delivery": {
+      "immediate": "توصيل فوري",
+      "preorder": "طلب مسبق (7-14 يوم)"
+    },
+    "out_of_stock": "غير متوفر",
+    "select_color": "اختر اللون",
+    "select_size": "اختر المقاس",
+    "add_to_cart": "أضف إلى السلة",
+    "added_to_cart": "تمت الإضافة إلى السلة!",
+    "product_detail": "تفاصيل المنتج"
+  },
+  "product_card": {
+    "immediate_delivery": "توصيل فوري",
+    "out_of_stock": "نفذ من المخزون",
+    "no_image": "لا توجد صورة",
+    "price": "السعر",
+    "colors_available": "{{count}} ألوان متاحة",
+    "only_x_left": "فقط {{count}} متبقي!"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلة التسوق فارغة",
+    "empty_subtitle": "ابدأ التسوق لإضافة منتجات إلى سلتك",
+    "continue_shopping": "متابعة التسوق",
+    "item_count": "{{count}} منتج",
+    "item_count_plural": "{{count}} منتجات",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "discount": "الخصم",
+    "total": "الإجمالي",
+    "proceed_to_checkout": "إتمام الطلب",
+    "remove": "إزالة",
+    "update_quantity": "تحديث الكمية",
+    "max_stock_reached": "تم الوصول إلى الحد الأقصى من المخزون"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "shipping_info": "معلومات الشحن",
+    "full_name_label": "الاسم الكامل",
+    "full_name_placeholder": "أدخل اسمك الكامل",
+    "phone_label": "رقم الهاتف",
+    "phone_placeholder": "+218...",
+    "city_label": "المدينة",
+    "city_select": "اختر مدينتك",
+    "address_label": "العنوان (اختياري)",
+    "address_placeholder": "الشارع، المبنى، الشقة...",
+    "coupon": {
+      "label": "كود الخصم",
+      "placeholder": "أدخل كود الخصم",
+      "apply": "تطبيق",
+      "applied": "تم تطبيق الكود!",
+      "invalid": "كود خصم غير صالح",
+      "remove": "إزالة"
+    },
+    "order_summary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "discount": "الخصم",
+    "shipping_fee": "رسوم الشحن",
+    "deposit": "العربون المطلوب",
+    "deposit_info": "عربون {{percent}}% للمنتجات المميزة",
+    "total": "الإجمالي",
+    "payment_method": "طريقة الدفع",
+    "payment_cod": "الدفع عند الاستلام",
+    "place_order": "تأكيد الطلب",
+    "placing_order": "جاري تأكيد الطلب...",
+    "error": {
+      "validation": "يرجى ملء جميع الحقول المطلوبة",
+      "network": "خطأ في الشبكة. يرجى المحاولة مرة أخرى.",
+      "out_of_stock": "بعض المنتجات غير متوفرة"
+    }
+  },
+  "order_success": {
+    "title": "تم تأكيد الطلب!",
+    "subtitle": "شكراً لطلبك",
+    "order_number": "رقم الطلب",
+    "message": "تم استلام طلبك وسنتواصل معك قريباً لتأكيد تفاصيل التوصيل.",
+    "payment_info": "طريقة الدفع: الدفع عند الاستلام",
+    "continue_shopping": "متابعة التسوق",
+    "view_orders": "عرض طلباتي"
+  },
+  "orders": {
+    "title": "طلباتي",
+    "empty": "لا توجد طلبات بعد",
+    "empty_subtitle": "ابدأ التسوق لتقديم طلبك الأول",
+    "order_number": "طلب #{{number}}",
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكد",
+      "processing": "قيد المعالجة",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغي"
+    },
+    "status_timeline": {
+      "pending": "تم تقديم الطلب",
+      "confirmed": "مؤكد",
+      "processing": "قيد المعالجة",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل"
+    },
+    "view_details": "عرض التفاصيل",
+    "total": "الإجمالي",
+    "items": "{{count}} منتج",
+    "items_plural": "{{count}} منتجات",
+    "detail": {
+      "title": "تفاصيل الطلب",
+      "order_status": "حالة الطلب",
+      "shipping_info": "معلومات الشحن",
+      "order_items": "المنتجات",
+      "order_summary": "ملخص الطلب",
+      "quantity": "الكمية: {{quantity}}",
+      "payment_method": "طريقة الدفع",
+      "help_title": "تحتاج مساعدة؟",
+      "help_text": "إذا كان لديك أي استفسارات حول طلبك، يرجى التواصل مع خدمة العملاء.",
+      "not_found": "الطلب غير موجود",
+      "back_to_orders": "العودة إلى الطلبات",
+      "cancelled_message": "تم إلغاء الطلب"
+    }
+  },
+  "account": {
+    "title": "الحساب",
+    "guest": {
+      "title": "مرحباً بك في إليت ستايل",
+      "subtitle": "سجل دخول للوصول إلى حسابك وطلباتك",
+      "sign_in": "تسجيل الدخول",
+      "create_account": "إنشاء حساب"
+    },
+    "menu": {
+      "orders": "طلباتي",
+      "profile": "إعدادات الحساب",
+      "addresses": "العناوين",
+      "language": "اللغة"
+    },
+    "logout": "تسجيل الخروج"
+  },
+  "loyalty": {
+    "title": "برنامج الولاء",
+    "tier": {
+      "classic": "كلاسيك",
+      "prestige": "بريستيج",
+      "black": "بلاك"
+    },
+    "total_spend": "إجمالي المشتريات",
+    "next_tier": "المستوى التالي",
+    "unlock": "€{{amount}} للوصول",
+    "max_tier": "تم الوصول إلى أعلى مستوى!",
+    "benefits": {
+      "title": "مزاياك",
+      "free_shipping": "شحن مجاني",
+      "concierge": "خدمة الكونسيرج",
+      "deposit_classic": "عربون 50%",
+      "deposit_prestige": "عربون 30%",
+      "deposit_black": "بدون عربون",
+      "priority_support": "دعم أولوية"
+    }
+  },
+  "errors": {
+    "generic": "حدث خطأ ما",
+    "network": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
+    "not_found": "غير موجود",
+    "unauthorized": "يرجى تسجيل الدخول للمتابعة",
+    "try_again": "حاول مرة أخرى",
+    "offline": "لا يوجد اتصال بالإنترنت"
+  },
+  "accessibility": {
+    "tap_to_view_product": "انقر مرتين لعرض تفاصيل المنتج",
+    "tap_to_view_details": "انقر مرتين لعرض التفاصيل"
+  }
+}
