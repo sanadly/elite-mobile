@@ -84,6 +84,12 @@ export default function RegisterScreen() {
       return;
     }
 
+    // Validate Libyan phone: 9 digits starting with 9
+    if (!/^9[0-9]{8}$/.test(phone)) {
+      setError(t('auth.register.error.invalid_phone'));
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError(t('auth.register.error.passwords_mismatch'));
       return;
@@ -208,9 +214,10 @@ export default function RegisterScreen() {
                 <Input
                   placeholder={t('auth.register.phone_placeholder')}
                   value={phone}
-                  onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ''))}
+                  onChangeText={(text) => setPhone(normalizeDigits(text))}
                   keyboardType="number-pad"
                   autoComplete="tel"
+                  maxLength={9}
                   textAlign="left"
                   writingDirection="ltr"
                   style={styles.phoneInput}
