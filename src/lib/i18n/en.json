@@ -33,6 +33,7 @@
       "create_account": "Create Account",
       "forgot_password": "Forgot Password?",
       "error": {
+        "validation": "Please enter your email and password",
         "invalid_credentials": "Invalid email or password",
         "network": "Network error. Please try again."
       }
@@ -67,6 +68,40 @@
         "password_complexity": "Password must contain uppercase, lowercase, and a number",
         "passwords_mismatch": "Passwords do not match",
         "invalid_phone": "Enter a valid Libyan phone number (9 digits starting with 9)",
+        "network": "Network error. Please try again."
+      }
+    },
+    "forgot_password": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email address and we'll send you a link to reset your password",
+      "email_label": "Email",
+      "email_placeholder": "Enter your email",
+      "submit": "Send Reset Link",
+      "loading": "Sending...",
+      "success_title": "Check Your Email",
+      "success_message": "We've sent a password reset link to your email. Please check your inbox and follow the instructions.",
+      "back_to_login": "Back to Login",
+      "error": {
+        "validation": "Please enter your email address",
+        "network": "Network error. Please try again."
+      }
+    },
+    "reset_password": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password below",
+      "password_label": "New Password",
+      "password_placeholder": "Enter new password",
+      "confirm_label": "Confirm Password",
+      "confirm_placeholder": "Re-enter new password",
+      "submit": "Reset Password",
+      "loading": "Resetting...",
+      "success": "Password reset successfully!",
+      "error": {
+        "validation": "Please fill all fields",
+        "mismatch": "Passwords do not match",
+        "weak": "Password must be at least 8 characters",
+        "complexity": "Password must contain uppercase, lowercase, and a number",
+        "expired": "Reset link has expired. Please request a new one.",
         "network": "Network error. Please try again."
       }
     },
@@ -137,7 +172,9 @@
   },
   "checkout": {
     "title": "Checkout",
+    "subtitle": "Complete your order details below",
     "shipping_info": "Shipping Information",
+    "delivery_info": "Delivery Information",
     "full_name_label": "Full Name",
     "full_name_placeholder": "Enter your full name",
     "phone_label": "Phone Number",
@@ -152,19 +189,27 @@
       "apply": "Apply",
       "applied": "Coupon applied!",
       "invalid": "Invalid coupon code",
-      "remove": "Remove"
+      "remove": "Remove",
+      "off": "off"
     },
     "order_summary": "Order Summary",
     "subtotal": "Subtotal",
+    "items": "items",
     "discount": "Discount",
+    "shipping": "Shipping",
     "shipping_fee": "Shipping Fee",
     "deposit": "Deposit Required",
+    "deposit_required": "Deposit required",
+    "deposit_note": "Deposit applies to concierge/reservation items only",
     "deposit_info": "{{percent}}% deposit for concierge items",
     "total": "Total",
     "payment_method": "Payment Method",
     "payment_cod": "Cash on Delivery (COD)",
+    "payment_note": "Payment will be collected upon delivery (COD)",
     "place_order": "Place Order",
     "placing_order": "Placing order...",
+    "select_address": "Select Address",
+    "select_saved_address": "Use a saved address",
     "error": {
       "validation": "Please fill all required fields",
       "network": "Network error. Please try again.",
@@ -231,9 +276,72 @@
       "orders": "My Orders",
       "profile": "Profile Settings",
       "addresses": "Addresses",
+      "notifications": "Notifications",
       "language": "Language"
     },
     "logout": "Logout"
+  },
+  "profile": {
+    "edit": {
+      "title": "Edit Profile",
+      "name_label": "Full Name",
+      "name_placeholder": "Enter your full name",
+      "email_label": "Email",
+      "email_disabled_hint": "Email cannot be changed",
+      "phone_label": "Phone Number",
+      "phone_placeholder": "9XXXXXXXX",
+      "city_label": "City",
+      "city_placeholder": "Select your city",
+      "birthday_label": "Date of Birth",
+      "birthday_placeholder": "Select your date of birth",
+      "birthday_locked": "Your birthday cannot be changed once set. Contact support to correct it.",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "success": "Profile updated successfully",
+      "error": {
+        "load_failed": "Failed to load profile",
+        "validation": "Please fill all required fields",
+        "invalid_phone": "Enter a valid Libyan phone number (9 digits starting with 9)",
+        "network": "Failed to update profile"
+      }
+    }
+  },
+  "addresses": {
+    "title": "My Addresses",
+    "empty": "No Saved Addresses",
+    "empty_subtitle": "Add an address for faster checkout",
+    "add": "Add Address",
+    "edit": "Edit Address",
+    "delete": "Delete Address",
+    "delete_confirm": "Are you sure you want to delete this address?",
+    "set_default": "Set as Default",
+    "default_badge": "Default",
+    "label": {
+      "home": "Home",
+      "work": "Work",
+      "other": "Other"
+    },
+    "form": {
+      "label_title": "Address Type",
+      "full_name_label": "Full Name",
+      "full_name_placeholder": "Recipient's full name",
+      "phone_label": "Phone Number",
+      "phone_placeholder": "9XXXXXXXX",
+      "city_label": "City",
+      "city_placeholder": "Select city",
+      "address_label": "Address Details",
+      "address_placeholder": "Street, building, apartment...",
+      "is_default": "Set as default address",
+      "save": "Save Address",
+      "saving": "Saving...",
+      "success_add": "Address added successfully",
+      "success_update": "Address updated successfully",
+      "error": {
+        "validation": "Please fill all required fields",
+        "invalid_phone": "Enter a valid Libyan phone number",
+        "network": "Failed to save address"
+      }
+    }
   },
   "loyalty": {
     "title": "Loyalty Program",
@@ -254,7 +362,40 @@
       "deposit_prestige": "30% Deposit",
       "deposit_black": "No Deposit Required",
       "priority_support": "Priority Support"
+    },
+    "detail": {
+      "title": "Loyalty Program",
+      "current_tier": "Your Current Tier",
+      "progress": "Your Progress",
+      "spent_so_far": "Spent so far",
+      "spend_more": "Spend {{amount}} more to reach",
+      "all_tiers": "All Tiers",
+      "tier_threshold": "Spend €{{amount}}+",
+      "tier_threshold_start": "Starting tier",
+      "benefits_title": "Tier Benefits",
+      "how_it_works": "How It Works",
+      "how_it_works_text": "Your loyalty tier is determined by your total spending. As you shop more, you unlock higher tiers with exclusive benefits and rewards.",
+      "current": "Current",
+      "locked": "Locked",
+      "unlocked": "Unlocked"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No Notifications",
+    "empty_subtitle": "You'll see order updates and promotions here",
+    "mark_all_read": "Mark All as Read",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_week": "This Week",
+    "earlier": "Earlier",
+    "type": {
+      "order_update": "Order Update",
+      "promotion": "Promotion",
+      "system": "System"
+    },
+    "delete": "Delete",
+    "delete_confirm": "Delete this notification?"
   },
   "errors": {
     "generic": "Something went wrong",

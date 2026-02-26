@@ -5,3 +5,6 @@ export { AuthLanguageToggle } from './AuthLanguageToggle';
 export { AvailabilityBadge } from './AvailabilityBadge';
 export type { AvailabilityType } from './AvailabilityBadge';
 export { EmptyState } from './EmptyState';
+export { Row } from './Row';
+export { ErrorBoundary } from './ErrorBoundary';
+export { BackButton } from './BackButton';

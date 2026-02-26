@@ -18,8 +18,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useProduct } from '../../src/hooks/useProducts';
 import { useBrand } from '../../src/hooks/useBrand';
 import { useCartStore } from '../../src/store/cartStore';
-import { colors, typography, fonts, spacing, radius, shadows, commonStyles } from '../../src/theme';
-import { Button, AvailabilityBadge } from '../../src/components/ui';
+import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
+import { Button, AvailabilityBadge, BackButton } from '../../src/components/ui';
 import { useRTL } from '../../src/hooks/useRTL';
 
 const { width } = Dimensions.get('window');
@@ -188,18 +188,10 @@ export default function ProductDetailScreen() {
           )}
 
           {/* Back Button */}
-          <Pressable
-            onPress={() => router.back()}
-            style={[styles.backButton, isRTL ? styles.backButtonRTL : null]}
-            hitSlop={12}
-          >
-            <Ionicons
-              name={isRTL ? "chevron-forward" : "chevron-back"}
-              size={26}
-              color={colors.primary.DEFAULT}
-              style={isRTL ? { marginRight: -2 } : { marginLeft: -2 }}
-            />
-          </Pressable>
+          <BackButton
+            variant="floating"
+            style={[styles.backButton, isRTL && styles.backButtonRTL]}
+          />
         </View>
 
         {/* Product Info */}
@@ -457,13 +449,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: spacing[12] + spacing[2],
     left: spacing[4],
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.overlay.light90,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...shadows.subtle,
   },
   backButtonRTL: {
     left: undefined,

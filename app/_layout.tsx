@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { I18nManager } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -14,6 +15,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import '../src/lib/i18n';
 import { NetworkBanner } from '../src/components/feedback';
+import { ErrorBoundary } from '../src/components/ui';
 import { colors, fonts } from '../src/theme';
 
 // Keep native splash visible until we're ready
@@ -50,6 +52,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <SafeAreaProvider>
           <NetworkBanner />
@@ -58,6 +61,8 @@ export default function RootLayout() {
               headerStyle: { backgroundColor: colors.primary.DEFAULT },
               headerTintColor: colors.primary.foreground,
               headerTitleStyle: { fontFamily: fonts.semibold },
+              headerBackButtonDisplayMode: 'minimal',
+              animation: I18nManager.isRTL ? 'slide_from_left' : 'slide_from_right',
             }}
           >
             <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -68,6 +73,7 @@ export default function RootLayout() {
           </Stack>
         </SafeAreaProvider>
       </QueryClientProvider>
+      </ErrorBoundary>
     </GestureHandlerRootView>
   );
 }

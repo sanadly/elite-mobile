@@ -89,7 +89,7 @@ export async function getOrderById(orderId: string) {
 // Subscribe to order status updates
 export function subscribeToOrderUpdates(
   userId: string,
-  onUpdate: (order: any) => void
+  onUpdate: (order: Record<string, unknown>) => void
 ) {
   const channel = supabase
     .channel('order-updates')

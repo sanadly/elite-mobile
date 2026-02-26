@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,7 +25,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError(t('checkout.error.validation'));
+      setError(t('auth.login.error.validation'));
       return;
     }
 
@@ -50,8 +50,8 @@ export default function LoginScreen() {
 
         router.replace('/(tabs)');
       }
-    } catch (err: any) {
-      setError(err.message || t('auth.login.error.invalid_credentials'));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('auth.login.error.invalid_credentials'));
     } finally {
       setLoading(false);
     }
@@ -101,6 +101,12 @@ export default function LoginScreen() {
             />
 
             {error ? <Text style={[styles.error, isRTL && commonStyles.rtlText]}>{error}</Text> : null}
+
+            <Pressable onPress={() => router.push('/(auth)/forgot-password')} style={styles.forgotPassword}>
+              <Text style={[styles.forgotPasswordText, isRTL && commonStyles.rtlText]}>
+                {t('auth.login.forgot_password')}
+              </Text>
+            </Pressable>
 
             <Button
               title={loading ? t('auth.login.loading') : t('auth.login.submit')}
@@ -189,5 +195,14 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     marginBottom: spacing[2],
     textAlign: 'center',
+  },
+  forgotPassword: {
+    alignSelf: 'center',
+    marginBottom: spacing[2],
+  },
+  forgotPasswordText: {
+    fontSize: typography.fontSize.sm,
+    fontFamily: fonts.medium,
+    color: colors.primary.DEFAULT,
   },
 });

@@ -12,11 +12,11 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { useProductsByBrand } from '../../src/hooks/useProducts';
 import { useBrand } from '../../src/hooks/useBrand';
 import { ProductCard } from '../../src/components/product/ProductCard';
 import { colors, typography, fonts, spacing, radius, shadows, commonStyles } from '../../src/theme';
+import { BackButton } from '../../src/components/ui';
 import { useRTL } from '../../src/hooks/useRTL';
 
 const { width } = Dimensions.get('window');
@@ -94,21 +94,11 @@ export default function BrandScreen() {
 
       {/* Top Bar */}
       <View style={[styles.topBar, { paddingTop: insets.top + spacing[2] }]}>
-        <Pressable
-          onPress={() => router.back()}
-          style={[styles.backButton, isRTL && styles.backButtonRTL]}
-          hitSlop={12}
-        >
-          <Ionicons
-            name={isRTL ? 'chevron-forward' : 'chevron-back'}
-            size={24}
-            color={colors.foreground}
-          />
-        </Pressable>
+        <BackButton />
         <Text style={styles.topBarTitle} numberOfLines={1}>
           {brandName}
         </Text>
-        <View style={styles.backButton} />
+        <View style={styles.spacer} />
       </View>
 
       {/* Products Grid */}
@@ -164,14 +154,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  backButton: {
+  spacer: {
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backButtonRTL: {
-    transform: [{ scaleX: 1 }],
   },
   topBarTitle: {
     flex: 1,

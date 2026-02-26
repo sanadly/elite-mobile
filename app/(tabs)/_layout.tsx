@@ -1,10 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { I18nManager } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors, fonts } from '../../src/theme';
 
 export default function TabsLayout() {
   const { t } = useTranslation();
+  const isRTL = I18nManager.isRTL;
 
   return (
     <Tabs
@@ -14,6 +16,7 @@ export default function TabsLayout() {
         tabBarStyle: {
           borderTopColor: colors.border,
           backgroundColor: colors.background,
+          flexDirection: isRTL ? 'row-reverse' : 'row',
         },
         headerStyle: {
           backgroundColor: colors.primary.DEFAULT,
@@ -21,9 +24,11 @@ export default function TabsLayout() {
         headerTintColor: colors.primary.foreground,
         headerTitleStyle: {
           fontFamily: fonts.semibold,
+          writingDirection: isRTL ? 'rtl' : 'ltr',
         },
         tabBarLabelStyle: {
           fontFamily: fonts.medium,
+          writingDirection: isRTL ? 'rtl' : 'ltr',
         },
       }}
     >

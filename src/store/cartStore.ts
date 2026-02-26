@@ -96,11 +96,12 @@ export const useCartStore = create<CartState>()(
       version: 2,
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({ items: state.items }),
-      migrate: (persistedState: any, version: number) => {
+      migrate: (persistedState, version) => {
+        const state = persistedState as { items?: CartItem[] } | null;
         if (version < 2) {
-          return { items: persistedState?.items || [] };
+          return { items: state?.items || [] };
         }
-        return persistedState as { items: CartItem[] };
+        return state as { items: CartItem[] };
       },
     }
   )

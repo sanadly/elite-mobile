@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, forwardRef } from 'react';
+import React, { useCallback, useMemo, forwardRef, ComponentProps } from 'react';
 import { View, Text, Pressable, StyleSheet, Switch } from 'react-native';
 import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
@@ -49,7 +49,7 @@ export const FilterBottomSheet = forwardRef<BottomSheet, FilterBottomSheetProps>
     const snapPoints = useMemo(() => ['60%', '90%'], []);
 
     const renderBackdrop = useCallback(
-      (props: any) => (
+      (props: ComponentProps<typeof BottomSheetBackdrop>) => (
         <BottomSheetBackdrop
           {...props}
           disappearsOnIndex={-1}

@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
+import { BackButton } from '../../src/components/ui';
 import { useFilteredProducts } from '../../src/hooks/useFilteredProducts';
 import { useFilterStore } from '../../src/store/filterStore';
 import { ProductCard } from '../../src/components/product/ProductCard';
@@ -118,17 +119,7 @@ export default function ProductsScreen() {
       <View style={styles.stickyHeader}>
         {/* Back button + Search bar */}
         <View style={[styles.searchRow, isRTL && styles.searchRowRTL]}>
-          <Pressable
-            onPress={() => router.back()}
-            style={styles.backButton}
-            hitSlop={8}
-          >
-            <Ionicons
-              name={isRTL ? 'arrow-forward' : 'arrow-back'}
-              size={22}
-              color={colors.foreground}
-            />
-          </Pressable>
+          <BackButton />
           <View style={styles.searchBarContainer}>
             <SearchBar
               value={search}
@@ -200,12 +191,6 @@ const styles = StyleSheet.create({
   },
   searchRowRTL: {
     flexDirection: 'row-reverse',
-  },
-  backButton: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   searchBarContainer: {
     flex: 1,

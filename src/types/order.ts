@@ -1,8 +1,10 @@
+export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
 export interface Order {
   id: string;
   order_number: string;
   created_at: string;
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: OrderStatus;
   total_eur: number;
   shipping_fee: number;
   discount_amount?: number;
@@ -16,6 +18,7 @@ export interface Order {
   };
   payment_method: 'cod';
   coupon_code?: string;
+  status_history?: Record<string, string>;
 }
 
 export interface OrderItem {

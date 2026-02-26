@@ -3,19 +3,20 @@ import { View, Text, StyleSheet, FlatList, Image, Pressable } from 'react-native
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCartStore } from '../../src/store/cartStore';
 import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
 import { Card, Button, AvailabilityBadge, EmptyState } from '../../src/components/ui';
 import { useRTL } from '../../src/hooks/useRTL';
-import { useMemo } from 'react';
+import { useCartTotals } from '../../src/hooks/useCartTotals';
 
 export default function CartScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
+  const insets = useSafeAreaInsets();
   const { items, removeItem, updateQuantity } = useCartStore();
-  const cartCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
-  const cartTotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
+  const { count: cartCount, total: cartTotal } = useCartTotals();
 
   if (items.length === 0) {
     return (
@@ -87,7 +88,7 @@ export default function CartScreen() {
       />
 
       {/* Footer with total and checkout button */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing[4]) }]}>
         <View style={[styles.totalRow, isRTL && commonStyles.rowReverse]}>
           <Text style={[styles.totalLabel, isRTL && commonStyles.rtlText]}>
             {t('cart.total')} ({t('cart.item_count', { count: cartCount })})

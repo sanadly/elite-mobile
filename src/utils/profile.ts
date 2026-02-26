@@ -1,16 +1,4 @@
-import { UserProfile } from '../types/user';
-
-interface UserData {
-  id: string;
-  uid: string;
-  name: string;
-  email: string;
-  phone?: string;
-  city?: string;
-  role: 'admin' | 'customer' | 'concierge';
-  loyaltyTier: 'classic' | 'prestige' | 'black';
-  totalSpend: number;
-}
+import { UserProfile, UserData } from '../types/user';
 
 export function mapProfileToUserData(profile: UserProfile): UserData {
   return {

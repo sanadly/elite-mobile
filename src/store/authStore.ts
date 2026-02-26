@@ -1,17 +1,6 @@
 import { create } from 'zustand';
 import { User, Session } from '@supabase/supabase-js';
-
-interface UserData {
-  id: string;
-  uid: string;
-  name: string;
-  email: string;
-  phone?: string;
-  city?: string;
-  role: 'admin' | 'customer' | 'concierge';
-  loyaltyTier: 'classic' | 'prestige' | 'black';
-  totalSpend: number;
-}
+import { UserData } from '../types/user';
 
 interface AuthState {
   user: User | null;

@@ -11,7 +11,7 @@ import Animated, {
 import Svg, { Circle } from 'react-native-svg';
 import { colors, typography, fonts, spacing, commonStyles } from '../../theme';
 import { calculateLoyaltyTier, getLoyaltyProgress, LOYALTY_TIERS } from '../../lib/loyalty';
-import type { LoyaltyTier } from '../../types/firestore';
+import type { LoyaltyTier } from '../../types/user';
 import { useRTL } from '../../hooks/useRTL';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

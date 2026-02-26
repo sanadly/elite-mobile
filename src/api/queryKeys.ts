@@ -15,4 +15,15 @@ export const queryKeys = {
     all: ['orders'] as const,
     detail: (id: string) => ['orders', id] as const,
   },
+  profile: {
+    all: ['profile'] as const,
+  },
+  addresses: {
+    all: ['addresses'] as const,
+    detail: (id: string) => ['addresses', id] as const,
+  },
+  notifications: {
+    all: ['notifications'] as const,
+    unreadCount: ['notifications', 'unread-count'] as const,
+  },
 } as const;

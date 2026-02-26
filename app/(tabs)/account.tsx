@@ -67,9 +67,9 @@ export default function AccountScreen() {
       </Card>
 
       {/* Loyalty Card */}
-      <View style={styles.loyaltyContainer}>
+      <Pressable style={styles.loyaltyContainer} onPress={() => router.push('/loyalty')}>
         <LoyaltyCard totalSpend={userData?.totalSpend || 0} />
-      </View>
+      </Pressable>
 
       {/* Menu Items */}
       <Card style={styles.menuCard}>
@@ -81,12 +81,17 @@ export default function AccountScreen() {
         <MenuItem
           icon="person-outline"
           title={t('account.menu.profile')}
-          onPress={() => {}}
+          onPress={() => router.push('/profile/edit')}
         />
         <MenuItem
           icon="location-outline"
           title={t('account.menu.addresses')}
-          onPress={() => {}}
+          onPress={() => router.push('/addresses')}
+        />
+        <MenuItem
+          icon="notifications-outline"
+          title={t('account.menu.notifications')}
+          onPress={() => router.push('/notifications')}
         />
         <MenuItem
           icon="globe-outline"

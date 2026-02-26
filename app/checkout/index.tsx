@@ -1,16 +1,20 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Pressable } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Input, Card } from '../../src/components/ui';
 import { useCartStore } from '../../src/store/cartStore';
 import { useAuthStore } from '../../src/store/authStore';
+import { useCartTotals } from '../../src/hooks/useCartTotals';
 import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
-import { validateCoupon, placeOrder, getCities } from '../../src/api/endpoints/checkout';
-import { DEPOSIT_RATES } from '../../src/lib/checkout-config';
+import { validateCoupon, placeOrder, getCities, type City, type CouponValidation } from '../../src/api/endpoints/checkout';
+import { getDepositRates } from '../../src/api/endpoints/config';
+import { DEPOSIT_RATES, roundDepositAmount } from '../../src/lib/checkout-config';
+import { LoyaltyTier } from '../../src/types/user';
 import { useRTL } from '../../src/hooks/useRTL';
 
 const checkoutSchema = z.object({
@@ -26,14 +30,16 @@ export default function CheckoutScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
+  const insets = useSafeAreaInsets();
   const { items, clearCart } = useCartStore();
-  const cartTotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
+  const { total: cartTotal } = useCartTotals();
   const { userData } = useAuthStore();
 
-  const [cities, setCities] = useState<any[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
   const [loadingCities, setLoadingCities] = useState(true);
+  const [depositRates, setDepositRates] = useState<Record<LoyaltyTier, number>>(DEPOSIT_RATES);
   const [couponCode, setCouponCode] = useState('');
-  const [appliedDiscount, setAppliedDiscount] = useState<any>(null);
+  const [appliedDiscount, setAppliedDiscount] = useState<CouponValidation['discount'] | null>(null);
   const [couponError, setCouponError] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,6 +56,7 @@ export default function CheckoutScreen() {
 
   useEffect(() => {
     getCities().then(setCities).finally(() => setLoadingCities(false));
+    getDepositRates().then(setDepositRates);
   }, []);
 
   useEffect(() => {
@@ -75,8 +82,8 @@ export default function CheckoutScreen() {
   const conciergeItems = items.filter(item => item.isConcierge);
   const conciergeSubtotal = conciergeItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const currentTier = userData?.loyaltyTier || 'classic';
-  const depositRate = DEPOSIT_RATES[currentTier] || 50;
-  const depositAmount = (conciergeSubtotal * depositRate) / 100;
+  const depositRate = depositRates[currentTier] || 50;
+  const depositAmount = roundDepositAmount((conciergeSubtotal * depositRate) / 100);
   const requiresDeposit = depositRate > 0 && conciergeSubtotal > 0;
 
   const handleApplyCoupon = async () => {
@@ -122,8 +129,8 @@ export default function CheckoutScreen() {
         clearCart();
         router.push(`/order-success?orderNumber=${result.orderNumber}`);
       }
-    } catch (error: any) {
-      alert(error.message || 'Failed to place order');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to place order');
     } finally {
       setIsSubmitting(false);
     }
@@ -231,8 +238,10 @@ export default function CheckoutScreen() {
           </View>
         </Card>
 
-        <Button title={isSubmitting ? t('checkout.placing_order') : t('checkout.place_order')} onPress={handleSubmit(onSubmit)} loading={isSubmitting} disabled={isSubmitting} size="lg" style={styles.submitButton} />
-        <Text style={styles.paymentNote}>{t('checkout.payment_note')}</Text>
+        <View style={[styles.checkoutFooter, { paddingBottom: Math.max(insets.bottom, spacing[6]) }]}>
+          <Button title={isSubmitting ? t('checkout.placing_order') : t('checkout.place_order')} onPress={handleSubmit(onSubmit)} loading={isSubmitting} disabled={isSubmitting} size="lg" style={styles.submitButton} />
+          <Text style={[styles.paymentNote, isRTL && commonStyles.rtlText]}>{t('checkout.payment_note')}</Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -273,6 +282,7 @@ const styles = StyleSheet.create({
   totalRow: { marginTop: spacing[3], paddingTop: spacing[3], borderTopWidth: 1, borderTopColor: colors.border },
   totalLabel: { fontSize: 18, fontFamily: fonts.bold, color: colors.foreground },
   totalValue: { fontSize: 24, fontFamily: fonts.bold, color: colors.primary.DEFAULT },
-  submitButton: { marginTop: spacing[6], marginBottom: spacing[4] },
-  paymentNote: { textAlign: 'center', fontSize: 14, color: colors.muted.foreground, fontFamily: fonts.regular, marginBottom: spacing[8] },
+  checkoutFooter: { marginTop: spacing[4], paddingTop: spacing[4], borderTopWidth: 1, borderTopColor: colors.border },
+  submitButton: { marginBottom: spacing[3] },
+  paymentNote: { textAlign: 'center', fontSize: 13, color: colors.muted.foreground, fontFamily: fonts.regular },
 });

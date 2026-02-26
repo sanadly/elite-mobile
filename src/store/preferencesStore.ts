@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { I18nManager, DevSettings } from 'react-native';
+import { I18nManager } from 'react-native';
+import { reloadAppAsync } from 'expo';
 import i18n, { setStoredLanguage } from '../lib/i18n';
 
 type Language = 'en' | 'ar';
@@ -38,12 +39,8 @@ export const usePreferencesStore = create<PreferencesState>()(
 
         // If RTL direction changed, we need to reload the app
         if (shouldBeRTL !== currentIsRTL) {
-          await I18nManager.forceRTL(shouldBeRTL);
-
-          // Reload the app to apply RTL changes
-          if (__DEV__ && DevSettings?.reload) {
-            DevSettings.reload();
-          }
+          I18nManager.forceRTL(shouldBeRTL);
+          await reloadAppAsync('RTL direction changed');
         }
       },
     }),
