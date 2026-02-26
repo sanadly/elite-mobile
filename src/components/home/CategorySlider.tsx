@@ -17,7 +17,7 @@ const CATEGORIES = [
   'other',
 ] as const;
 
-const CATEGORY_IMAGE_BASE = 'https://elitestyle.ly/assets/categories';
+const CATEGORY_IMAGE_BASE = `${process.env.EXPO_PUBLIC_APP_URL}/assets/categories`;
 
 type Category = (typeof CATEGORIES)[number];
 
