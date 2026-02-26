@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Input, AuthLanguageToggle } from '../../src/components/ui';
 import { colors, typography, fonts, spacing } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
+import { fetchUserProfile } from '../../src/api/endpoints/profile';
 import { useAuthStore } from '../../src/store/authStore';
 import { useRTL } from '../../src/hooks/useRTL';
 
@@ -17,7 +18,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
-  const { setUser, setSession } = useAuthStore();
+  const { setUser, setUserData, setSession } = useAuthStore();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -39,6 +40,23 @@ export default function LoginScreen() {
       if (data.user && data.session) {
         setUser(data.user);
         setSession(data.session);
+
+        // Fetch user profile from backend
+        const profile = await fetchUserProfile();
+        if (profile) {
+          setUserData({
+            id: profile.id,
+            uid: profile.uid,
+            name: profile.name,
+            email: profile.email,
+            phone: profile.phone || undefined,
+            city: profile.city || undefined,
+            role: profile.role,
+            loyaltyTier: profile.loyaltyTier,
+            totalSpend: profile.totalSpend,
+          });
+        }
+
         router.replace('/(tabs)');
       }
     } catch (err: any) {

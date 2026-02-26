@@ -3,12 +3,13 @@ import { useRouter, useSegments } from 'expo-router';
 import { View, Image, StyleSheet } from 'react-native';
 import { useAuthStore } from '../src/store/authStore';
 import { supabase } from '../src/api/supabase';
+import { fetchUserProfile } from '../src/api/endpoints/profile';
 import { colors } from '../src/theme';
 
 const MIN_SPLASH_MS = 2500;
 
 export default function Index() {
-  const { user, setUser, setSession, setLoading, loading } = useAuthStore();
+  const { user, setUser, setUserData, setSession, setLoading, loading } = useAuthStore();
   const [splashReady, setSplashReady] = useState(false);
   const router = useRouter();
   const segments = useSegments();
@@ -21,16 +22,50 @@ export default function Index() {
 
   useEffect(() => {
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        const profile = await fetchUserProfile();
+        if (profile) {
+          setUserData({
+            id: profile.id,
+            uid: profile.uid,
+            name: profile.name,
+            email: profile.email,
+            phone: profile.phone || undefined,
+            city: profile.city || undefined,
+            role: profile.role,
+            loyaltyTier: profile.loyaltyTier,
+            totalSpend: profile.totalSpend,
+          });
+        }
+      }
       setLoading(false);
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        const profile = await fetchUserProfile();
+        if (profile) {
+          setUserData({
+            id: profile.id,
+            uid: profile.uid,
+            name: profile.name,
+            email: profile.email,
+            phone: profile.phone || undefined,
+            city: profile.city || undefined,
+            role: profile.role,
+            loyaltyTier: profile.loyaltyTier,
+            totalSpend: profile.totalSpend,
+          });
+        }
+      } else {
+        setUserData(null);
+      }
     });
 
     return () => subscription.unsubscribe();
