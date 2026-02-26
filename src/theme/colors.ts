@@ -69,6 +69,37 @@ export const colors = {
     },
   },
 
+  // Availability / stock indicators
+  availability: {
+    immediate: '#10b981',       // Emerald green
+    reservation: '#f59e0b',     // Amber
+    reservationDark: '#d97706', // Amber darker (text)
+    outOfStock: '#dc2626',      // Red
+    emerald: '#059669',         // Emerald (text / accent)
+    emeraldLight: '#ecfdf5',    // Emerald bg
+    // Badge backgrounds & borders (translucent)
+    immediateBg: 'rgba(16, 185, 129, 0.1)',
+    immediateBorder: 'rgba(16, 185, 129, 0.2)',
+    reservationBg: 'rgba(245, 158, 11, 0.1)',
+    reservationBorder: 'rgba(245, 158, 11, 0.2)',
+    outOfStockBg: 'rgba(239, 68, 68, 0.1)',
+    outOfStockBorder: 'rgba(239, 68, 68, 0.2)',
+  },
+
+  // Order status colors
+  orderStatus: {
+    confirmed: { bg: '#F0F9FF', text: '#0369A1' },
+    processing: { bg: '#FEF3C7', text: '#D97706' },
+    shipped: { bg: '#EDE9FE', text: '#7C3AED' },
+  },
+
+  // Overlay colors
+  overlay: {
+    dark35: 'rgba(0,0,0,0.35)',
+    light90: 'rgba(255,255,255,0.9)',
+    light60: 'rgba(255,255,255,0.6)',
+  },
+
   // Luxury Palette
   luxury: {
     offWhite: '#FAFAF9',

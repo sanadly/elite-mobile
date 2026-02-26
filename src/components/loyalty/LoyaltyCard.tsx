@@ -9,7 +9,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
-import { colors, typography, fonts, spacing } from '../../theme';
+import { colors, typography, fonts, spacing, commonStyles } from '../../theme';
 import { calculateLoyaltyTier, getLoyaltyProgress, LOYALTY_TIERS } from '../../lib/loyalty';
 import type { LoyaltyTier } from '../../types/firestore';
 import { useRTL } from '../../hooks/useRTL';
@@ -89,18 +89,18 @@ export function LoyaltyCard({ totalSpend }: LoyaltyCardProps) {
         </View>
 
         <View style={styles.progressInfo}>
-          <Text style={[styles.spendLabel, isRTL && styles.rtlText]}>{t('loyalty.total_spend')}</Text>
-          <Text style={[styles.spendAmount, isRTL && styles.rtlText]}>{'\u20AC'}{totalSpend.toFixed(0)}</Text>
+          <Text style={[styles.spendLabel, isRTL && commonStyles.rtlText]}>{t('loyalty.total_spend')}</Text>
+          <Text style={[styles.spendAmount, isRTL && commonStyles.rtlText]}>{'\u20AC'}{totalSpend.toFixed(0)}</Text>
 
           {progress.nextTier && (
             <>
               <View style={styles.divider} />
-              <Text style={[styles.nextTierLabel, isRTL && styles.rtlText]}>{t('loyalty.next_tier')}</Text>
+              <Text style={[styles.nextTierLabel, isRTL && commonStyles.rtlText]}>{t('loyalty.next_tier')}</Text>
               <View style={[styles.nextTierRow, isRTL && styles.nextTierRowRTL]}>
                 <Ionicons name={TIER_ICONS[progress.nextTier]} size={18} color={TIER_COLORS[progress.nextTier]} />
                 <Text style={[styles.nextTierName, { color: TIER_COLORS[progress.nextTier] }]}>{getTierName(progress.nextTier)}</Text>
               </View>
-              <Text style={[styles.remainingAmount, isRTL && styles.rtlText]}>{t('loyalty.unlock', { amount: progress.spendNeeded.toFixed(0) })}</Text>
+              <Text style={[styles.remainingAmount, isRTL && commonStyles.rtlText]}>{t('loyalty.unlock', { amount: progress.spendNeeded.toFixed(0) })}</Text>
             </>
           )}
 
@@ -117,21 +117,21 @@ export function LoyaltyCard({ totalSpend }: LoyaltyCardProps) {
       </View>
 
       <View style={styles.benefitsContainer}>
-        <Text style={[styles.benefitsTitle, isRTL && styles.rtlText]}>{t('loyalty.benefits.title')}</Text>
+        <Text style={[styles.benefitsTitle, isRTL && commonStyles.rtlText]}>{t('loyalty.benefits.title')}</Text>
 
         <View style={[styles.benefitRow, isRTL && styles.benefitRowRTL]}>
           <Ionicons name={currentTier === 'classic' ? 'close-circle' : 'checkmark-circle'} size={20} color={currentTier === 'classic' ? colors.muted.foreground : colors.status.success.text} />
-          <Text style={[styles.benefitText, currentTier === 'classic' && styles.benefitDisabled, isRTL && styles.rtlText]}>{t('loyalty.benefits.free_shipping')}</Text>
+          <Text style={[styles.benefitText, currentTier === 'classic' && styles.benefitDisabled, isRTL && commonStyles.rtlText]}>{t('loyalty.benefits.free_shipping')}</Text>
         </View>
 
         <View style={[styles.benefitRow, isRTL && styles.benefitRowRTL]}>
           <Ionicons name={currentTier === 'classic' ? 'close-circle' : 'checkmark-circle'} size={20} color={currentTier === 'classic' ? colors.muted.foreground : colors.status.success.text} />
-          <Text style={[styles.benefitText, currentTier === 'classic' && styles.benefitDisabled, isRTL && styles.rtlText]}>{t('loyalty.benefits.concierge')}</Text>
+          <Text style={[styles.benefitText, currentTier === 'classic' && styles.benefitDisabled, isRTL && commonStyles.rtlText]}>{t('loyalty.benefits.concierge')}</Text>
         </View>
 
         <View style={[styles.benefitRow, isRTL && styles.benefitRowRTL]}>
           <Ionicons name="checkmark-circle" size={20} color={colors.status.success.text} />
-          <Text style={[styles.benefitText, isRTL && styles.rtlText]}>
+          <Text style={[styles.benefitText, isRTL && commonStyles.rtlText]}>
             {currentTier === 'classic' && t('loyalty.benefits.deposit_classic')}
             {currentTier === 'prestige' && t('loyalty.benefits.deposit_prestige')}
             {currentTier === 'black' && t('loyalty.benefits.deposit_black')}
@@ -141,7 +141,7 @@ export function LoyaltyCard({ totalSpend }: LoyaltyCardProps) {
         {currentTier === 'black' && (
           <View style={[styles.benefitRow, isRTL && styles.benefitRowRTL]}>
             <Ionicons name="checkmark-circle" size={20} color={colors.status.success.text} />
-            <Text style={[styles.benefitText, isRTL && styles.rtlText]}>{t('loyalty.benefits.priority_support')}</Text>
+            <Text style={[styles.benefitText, isRTL && commonStyles.rtlText]}>{t('loyalty.benefits.priority_support')}</Text>
           </View>
         )}
       </View>
@@ -163,7 +163,6 @@ const styles = StyleSheet.create({
   progressInfo: { flex: 1 },
   spendLabel: { fontSize: typography.fontSize.sm, fontFamily: fonts.regular, color: colors.muted.foreground, marginBottom: spacing[1] },
   spendAmount: { fontSize: typography.fontSize['2xl'], fontFamily: fonts.bold, color: colors.foreground },
-  rtlText: { textAlign: 'right', writingDirection: 'rtl' },
   divider: { height: 1, backgroundColor: colors.border, marginVertical: spacing[3] },
   nextTierLabel: { fontSize: typography.fontSize.sm, fontFamily: fonts.regular, color: colors.muted.foreground, marginBottom: spacing[1] },
   nextTierRow: { flexDirection: 'row', alignItems: 'center', gap: spacing[1], marginBottom: spacing[1] },

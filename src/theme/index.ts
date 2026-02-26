@@ -6,3 +6,4 @@
 export { colors } from './colors';
 export { typography, fonts } from './typography';
 export { spacing, radius, shadows } from './spacing';
+export { commonStyles } from './commonStyles';

@@ -3,23 +3,12 @@ import { View, Text, FlatList, Pressable, StyleSheet, useWindowDimensions } from
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, spacing, radius } from '../../theme';
+import { colors, fonts, spacing, radius, commonStyles } from '../../theme';
 import { useRTL } from '../../hooks/useRTL';
-const CATEGORIES = [
-  'watches',
-  'bags',
-  'shoes',
-  'clothes',
-  'accessories',
-  'parfums',
-  'kids',
-  'cosmetics',
-  'other',
-] as const;
+import { CATEGORIES, Category } from '../../constants/categories';
+import { API_BASE } from '../../api/config';
 
-const CATEGORY_IMAGE_BASE = `${process.env.EXPO_PUBLIC_APP_URL}/assets/categories`;
-
-type Category = (typeof CATEGORIES)[number];
+const CATEGORY_IMAGE_BASE = `${API_BASE}/assets/categories`;
 
 interface CategoryItem {
   id: Category;
@@ -39,8 +28,7 @@ export function CategorySlider() {
   const isRTL = useRTL();
 
   const handleCategoryPress = (category: Category) => {
-    // TODO: Navigate to products filtered by category when catalog screen supports filters
-    router.push('/(tabs)' as any);
+    router.push(`/products?category=${category}` as any);
   };
 
   const renderCategory = ({ item }: { item: CategoryItem }) => (
@@ -64,7 +52,7 @@ export function CategorySlider() {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>
+      <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>
         {t('home.categories.title')}
       </Text>
       <FlatList
@@ -93,10 +81,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing[4],
     letterSpacing: -0.3,
   },
-  rtlText: {
-    textAlign: 'right',
-    writingDirection: 'rtl',
-  },
   listContent: {
     paddingHorizontal: spacing[4],
   },
@@ -116,7 +100,7 @@ const styles = StyleSheet.create({
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: colors.overlay.dark35,
   },
   cardLabelContainer: {
     position: 'absolute',

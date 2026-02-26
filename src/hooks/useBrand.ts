@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../api/supabase';
+import { API_BASE } from '../api/config';
+import { queryKeys } from '../api/queryKeys';
 
 export interface Brand {
   id: string;
@@ -9,23 +10,34 @@ export interface Brand {
   description: string | null;
   description_en: string | null;
   description_ar: string | null;
-  website: string | null;
+}
+
+export function useBrands() {
+  return useQuery({
+    queryKey: queryKeys.brands.all,
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE}/api/mobile/brands`);
+      if (!res.ok) throw new Error('Failed to fetch brands');
+
+      const data = await res.json();
+      return ((data.brands as Brand[]) || []).map((b) => b.name);
+    },
+  });
 }
 
 export function useBrand(brandName: string | undefined) {
   return useQuery({
-    queryKey: ['brand', brandName],
+    queryKey: queryKeys.brands.detail(brandName || ''),
     queryFn: async () => {
       if (!brandName) return null;
 
-      const { data, error } = await supabase
-        .from('brands')
-        .select('id, name, slug, logo_url, description, description_en, description_ar, website')
-        .ilike('name', brandName)
-        .maybeSingle();
+      const res = await fetch(
+        `${API_BASE}/api/mobile/brands?name=${encodeURIComponent(brandName)}`
+      );
+      if (!res.ok) throw new Error('Failed to fetch brand');
 
-      if (error) throw error;
-      return data as Brand | null;
+      const data = await res.json();
+      return (data.brand as Brand) || null;
     },
     enabled: !!brandName,
   });

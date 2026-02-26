@@ -107,6 +107,9 @@
     "about_brand": "عن {{brand}}",
     "view_all_from_brand": "عرض جميع منتجات {{brand}}"
   },
+  "brand": {
+    "products_count": "{{count}} منتجات"
+  },
   "product_card": {
     "immediate_delivery": "تسليم فوري",
     "available_by_reservation": "متوفر بالحجز",
@@ -260,6 +263,37 @@
     "unauthorized": "يرجى تسجيل الدخول للمتابعة",
     "try_again": "حاول مرة أخرى",
     "offline": "لا يوجد اتصال بالإنترنت"
+  },
+  "filters": {
+    "title": "الفلاتر",
+    "reset": "إعادة تعيين",
+    "reset_all": "مسح الكل",
+    "show_results": "عرض النتائج",
+    "all_categories": "الكل",
+    "immediate_delivery": "تسليم فوري",
+    "sort_by": "ترتيب حسب",
+    "sort_default": "مميز",
+    "sort_best_sellers": "الأكثر مبيعاً",
+    "sort_price_low": "السعر: من الأقل",
+    "sort_price_high": "السعر: من الأعلى",
+    "sort_newest": "الأحدث",
+    "category": "الفئة",
+    "gender": "الجنس",
+    "gender_men": "رجال",
+    "gender_women": "نساء",
+    "gender_unisex": "للجنسين",
+    "size": "المقاس",
+    "size_types": {
+      "numeric": "رقمي",
+      "volume": "الحجم",
+      "clothing": "ملابس",
+      "watch": "ساعات",
+      "age": "العمر",
+      "text": "أخرى"
+    },
+    "brand": "العلامة",
+    "no_results": "لا توجد منتجات تطابق الفلاتر",
+    "clear_filters": "مسح الفلاتر"
   },
   "tabs": {
     "shop": "المتجر",

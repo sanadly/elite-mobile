@@ -1,6 +1,5 @@
 import { supabase } from '../supabase';
-
-const API_URL = process.env.EXPO_PUBLIC_APP_URL || '';
+import { API_BASE, getAuthHeaders, getRequiredAuthHeaders } from '../config';
 
 export interface CheckoutData {
   fullName: string;
@@ -36,36 +35,31 @@ export interface CouponValidation {
 
 export async function validateCoupon(code: string, subtotal: number): Promise<CouponValidation> {
   try {
-    const { data: session } = await supabase.auth.getSession();
-    const token = session?.session?.access_token;
+    const authHeaders = await getAuthHeaders();
 
-    const response = await fetch(`${API_URL}/api/mobile/coupons/validate`, {
+    const response = await fetch(`${API_BASE}/api/mobile/coupons/validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        ...authHeaders,
       },
       body: JSON.stringify({ code, subtotal }),
     });
     return await response.json();
-  } catch {
+  } catch (err) {
+    console.warn('[Checkout] Coupon validation failed:', err);
     return { valid: false, error: 'Network error' };
   }
 }
 
 export async function placeOrder(data: CheckoutData) {
-  const { data: session } = await supabase.auth.getSession();
-  const token = session?.session?.access_token;
+  const authHeaders = await getRequiredAuthHeaders();
 
-  if (!token) {
-    throw new Error('Not authenticated');
-  }
-
-  const response = await fetch(`${API_URL}/api/mobile/orders`, {
+  const response = await fetch(`${API_BASE}/api/mobile/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      ...authHeaders,
     },
     body: JSON.stringify(data),
   });

@@ -4,9 +4,10 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Input, AuthLanguageToggle } from '../../src/components/ui';
-import { colors, typography, fonts, spacing } from '../../src/theme';
+import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
 import { fetchUserProfile } from '../../src/api/endpoints/profile';
+import { mapProfileToUserData } from '../../src/utils/profile';
 import { useAuthStore } from '../../src/store/authStore';
 import { useRTL } from '../../src/hooks/useRTL';
 
@@ -45,19 +46,7 @@ export default function LoginScreen() {
 
         // Fetch user profile from backend
         const profile = await fetchUserProfile();
-        if (profile) {
-          setUserData({
-            id: profile.id,
-            uid: profile.uid,
-            name: profile.name,
-            email: profile.email,
-            phone: profile.phone || undefined,
-            city: profile.city || undefined,
-            role: profile.role,
-            loyaltyTier: profile.loyaltyTier,
-            totalSpend: profile.totalSpend,
-          });
-        }
+        if (profile) setUserData(mapProfileToUserData(profile));
 
         router.replace('/(tabs)');
       }
@@ -88,7 +77,7 @@ export default function LoginScreen() {
               style={styles.logo}
               resizeMode="contain"
             />
-            <Text style={[styles.welcome, isRTL && styles.rtlText]}>{t('auth.login.title')}</Text>
+            <Text style={[styles.welcome, isRTL && commonStyles.rtlText]}>{t('auth.login.title')}</Text>
           </View>
 
           <View style={styles.form}>
@@ -111,7 +100,7 @@ export default function LoginScreen() {
               autoComplete="password"
             />
 
-            {error ? <Text style={[styles.error, isRTL && styles.rtlText]}>{error}</Text> : null}
+            {error ? <Text style={[styles.error, isRTL && commonStyles.rtlText]}>{error}</Text> : null}
 
             <Button
               title={loading ? t('auth.login.loading') : t('auth.login.submit')}
@@ -200,9 +189,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     marginBottom: spacing[2],
     textAlign: 'center',
-  },
-  rtlText: {
-    textAlign: 'right',
-    writingDirection: 'rtl',
   },
 });

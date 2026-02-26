@@ -1,16 +1,19 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors, typography, fonts, spacing } from '../../src/theme';
+import { useRouter } from 'expo-router';
+import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
 import { useProducts } from '../../src/hooks/useProducts';
 import { ProductCard } from '../../src/components/product/ProductCard';
 import { HeroSlider } from '../../src/components/home/HeroSlider';
 import { CategorySlider } from '../../src/components/home/CategorySlider';
+import { SearchBar } from '../../src/components/search/SearchBar';
 import { useRTL } from '../../src/hooks/useRTL';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
   const isRTL = useRTL();
+  const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch, isRefetching } = useProducts();
 
   const products = useMemo(() => data?.pages.flatMap((page) => page) ?? [], [data]);
@@ -18,11 +21,22 @@ export default function HomeScreen() {
   const renderHeader = () => (
     <View>
       <HeroSlider />
+
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <SearchBar
+          value=""
+          onChangeText={() => {}}
+          mode="button"
+          onPress={() => router.push('/products')}
+        />
+      </View>
+
       <CategorySlider />
 
       {/* Products Section Header */}
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>
+        <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>
           {t('home.featured')}
         </Text>
       </View>
@@ -84,6 +98,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  searchContainer: {
+    paddingHorizontal: spacing[4],
+    paddingTop: spacing[5],
+  },
   sectionHeader: {
     paddingHorizontal: spacing[4],
     paddingTop: spacing[8],
@@ -94,10 +112,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     color: colors.foreground,
     letterSpacing: -0.3,
-  },
-  rtlText: {
-    textAlign: 'right',
-    writingDirection: 'rtl',
   },
   list: {
     paddingBottom: spacing[6],

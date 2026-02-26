@@ -27,8 +27,6 @@ interface CartState {
   removeItem: (variantId: string) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
   clearCart: () => void;
-  cartCount: number;
-  cartTotal: number;
 }
 
 export const useCartStore = create<CartState>()(
@@ -92,18 +90,24 @@ export const useCartStore = create<CartState>()(
       },
 
       clearCart: () => set({ items: [] }),
-
-      get cartCount() {
-        return get().items.reduce((sum, item) => sum + item.quantity, 0);
-      },
-
-      get cartTotal() {
-        return get().items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      },
     }),
     {
       name: 'elite-cart',
+      version: 2,
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({ items: state.items }),
+      migrate: (persistedState: any, version: number) => {
+        if (version < 2) {
+          return { items: persistedState?.items || [] };
+        }
+        return persistedState as { items: CartItem[] };
+      },
     }
   )
 );
+
+export const selectCartCount = (state: CartState) =>
+  state.items.reduce((sum, item) => sum + item.quantity, 0);
+
+export const selectCartTotal = (state: CartState) =>
+  state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);

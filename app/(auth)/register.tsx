@@ -9,7 +9,6 @@ import {
   Platform,
   Pressable,
   Modal,
-  FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +17,8 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Input, AuthLanguageToggle } from '../../src/components/ui';
-import { colors, typography, fonts, spacing, radius } from '../../src/theme';
+import { CityPickerModal } from '../../src/components/auth/CityPickerModal';
+import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
 
 interface City {
@@ -66,8 +66,8 @@ export default function RegisterScreen() {
       if (!error && data) {
         setCities(data as City[]);
       }
-    } catch {
-      // Cities fetch failed silently - user can still type city name
+    } catch (err) {
+      console.warn('[Register] Cities fetch failed:', err);
     }
   };
 
@@ -207,7 +207,7 @@ export default function RegisterScreen() {
 
           {/* Phone with +218 prefix - always LTR */}
           <View style={styles.phoneFieldContainer}>
-            <Text style={[styles.label, isRTL && styles.rtlText]}>{t('auth.register.phone_label')}</Text>
+            <Text style={[styles.label, isRTL && commonStyles.rtlText]}>{t('auth.register.phone_label')}</Text>
             <View style={styles.phoneRow}>
               <View style={styles.phonePrefix}>
                 <Text style={styles.phonePrefixText}>+218</Text>
@@ -230,12 +230,12 @@ export default function RegisterScreen() {
 
           {/* City Picker */}
           <View style={styles.fieldContainer}>
-            <Text style={[styles.label, isRTL && styles.rtlText]}>{t('auth.register.city_label')}</Text>
+            <Text style={[styles.label, isRTL && commonStyles.rtlText]}>{t('auth.register.city_label')}</Text>
             <Pressable
               style={[styles.pickerButton, isRTL && styles.pickerButtonRTL]}
               onPress={() => setShowCityPicker(true)}
             >
-              <Text style={[styles.pickerText, !city && styles.pickerPlaceholder, isRTL && styles.rtlText]}>
+              <Text style={[styles.pickerText, !city && styles.pickerPlaceholder, isRTL && commonStyles.rtlText]}>
                 {city || t('auth.register.city_placeholder')}
               </Text>
               <Ionicons name="chevron-down" size={18} color={colors.muted.foreground} />
@@ -243,64 +243,24 @@ export default function RegisterScreen() {
           </View>
 
           {/* City Picker Modal */}
-          <Modal
+          <CityPickerModal
             visible={showCityPicker}
-            transparent
-            animationType="slide"
-            onRequestClose={() => setShowCityPicker(false)}
-          >
-            <Pressable
-              style={styles.modalOverlay}
-              onPress={() => setShowCityPicker(false)}
-            >
-              <View style={styles.modalContent}>
-                <View style={styles.modalHeader}>
-                  <Text style={styles.modalTitle}>{t('auth.register.city_label')}</Text>
-                  <Pressable onPress={() => setShowCityPicker(false)}>
-                    <Ionicons name="close" size={24} color={colors.foreground} />
-                  </Pressable>
-                </View>
-                <FlatList
-                  data={cities}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                    <Pressable
-                      style={[
-                        styles.cityItem,
-                        city === item.city_name && styles.cityItemSelected,
-                      ]}
-                      onPress={() => {
-                        setCity(item.city_name);
-                        setShowCityPicker(false);
-                      }}
-                    >
-                      <Text
-                        style={[
-                          styles.cityItemText,
-                          city === item.city_name && styles.cityItemTextSelected,
-                        ]}
-                      >
-                        {item.city_name}
-                      </Text>
-                      {city === item.city_name && (
-                        <Ionicons name="checkmark" size={20} color={colors.primary.DEFAULT} />
-                      )}
-                    </Pressable>
-                  )}
-                />
-              </View>
-            </Pressable>
-          </Modal>
+            onClose={() => setShowCityPicker(false)}
+            cities={cities}
+            selectedCity={city}
+            onSelectCity={setCity}
+            title={t('auth.register.city_label')}
+          />
 
           {/* Date of Birth (Optional) */}
           <View style={styles.fieldContainer}>
             <View style={[styles.labelRow, isRTL && styles.labelRowRTL]}>
-              <Text style={[styles.label, isRTL && styles.rtlText]}>{t('auth.register.dob_label')}</Text>
+              <Text style={[styles.label, isRTL && commonStyles.rtlText]}>{t('auth.register.dob_label')}</Text>
               <Text style={styles.optionalBadge}>{t('common.optional')}</Text>
             </View>
             <View style={[styles.birthdayIncentive, isRTL && styles.birthdayIncentiveRTL]}>
               <Ionicons name="gift-outline" size={16} color="#d97706" />
-              <Text style={[styles.birthdayIncentiveText, isRTL && styles.rtlText]}>
+              <Text style={[styles.birthdayIncentiveText, isRTL && commonStyles.rtlText]}>
                 {t('auth.register.birthday_incentive')}
               </Text>
             </View>
@@ -308,7 +268,7 @@ export default function RegisterScreen() {
               style={[styles.pickerButton, isRTL && styles.pickerButtonRTL]}
               onPress={() => setShowDatePicker(true)}
             >
-              <Text style={[styles.pickerText, !dateOfBirth && styles.pickerPlaceholder, isRTL && styles.rtlText]}>
+              <Text style={[styles.pickerText, !dateOfBirth && styles.pickerPlaceholder, isRTL && commonStyles.rtlText]}>
                 {dateOfBirth ? format(dateOfBirth, 'yyyy-MM-dd') : t('auth.register.dob_placeholder')}
               </Text>
               <Ionicons name="calendar-outline" size={18} color={colors.muted.foreground} />
@@ -438,10 +398,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     color: colors.foreground,
     marginBottom: 6,
-  },
-  rtlText: {
-    textAlign: 'right',
-    writingDirection: 'rtl',
   },
   labelRow: {
     flexDirection: 'row',
@@ -580,18 +536,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: spacing[8],
   },
-  // Modal styles
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: colors.background,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '60%',
-    paddingBottom: spacing[6],
   },
   modalHeader: {
     flexDirection: 'row',
@@ -605,27 +553,6 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontFamily: fonts.bold,
     color: colors.foreground,
-  },
-  cityItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: spacing[4],
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  cityItemSelected: {
-    backgroundColor: `${colors.primary.DEFAULT}10`,
-  },
-  cityItemText: {
-    fontSize: 16,
-    fontFamily: fonts.regular,
-    color: colors.foreground,
-  },
-  cityItemTextSelected: {
-    fontFamily: fonts.bold,
-    color: colors.primary.DEFAULT,
   },
   datePickerModal: {
     backgroundColor: colors.background,

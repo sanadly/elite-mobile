@@ -4,6 +4,7 @@ import { View, Image, StyleSheet } from 'react-native';
 import { useAuthStore } from '../src/store/authStore';
 import { supabase } from '../src/api/supabase';
 import { fetchUserProfile } from '../src/api/endpoints/profile';
+import { mapProfileToUserData } from '../src/utils/profile';
 import { colors } from '../src/theme';
 
 const MIN_SPLASH_MS = 2500;
@@ -55,20 +56,10 @@ export default function Index() {
         // Fetch profile before finishing — ensures userData is set
         try {
           const profile = await fetchUserProfile();
-          if (profile) {
-            setUserData({
-              id: profile.id,
-              uid: profile.uid,
-              name: profile.name,
-              email: profile.email,
-              phone: profile.phone || undefined,
-              city: profile.city || undefined,
-              role: profile.role,
-              loyaltyTier: profile.loyaltyTier,
-              totalSpend: profile.totalSpend,
-            });
-          }
-        } catch {}
+          if (profile) setUserData(mapProfileToUserData(profile));
+        } catch (err) {
+          console.warn('[Auth] Profile fetch failed:', err);
+        }
 
         finishLoading();
       } catch (err) {
@@ -86,20 +77,10 @@ export default function Index() {
       if (session?.user) {
         try {
           const profile = await fetchUserProfile();
-          if (profile) {
-            setUserData({
-              id: profile.id,
-              uid: profile.uid,
-              name: profile.name,
-              email: profile.email,
-              phone: profile.phone || undefined,
-              city: profile.city || undefined,
-              role: profile.role,
-              loyaltyTier: profile.loyaltyTier,
-              totalSpend: profile.totalSpend,
-            });
-          }
-        } catch {}
+          if (profile) setUserData(mapProfileToUserData(profile));
+        } catch (err) {
+          console.warn('[Auth] Profile fetch on auth change failed:', err);
+        }
       } else {
         setUserData(null);
       }

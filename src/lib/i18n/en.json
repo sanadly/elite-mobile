@@ -107,6 +107,9 @@
     "about_brand": "About {{brand}}",
     "view_all_from_brand": "View all {{brand}} products"
   },
+  "brand": {
+    "products_count": "{{count}} products"
+  },
   "product_card": {
     "immediate_delivery": "IMMEDIATE DELIVERY",
     "available_by_reservation": "AVAILABLE BY RESERVATION",
@@ -260,6 +263,37 @@
     "unauthorized": "Please sign in to continue",
     "try_again": "Try Again",
     "offline": "No internet connection"
+  },
+  "filters": {
+    "title": "Filters",
+    "reset": "Reset",
+    "reset_all": "Reset All",
+    "show_results": "Show Results",
+    "all_categories": "All",
+    "immediate_delivery": "Immediate Delivery",
+    "sort_by": "Sort By",
+    "sort_default": "Featured",
+    "sort_best_sellers": "Best Sellers",
+    "sort_price_low": "Price: Low to High",
+    "sort_price_high": "Price: High to Low",
+    "sort_newest": "Newest",
+    "category": "Category",
+    "gender": "Gender",
+    "gender_men": "Men",
+    "gender_women": "Women",
+    "gender_unisex": "Unisex",
+    "size": "Size",
+    "size_types": {
+      "numeric": "Numeric",
+      "volume": "Volume",
+      "clothing": "Clothing",
+      "watch": "Watch",
+      "age": "Age",
+      "text": "Other"
+    },
+    "brand": "Brand",
+    "no_results": "No products match your filters",
+    "clear_filters": "Clear Filters"
   },
   "tabs": {
     "shop": "Shop",

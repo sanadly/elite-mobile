@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useOrder } from '../../src/hooks/useOrders';
-import { colors, typography, fonts, spacing } from '../../src/theme';
+import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
 import { Card, Button } from '../../src/components/ui';
 import { format } from 'date-fns';
 import { useRTL } from '../../src/hooks/useRTL';
@@ -47,12 +47,12 @@ export default function OrderDetailScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Stack.Screen options={{ title: `#${order.order_number}` }} />
 
-      <Text style={[styles.title, isRTL && styles.rtlText]}>Order #{order.order_number}</Text>
-      <Text style={[styles.date, isRTL && styles.rtlText]}>{format(new Date(order.created_at), 'MMMM dd, yyyy • HH:mm')}</Text>
+      <Text style={[styles.title, isRTL && commonStyles.rtlText]}>Order #{order.order_number}</Text>
+      <Text style={[styles.date, isRTL && commonStyles.rtlText]}>{format(new Date(order.created_at), 'MMMM dd, yyyy • HH:mm')}</Text>
 
       {/* Order Timeline */}
       <Card style={styles.timelineCard}>
-        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('orders.detail.order_status')}</Text>
+        <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('orders.detail.order_status')}</Text>
         {isCancelled ? (
           <View style={styles.cancelledContainer}>
             <Ionicons name="close-circle" size={48} color={colors.status.error.text} />
@@ -65,7 +65,7 @@ export default function OrderDetailScreen() {
               const isCurrent = index === currentStatusIndex;
               const isLast = index === STATUS_TIMELINE.length - 1;
               return (
-                <View key={status} style={[styles.timelineItem, isRTL && styles.rowReverse]}>
+                <View key={status} style={[styles.timelineItem, isRTL && commonStyles.rowReverse]}>
                   <View style={[styles.timelineLeft, isRTL && styles.timelineLeftRTL]}>
                     <View style={[styles.timelineIcon, isCompleted && styles.timelineIconCompleted, isCurrent && styles.timelineIconCurrent]}>
                       <Ionicons name={STATUS_ICONS[status]} size={20} color={isCompleted ? colors.primary.foreground : colors.muted.foreground} />
@@ -73,9 +73,9 @@ export default function OrderDetailScreen() {
                     {!isLast && <View style={[styles.timelineLine, isCompleted && styles.timelineLineCompleted]} />}
                   </View>
                   <View style={styles.timelineRight}>
-                    <Text style={[styles.timelineLabel, isCompleted && styles.timelineLabelCompleted, isRTL && styles.rtlText]}>{getStatusLabel(status)}</Text>
+                    <Text style={[styles.timelineLabel, isCompleted && styles.timelineLabelCompleted, isRTL && commonStyles.rtlText]}>{getStatusLabel(status)}</Text>
                     {order.status_history?.[status] && (
-                      <Text style={[styles.timelineTime, isRTL && styles.rtlText]}>{format(new Date(order.status_history[status]), 'MMM dd, HH:mm')}</Text>
+                      <Text style={[styles.timelineTime, isRTL && commonStyles.rtlText]}>{format(new Date(order.status_history[status]), 'MMM dd, HH:mm')}</Text>
                     )}
                   </View>
                 </View>
@@ -87,18 +87,18 @@ export default function OrderDetailScreen() {
 
       {/* Shipping Information */}
       <Card style={styles.card}>
-        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('orders.detail.shipping_info')}</Text>
-        <View style={[styles.infoRow, isRTL && styles.rowReverse]}>
+        <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('orders.detail.shipping_info')}</Text>
+        <View style={[styles.infoRow, isRTL && commonStyles.rowReverse]}>
           <Ionicons name="person-outline" size={20} color={colors.muted.foreground} />
-          <Text style={[styles.infoText, isRTL && styles.rtlText]}>{order.shipping_address.fullName}</Text>
+          <Text style={[styles.infoText, isRTL && commonStyles.rtlText]}>{order.shipping_address.fullName}</Text>
         </View>
-        <View style={[styles.infoRow, isRTL && styles.rowReverse]}>
+        <View style={[styles.infoRow, isRTL && commonStyles.rowReverse]}>
           <Ionicons name="call-outline" size={20} color={colors.muted.foreground} />
-          <Text style={[styles.infoText, isRTL && styles.rtlText]}>{order.shipping_address.phone}</Text>
+          <Text style={[styles.infoText, isRTL && commonStyles.rtlText]}>{order.shipping_address.phone}</Text>
         </View>
-        <View style={[styles.infoRow, isRTL && styles.rowReverse]}>
+        <View style={[styles.infoRow, isRTL && commonStyles.rowReverse]}>
           <Ionicons name="location-outline" size={20} color={colors.muted.foreground} />
-          <Text style={[styles.infoText, isRTL && styles.rtlText]}>
+          <Text style={[styles.infoText, isRTL && commonStyles.rtlText]}>
             {order.shipping_address.city}{order.shipping_address.address && `, ${order.shipping_address.address}`}
           </Text>
         </View>
@@ -106,9 +106,9 @@ export default function OrderDetailScreen() {
 
       {/* Order Items */}
       <Card style={styles.card}>
-        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('orders.detail.order_items')}</Text>
+        <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('orders.detail.order_items')}</Text>
         {order.items.map((item) => (
-          <View key={item.id} style={[styles.itemRow, isRTL && styles.rowReverse]}>
+          <View key={item.id} style={[styles.itemRow, isRTL && commonStyles.rowReverse]}>
             {item.image_url ? (
               <Image source={{ uri: item.image_url }} style={styles.itemImage} />
             ) : (
@@ -117,9 +117,9 @@ export default function OrderDetailScreen() {
               </View>
             )}
             <View style={[styles.itemInfo, isRTL && styles.itemInfoRTL]}>
-              <Text style={[styles.itemName, isRTL && styles.rtlText]} numberOfLines={2}>{item.product_name}</Text>
-              <Text style={[styles.itemDetails, isRTL && styles.rtlText]}>{item.color} • {item.size}</Text>
-              <Text style={[styles.itemQuantity, isRTL && styles.rtlText]}>{t('orders.detail.quantity', { quantity: item.quantity })}</Text>
+              <Text style={[styles.itemName, isRTL && commonStyles.rtlText]} numberOfLines={2}>{item.product_name}</Text>
+              <Text style={[styles.itemDetails, isRTL && commonStyles.rtlText]}>{item.color} • {item.size}</Text>
+              <Text style={[styles.itemQuantity, isRTL && commonStyles.rtlText]}>{t('orders.detail.quantity', { quantity: item.quantity })}</Text>
             </View>
             <Text style={styles.itemPrice}>€{(item.price_eur * item.quantity).toFixed(2)}</Text>
           </View>
@@ -128,49 +128,49 @@ export default function OrderDetailScreen() {
 
       {/* Order Summary */}
       <Card style={styles.card}>
-        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('orders.detail.order_summary')}</Text>
+        <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('orders.detail.order_summary')}</Text>
 
-        <View style={[styles.summaryRow, isRTL && styles.rowReverse]}>
-          <Text style={[styles.summaryLabel, isRTL && styles.rtlText]}>{t('checkout.subtotal')}</Text>
+        <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+          <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.subtotal')}</Text>
           <Text style={styles.summaryValue}>€{(order.total_eur - order.shipping_fee + (order.discount_amount || 0)).toFixed(2)}</Text>
         </View>
 
         {order.discount_amount && order.discount_amount > 0 && (
-          <View style={[styles.summaryRow, isRTL && styles.rowReverse]}>
-            <Text style={[styles.summaryLabel, styles.discountLabel, isRTL && styles.rtlText]}>{t('checkout.discount')} {order.coupon_code && `(${order.coupon_code})`}</Text>
+          <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+            <Text style={[styles.summaryLabel, styles.discountLabel, isRTL && commonStyles.rtlText]}>{t('checkout.discount')} {order.coupon_code && `(${order.coupon_code})`}</Text>
             <Text style={[styles.summaryValue, styles.discountValue]}>-€{order.discount_amount.toFixed(2)}</Text>
           </View>
         )}
 
-        <View style={[styles.summaryRow, isRTL && styles.rowReverse]}>
-          <Text style={[styles.summaryLabel, isRTL && styles.rtlText]}>{t('checkout.shipping')}</Text>
+        <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+          <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.shipping')}</Text>
           <Text style={styles.summaryValue}>€{order.shipping_fee.toFixed(2)}</Text>
         </View>
 
-        <View style={[styles.summaryRow, styles.totalRow, isRTL && styles.rowReverse]}>
-          <Text style={[styles.totalLabel, isRTL && styles.rtlText]}>{t('cart.total')}</Text>
+        <View style={[styles.summaryRow, styles.totalRow, isRTL && commonStyles.rowReverse]}>
+          <Text style={[styles.totalLabel, isRTL && commonStyles.rtlText]}>{t('cart.total')}</Text>
           <Text style={styles.totalValue}>€{order.total_eur.toFixed(2)}</Text>
         </View>
 
         {order.deposit_amount && order.deposit_amount > 0 && (
           <>
             <View style={styles.divider} />
-            <View style={[styles.summaryRow, isRTL && styles.rowReverse]}>
-              <Text style={[styles.depositLabel, isRTL && styles.rtlText]}>{t('checkout.deposit')}</Text>
+            <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+              <Text style={[styles.depositLabel, isRTL && commonStyles.rtlText]}>{t('checkout.deposit')}</Text>
               <Text style={styles.depositValue}>€{order.deposit_amount.toFixed(2)}</Text>
             </View>
           </>
         )}
 
-        <View style={[styles.paymentMethodRow, isRTL && styles.rowReverse]}>
+        <View style={[styles.paymentMethodRow, isRTL && commonStyles.rowReverse]}>
           <Ionicons name="cash-outline" size={20} color={colors.muted.foreground} />
-          <Text style={[styles.paymentMethodText, isRTL && styles.rtlText]}>{t('orders.detail.payment_method')}</Text>
+          <Text style={[styles.paymentMethodText, isRTL && commonStyles.rtlText]}>{t('orders.detail.payment_method')}</Text>
         </View>
       </Card>
 
       <Card style={styles.helpCard}>
-        <Text style={[styles.helpTitle, isRTL && styles.rtlText]}>{t('orders.detail.help_title')}</Text>
-        <Text style={[styles.helpText, isRTL && styles.rtlText]}>{t('orders.detail.help_text')}</Text>
+        <Text style={[styles.helpTitle, isRTL && commonStyles.rtlText]}>{t('orders.detail.help_title')}</Text>
+        <Text style={[styles.helpText, isRTL && commonStyles.rtlText]}>{t('orders.detail.help_text')}</Text>
       </Card>
 
       <View style={styles.bottomSpacing} />
@@ -188,8 +188,6 @@ const styles = StyleSheet.create({
   backButton: { marginBottom: spacing[4] },
   title: { fontSize: typography.fontSize['3xl'], fontFamily: fonts.bold, color: colors.foreground, marginBottom: spacing[1] },
   date: { fontSize: typography.fontSize.base, color: colors.muted.foreground, marginBottom: spacing[6], fontFamily: fonts.regular },
-  rtlText: { textAlign: 'right', writingDirection: 'rtl' },
-  rowReverse: { flexDirection: 'row-reverse' },
   card: { marginBottom: spacing[3] },
   timelineCard: { marginBottom: spacing[3] },
   sectionTitle: { fontSize: typography.fontSize.lg, fontFamily: fonts.semibold, color: colors.foreground, marginBottom: spacing[4] },

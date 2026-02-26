@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { usePreferencesStore } from '../../store/preferencesStore';
-import { colors, typography, fonts, spacing } from '../../theme';
+import { colors, typography, fonts, spacing, commonStyles } from '../../theme';
 import { useRTL } from '../../hooks/useRTL';
 
 export function LanguageSwitcher() {
@@ -40,7 +40,7 @@ export function LanguageSwitcher() {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, isRTL && styles.rtlText]}>{t('account.menu.language')}</Text>
+      <Text style={[styles.title, isRTL && commonStyles.rtlText]}>{t('account.menu.language')}</Text>
 
       <View style={styles.options}>
         <Pressable
@@ -63,10 +63,10 @@ export function LanguageSwitcher() {
           disabled={isChanging}
         >
           <View style={styles.optionContent}>
-            <Text style={[styles.optionText, language === 'ar' && styles.optionTextActive, isRTL && styles.rtlText]}>
+            <Text style={[styles.optionText, language === 'ar' && styles.optionTextActive, isRTL && commonStyles.rtlText]}>
               {'\u0627\u0644\u0639\u0631\u0628\u064A\u0629'}
             </Text>
-            <Text style={[styles.optionSubtext, language === 'ar' && styles.optionSubtextActive, isRTL && styles.rtlText]}>
+            <Text style={[styles.optionSubtext, language === 'ar' && styles.optionSubtextActive, isRTL && commonStyles.rtlText]}>
               Arabic
             </Text>
           </View>
@@ -88,7 +88,6 @@ export function LanguageSwitcher() {
 const styles = StyleSheet.create({
   container: { padding: spacing[4] },
   title: { fontSize: typography.fontSize.lg, fontFamily: fonts.semibold, color: colors.foreground, marginBottom: spacing[4] },
-  rtlText: { textAlign: 'right', writingDirection: 'rtl' },
   options: { gap: spacing[3] },
   option: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing[4], borderRadius: 12, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.background },
   optionRTL: { flexDirection: 'row-reverse' },

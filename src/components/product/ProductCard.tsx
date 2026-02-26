@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-nati
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { colors, typography, fonts, spacing, radius, shadows } from '../../theme';
-import { Product } from '../../hooks/useProducts';
+import { colors, typography, fonts, spacing, radius, shadows, commonStyles } from '../../theme';
+import { Product } from '../../types/product';
 import { useRTL } from '../../hooks/useRTL';
 
 interface ProductCardProps {
@@ -23,7 +23,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const isReservable = product.show_out_of_stock === true;
   const stockRemaining = product.stockRemaining || 0;
 
-  const availableColors = product.availableColors || [];
+  const availableColors = product.availableColors || product.variants?.map(v => v.color) || [];
 
   const accessibilityLabel = `${product.brand} ${product.model}, ${t('product_card.price')} ${product.price} euros${isImmediateDelivery ? `, ${t('product_card.immediate_delivery')}` : ''}${isReservable ? `, ${t('product_card.available_by_reservation')}` : ''}`;
 
@@ -87,19 +87,19 @@ export function ProductCard({ product }: ProductCardProps) {
       </View>
 
       <View style={styles.info}>
-        <Text style={[styles.name, isRTL && styles.rtlText]} numberOfLines={2}>
+        <Text style={[styles.name, isRTL && commonStyles.rtlText]} numberOfLines={2}>
           {product.brand} {product.model}
         </Text>
 
         {availableColors.length > 0 && (
-          <Text style={[styles.colors, isRTL && styles.rtlText]}>
+          <Text style={[styles.colors, isRTL && commonStyles.rtlText]}>
             {availableColors.length === 1
               ? availableColors[0]
               : t('product_card.colors_available', { count: availableColors.length })}
           </Text>
         )}
 
-        <Text style={[styles.price, isRTL && styles.rtlText]}>{'\u20AC'}{product.price.toFixed(2)}</Text>
+        <Text style={[styles.price, isRTL && commonStyles.rtlText]}>{'\u20AC'}{product.price.toFixed(2)}</Text>
       </View>
     </Pressable>
   );
@@ -119,13 +119,12 @@ const styles = StyleSheet.create({
   deliveryBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingHorizontal: spacing[2] + 2, paddingVertical: spacing[1], borderRadius: 999, borderWidth: 1, borderColor: 'rgba(134, 239, 172, 0.5)', gap: 4 },
   reservableBadge: { backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingHorizontal: spacing[2] + 2, paddingVertical: spacing[1], borderRadius: 999, borderWidth: 1, borderColor: 'rgba(96, 165, 250, 0.5)' },
   reservableText: { fontSize: 10, fontFamily: fonts.semibold, color: '#1d4ed8', letterSpacing: 0.5 },
-  pulseDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#10b981' },
-  deliveryText: { fontSize: 10, fontFamily: fonts.semibold, color: '#15803d', textTransform: 'uppercase', letterSpacing: 0.5 },
+  pulseDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.availability.immediate },
+  deliveryText: { fontSize: 10, fontFamily: fonts.semibold, color: colors.status.success.text, textTransform: 'uppercase', letterSpacing: 0.5 },
   stockIndicator: { position: 'absolute', bottom: spacing[3], left: spacing[3], right: spacing[3], backgroundColor: 'rgba(245, 158, 11, 0.95)', paddingHorizontal: spacing[2], paddingVertical: spacing[1], borderRadius: 4 },
   stockText: { fontSize: 10, fontFamily: fonts.bold, color: '#fff', textAlign: 'center', textTransform: 'uppercase', letterSpacing: 0.3 },
   info: { paddingTop: spacing[4], gap: spacing[1] },
   name: { fontSize: typography.fontSize.base, fontFamily: fonts.bold, color: colors.foreground, textTransform: 'uppercase', letterSpacing: -0.5, lineHeight: typography.lineHeight.tight * typography.fontSize.base },
-  rtlText: { textAlign: 'right', writingDirection: 'rtl' },
   colors: { fontSize: typography.fontSize.xs, fontFamily: fonts.regular, color: colors.muted.foreground },
   price: { fontSize: typography.fontSize.sm, fontFamily: fonts.bold, color: colors.foreground, marginTop: spacing[1] },
 });

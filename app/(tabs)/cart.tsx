@@ -4,29 +4,28 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useCartStore } from '../../src/store/cartStore';
-import { colors, typography, fonts, spacing } from '../../src/theme';
-import { Card, Button } from '../../src/components/ui';
+import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
+import { Card, Button, AvailabilityBadge, EmptyState } from '../../src/components/ui';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useMemo } from 'react';
 
 export default function CartScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
-  const { items, cartTotal, cartCount, removeItem, updateQuantity } = useCartStore();
+  const { items, removeItem, updateQuantity } = useCartStore();
+  const cartCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
+  const cartTotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
 
   if (items.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <Ionicons name="cart-outline" size={80} color={colors.muted.foreground} />
-        <Text style={styles.emptyText}>{t('cart.empty')}</Text>
-        <Text style={styles.emptySubtext}>{t('cart.empty_subtitle')}</Text>
-        <Button
-          title={t('cart.continue_shopping')}
-          onPress={() => router.push('/(tabs)')}
-          size="lg"
-          style={styles.button}
-        />
-      </View>
+      <EmptyState
+        icon="cart-outline"
+        title={t('cart.empty')}
+        subtitle={t('cart.empty_subtitle')}
+        actionLabel={t('cart.continue_shopping')}
+        onAction={() => router.push('/(tabs)')}
+      />
     );
   }
 
@@ -37,7 +36,7 @@ export default function CartScreen() {
         keyExtractor={(item) => item.variantId}
         renderItem={({ item }) => (
           <Card style={styles.cartItem}>
-            <View style={[styles.itemRow, isRTL && styles.rowReverse]}>
+            <View style={[styles.itemRow, isRTL && commonStyles.rowReverse]}>
               {item.image ? (
                 <Image source={{ uri: item.image }} style={styles.itemImage} />
               ) : (
@@ -47,11 +46,17 @@ export default function CartScreen() {
               )}
 
               <View style={[styles.itemInfo, isRTL && styles.itemInfoRTL]}>
-                <Text style={[styles.itemName, isRTL && styles.rtlText]} numberOfLines={2}>{item.name}</Text>
-                <Text style={[styles.itemDetails, isRTL && styles.rtlText]}>
+                <Text style={[styles.itemName, isRTL && commonStyles.rtlText]} numberOfLines={2}>{item.name}</Text>
+                <Text style={[styles.itemDetails, isRTL && commonStyles.rtlText]}>
                   {item.color} • {item.size}
                 </Text>
-                <Text style={[styles.itemPrice, isRTL && styles.rtlText]}>€{item.price.toFixed(2)}</Text>
+                <View style={[styles.badgeRow, isRTL && commonStyles.rowReverse]}>
+                  <AvailabilityBadge
+                    type={item.isConcierge ? 'reservation' : 'immediate'}
+                    size="sm"
+                  />
+                </View>
+                <Text style={[styles.itemPrice, isRTL && commonStyles.rtlText]}>€{item.price.toFixed(2)}</Text>
               </View>
 
               <Pressable onPress={() => removeItem(item.variantId)} style={styles.removeButton}>
@@ -83,9 +88,9 @@ export default function CartScreen() {
 
       {/* Footer with total and checkout button */}
       <View style={styles.footer}>
-        <View style={[styles.totalRow, isRTL && styles.rowReverse]}>
-          <Text style={[styles.totalLabel, isRTL && styles.rtlText]}>
-            {t('cart.total')} ({cartCount} {t('cart.item_count', { count: cartCount })})
+        <View style={[styles.totalRow, isRTL && commonStyles.rowReverse]}>
+          <Text style={[styles.totalLabel, isRTL && commonStyles.rtlText]}>
+            {t('cart.total')} ({t('cart.item_count', { count: cartCount })})
           </Text>
           <Text style={styles.totalAmount}>€{cartTotal.toFixed(2)}</Text>
         </View>
@@ -104,30 +109,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing[6],
-  },
-  emptyText: {
-    fontSize: 24,
-    fontFamily: fonts.semibold,
-    color: colors.foreground,
-    marginTop: spacing[4],
-    marginBottom: spacing[2],
-  },
-  emptySubtext: {
-    fontSize: 16,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-    textAlign: 'center',
-    marginBottom: spacing[8],
-  },
-  button: {
-    width: '100%',
-    maxWidth: 300,
-  },
   list: {
     padding: spacing[4],
   },
@@ -137,13 +118,6 @@ const styles = StyleSheet.create({
   itemRow: {
     flexDirection: 'row',
     marginBottom: spacing[3],
-  },
-  rowReverse: {
-    flexDirection: 'row-reverse',
-  },
-  rtlText: {
-    textAlign: 'right',
-    writingDirection: 'rtl',
   },
   itemImage: {
     width: 80,
@@ -179,6 +153,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: fonts.bold,
     color: colors.primary.DEFAULT,
+  },
+  badgeRow: {
+    flexDirection: 'row',
+    marginBottom: spacing[2],
   },
   removeButton: {
     padding: spacing[2],

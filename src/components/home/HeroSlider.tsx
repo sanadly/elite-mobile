@@ -11,21 +11,24 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { colors, spacing, radius } from '../../theme';
 import { useRTL } from '../../hooks/useRTL';
+import { API_BASE } from '../../api/config';
+
+const HERO_BASE = `${API_BASE}/hero`;
 
 const SLIDES = [
   {
     id: 'cartier',
-    image: 'https://elitestyle.ly/hero/cartier.png',
+    image: `${HERO_BASE}/cartier.png`,
     brand: 'Cartier',
   },
   {
     id: 'hublot',
-    image: 'https://elitestyle.ly/hero/hublot.png',
+    image: `${HERO_BASE}/hublot.png`,
     brand: 'Hublot',
   },
   {
     id: 'on',
-    image: 'https://elitestyle.ly/hero/on.png',
+    image: `${HERO_BASE}/on.png`,
     brand: 'On',
   },
 ];
@@ -90,9 +93,7 @@ export function HeroSlider() {
   }, [slides.length, scrollToIndex]);
 
   const handleSlidePress = (brand: string) => {
-    // Navigate to products filtered by brand - for now just go to home
-    // TODO: Add brand filter route when products catalog screen is available
-    router.push('/(tabs)' as any);
+    router.push(`/brand/${encodeURIComponent(brand)}` as any);
   };
 
   const renderSlide = ({ item }: { item: (typeof slides)[number] }) => (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Pressable } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { Button, Input, Card } from '../../src/components/ui';
 import { useCartStore } from '../../src/store/cartStore';
 import { useAuthStore } from '../../src/store/authStore';
-import { colors, typography, fonts, spacing } from '../../src/theme';
+import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
 import { validateCoupon, placeOrder, getCities } from '../../src/api/endpoints/checkout';
 import { DEPOSIT_RATES } from '../../src/lib/checkout-config';
 import { useRTL } from '../../src/hooks/useRTL';
@@ -26,7 +26,8 @@ export default function CheckoutScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
-  const { items, cartTotal, clearCart } = useCartStore();
+  const { items, clearCart } = useCartStore();
+  const cartTotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
   const { userData } = useAuthStore();
 
   const [cities, setCities] = useState<any[]>([]);
@@ -142,10 +143,10 @@ export default function CheckoutScreen() {
     <ScrollView style={styles.container}>
       <Stack.Screen options={{ title: t('checkout.title') }} />
       <View style={styles.content}>
-        <Text style={[styles.subtitle, isRTL && styles.rtlText]}>{t('checkout.subtitle')}</Text>
+        <Text style={[styles.subtitle, isRTL && commonStyles.rtlText]}>{t('checkout.subtitle')}</Text>
 
         <Card style={styles.section}>
-          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('checkout.delivery_info')}</Text>
+          <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('checkout.delivery_info')}</Text>
 
           <Controller control={control} name="fullName" render={({ field: { onChange, value } }) => (
             <Input label={t('checkout.full_name_label')} value={value} onChangeText={onChange} error={errors.fullName?.message} placeholder={t('checkout.full_name_placeholder')} />
@@ -160,7 +161,7 @@ export default function CheckoutScreen() {
           ) : (
             <Controller control={control} name="city" render={({ field: { onChange, value } }) => (
               <View style={styles.cityContainer}>
-                <Text style={[styles.inputLabel, isRTL && styles.rtlText]}>{t('checkout.city_label')}</Text>
+                <Text style={[styles.inputLabel, isRTL && commonStyles.rtlText]}>{t('checkout.city_label')}</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cityScroll}>
                   {cities.map((city) => (
                     <Pressable key={city.id} onPress={() => onChange(city.city_name)} style={[styles.cityChip, isRTL && styles.cityChipRTL, value === city.city_name && styles.cityChipSelected]}>
@@ -179,10 +180,10 @@ export default function CheckoutScreen() {
         </Card>
 
         <Card style={styles.section}>
-          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('checkout.coupon.label')}</Text>
+          <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('checkout.coupon.label')}</Text>
           {appliedDiscount ? (
-            <View style={[styles.couponApplied, isRTL && styles.rowReverse]}>
-              <Text style={[styles.couponAppliedText, isRTL && styles.rtlText]}>
+            <View style={[styles.couponApplied, isRTL && commonStyles.rowReverse]}>
+              <Text style={[styles.couponAppliedText, isRTL && commonStyles.rtlText]}>
                 {appliedDiscount.code} - {appliedDiscount.type === 'percentage' ? `${appliedDiscount.value}%` : `€${appliedDiscount.value}`} {t('checkout.coupon.off')}
               </Text>
               <Pressable onPress={() => { setAppliedDiscount(null); setCouponCode(''); }}>
@@ -190,7 +191,7 @@ export default function CheckoutScreen() {
               </Pressable>
             </View>
           ) : (
-            <View style={[styles.couponRow, isRTL && styles.rowReverse]}>
+            <View style={[styles.couponRow, isRTL && commonStyles.rowReverse]}>
               <Input value={couponCode} onChangeText={(text) => { setCouponCode(text); setCouponError(''); }} placeholder={t('checkout.coupon.placeholder')} error={couponError} style={styles.couponInput} />
               <Button title={t('checkout.coupon.apply')} onPress={handleApplyCoupon} loading={isApplyingCoupon} size="md" style={styles.couponButton} />
             </View>
@@ -198,34 +199,34 @@ export default function CheckoutScreen() {
         </Card>
 
         <Card style={styles.section}>
-          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('checkout.order_summary')}</Text>
+          <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('checkout.order_summary')}</Text>
 
-          <View style={[styles.summaryRow, isRTL && styles.rowReverse]}>
-            <Text style={[styles.summaryLabel, isRTL && styles.rtlText]}>{t('checkout.subtotal')} ({items.length} {t('checkout.items')})</Text>
+          <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+            <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.subtotal')} ({items.length} {t('checkout.items')})</Text>
             <Text style={styles.summaryValue}>€{subtotal.toFixed(2)}</Text>
           </View>
 
           {discountAmount > 0 && (
-            <View style={[styles.summaryRow, isRTL && styles.rowReverse]}>
-              <Text style={[styles.summaryLabel, isRTL && styles.rtlText]}>{t('checkout.discount')}</Text>
+            <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+              <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.discount')}</Text>
               <Text style={[styles.summaryValue, styles.discountValue]}>-€{discountAmount.toFixed(2)}</Text>
             </View>
           )}
 
-          <View style={[styles.summaryRow, isRTL && styles.rowReverse]}>
-            <Text style={[styles.summaryLabel, isRTL && styles.rtlText]}>{t('checkout.shipping')}</Text>
+          <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+            <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.shipping')}</Text>
             <Text style={styles.summaryValue}>€{shippingFee.toFixed(2)}</Text>
           </View>
 
           {requiresDeposit && (
             <View style={styles.depositInfo}>
-              <Text style={[styles.depositText, isRTL && styles.rtlText]}>{t('checkout.deposit_required')} ({depositRate}%): €{depositAmount.toFixed(2)}</Text>
-              <Text style={[styles.depositSubtext, isRTL && styles.rtlText]}>{t('checkout.deposit_note')}</Text>
+              <Text style={[styles.depositText, isRTL && commonStyles.rtlText]}>{t('checkout.deposit_required')} ({depositRate}%): €{depositAmount.toFixed(2)}</Text>
+              <Text style={[styles.depositSubtext, isRTL && commonStyles.rtlText]}>{t('checkout.deposit_note')}</Text>
             </View>
           )}
 
-          <View style={[styles.summaryRow, styles.totalRow, isRTL && styles.rowReverse]}>
-            <Text style={[styles.totalLabel, isRTL && styles.rtlText]}>{t('checkout.total')}</Text>
+          <View style={[styles.summaryRow, styles.totalRow, isRTL && commonStyles.rowReverse]}>
+            <Text style={[styles.totalLabel, isRTL && commonStyles.rtlText]}>{t('checkout.total')}</Text>
             <Text style={styles.totalValue}>€{total.toFixed(2)}</Text>
           </View>
         </Card>
@@ -245,8 +246,6 @@ const styles = StyleSheet.create({
   button: { minWidth: 200 },
   title: { fontSize: 30, fontFamily: fonts.bold, color: colors.foreground, marginBottom: spacing[1] },
   subtitle: { fontSize: 14, color: colors.muted.foreground, fontFamily: fonts.regular, marginBottom: spacing[6] },
-  rtlText: { textAlign: 'right', writingDirection: 'rtl' },
-  rowReverse: { flexDirection: 'row-reverse' },
   section: { marginBottom: spacing[4] },
   sectionTitle: { fontSize: 18, fontFamily: fonts.semibold, color: colors.foreground, marginBottom: spacing[4] },
   cityContainer: { marginBottom: spacing[4] },

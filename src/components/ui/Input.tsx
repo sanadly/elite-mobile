@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput, View, Text, StyleSheet, TextInputProps, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, radius } from '../../theme';
+import { colors, fonts, radius, commonStyles } from '../../theme';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -17,7 +17,7 @@ export function Input({ label, error, hint, loading, style, ...props }: InputPro
   return (
     <View style={styles.container}>
       {label && (
-        <Text style={[styles.label, isRTL && styles.rtlText]}>
+        <Text style={[styles.label, isRTL && commonStyles.rtlText]}>
           {label}
         </Text>
       )}
@@ -46,8 +46,8 @@ export function Input({ label, error, hint, loading, style, ...props }: InputPro
         )}
       </View>
 
-      {error && <Text style={[styles.errorText, isRTL && styles.rtlText]}>{error}</Text>}
-      {hint && !error && <Text style={[styles.hintText, isRTL && styles.rtlText]}>{hint}</Text>}
+      {error && <Text style={[styles.errorText, isRTL && commonStyles.rtlText]}>{error}</Text>}
+      {hint && !error && <Text style={[styles.hintText, isRTL && commonStyles.rtlText]}>{hint}</Text>}
     </View>
   );
 }
@@ -63,10 +63,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     color: colors.foreground,
     lineHeight: 20,
-  },
-  rtlText: {
-    textAlign: 'right',
-    writingDirection: 'rtl',
   },
   inputWrapper: {
     position: 'relative',
