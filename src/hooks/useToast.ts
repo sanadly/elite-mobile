@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { create } from 'zustand';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -6,46 +6,23 @@ interface ToastState {
   visible: boolean;
   message: string;
   type: ToastType;
+  show: (message: string, type?: ToastType) => void;
+  success: (message: string) => void;
+  error: (message: string) => void;
+  warning: (message: string) => void;
+  info: (message: string) => void;
+  hide: () => void;
 }
 
-export function useToast() {
-  const [toast, setToast] = useState<ToastState>({
-    visible: false,
-    message: '',
-    type: 'info',
-  });
+export const useToast = create<ToastState>((set) => ({
+  visible: false,
+  message: '',
+  type: 'info',
 
-  const show = useCallback((message: string, type: ToastType = 'info') => {
-    setToast({ visible: true, message, type });
-  }, []);
-
-  const success = useCallback((message: string) => {
-    show(message, 'success');
-  }, [show]);
-
-  const error = useCallback((message: string) => {
-    show(message, 'error');
-  }, [show]);
-
-  const warning = useCallback((message: string) => {
-    show(message, 'warning');
-  }, [show]);
-
-  const info = useCallback((message: string) => {
-    show(message, 'info');
-  }, [show]);
-
-  const hide = useCallback(() => {
-    setToast((prev) => ({ ...prev, visible: false }));
-  }, []);
-
-  return {
-    toast,
-    show,
-    success,
-    error,
-    warning,
-    info,
-    hide,
-  };
-}
+  show: (message, type = 'info') => set({ visible: true, message, type }),
+  success: (message) => set({ visible: true, message, type: 'success' }),
+  error: (message) => set({ visible: true, message, type: 'error' }),
+  warning: (message) => set({ visible: true, message, type: 'warning' }),
+  info: (message) => set({ visible: true, message, type: 'info' }),
+  hide: () => set({ visible: false }),
+}));

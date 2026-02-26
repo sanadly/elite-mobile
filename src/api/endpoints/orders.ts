@@ -1,14 +1,10 @@
-import { supabase } from '../supabase';
+import { supabase, getAuthenticatedUserId } from '../supabase';
 import { Order } from '../../types/order';
 
 export type { Order, OrderItem, OrderStatusHistory } from '../../types/order';
 
 export async function getOrders() {
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session) {
-    throw new Error('Not authenticated');
-  }
+  const userId = await getAuthenticatedUserId();
 
   const { data, error } = await supabase
     .from('orders')
@@ -25,7 +21,7 @@ export async function getOrders() {
       coupon_code,
       shipping_address
     `)
-    .eq('customer_id', session.user.id)
+    .eq('customer_id', userId)
     .order('created_at', { ascending: false });
 
   if (error) throw error;
@@ -33,11 +29,7 @@ export async function getOrders() {
 }
 
 export async function getOrderById(orderId: string) {
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session) {
-    throw new Error('Not authenticated');
-  }
+  const userId = await getAuthenticatedUserId();
 
   const { data: order, error: orderError } = await supabase
     .from('orders')
@@ -56,7 +48,7 @@ export async function getOrderById(orderId: string) {
       status_history
     `)
     .eq('id', orderId)
-    .eq('customer_id', session.user.id)
+    .eq('customer_id', userId)
     .single();
 
   if (orderError) throw orderError;

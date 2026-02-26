@@ -1,5 +1,5 @@
 import { Product } from '../types/product';
-import { API_BASE } from './config';
+import { apiFetch } from './client';
 
 export const PRODUCTS_PER_PAGE = 20;
 
@@ -27,9 +27,8 @@ export async function fetchProducts(params: FetchProductsParams): Promise<Produc
   if (params.gender) searchParams.set('gender', params.gender);
   if (params.size) searchParams.set('size', params.size);
 
-  const res = await fetch(`${API_BASE}/api/mobile/products?${searchParams.toString()}`);
-  if (!res.ok) throw new Error('Failed to fetch products');
-
-  const data = await res.json();
-  return data.products as Product[];
+  const data = await apiFetch<{ products: Product[] }>(
+    `/api/mobile/products?${searchParams.toString()}`
+  );
+  return data.products;
 }

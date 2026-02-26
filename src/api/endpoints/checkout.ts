@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { API_BASE, getAuthHeaders, getRequiredAuthHeaders } from '../config';
+import { apiFetch } from '../client';
 
 export interface CheckoutData {
   fullName: string;
@@ -35,17 +35,9 @@ export interface CouponValidation {
 
 export async function validateCoupon(code: string, subtotal: number): Promise<CouponValidation> {
   try {
-    const authHeaders = await getAuthHeaders();
-
-    const response = await fetch(`${API_BASE}/api/mobile/coupons/validate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeaders,
-      },
-      body: JSON.stringify({ code, subtotal }),
+    return await apiFetch<CouponValidation>('/api/mobile/coupons/validate', {
+      body: { code, subtotal },
     });
-    return await response.json();
   } catch (err) {
     console.warn('[Checkout] Coupon validation failed:', err);
     return { valid: false, error: 'Network error' };
@@ -53,24 +45,31 @@ export async function validateCoupon(code: string, subtotal: number): Promise<Co
 }
 
 export async function placeOrder(data: CheckoutData) {
-  const authHeaders = await getRequiredAuthHeaders();
+  const result = await apiFetch<{ success: boolean; orderNumber?: string; error?: string }>(
+    '/api/mobile/orders',
+    { requireAuth: true, body: data },
+  );
 
-  const response = await fetch(`${API_BASE}/api/mobile/orders`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders,
-    },
-    body: JSON.stringify(data),
-  });
-
-  const result = await response.json();
-
-  if (!response.ok || !result.success) {
+  if (!result.success) {
     throw new Error(result.error || 'Failed to place order');
   }
 
   return result;
 }
 
+export interface City {
+  id: string;
+  city_name: string;
+  fee_local: number;
+  currency: string;
+}
 
+export async function getCities(): Promise<City[]> {
+  const { data, error } = await supabase
+    .from('courier_fees')
+    .select('id, city_name, fee_local, currency')
+    .order('city_name');
+
+  if (error) throw error;
+  return (data as City[]) || [];
+}

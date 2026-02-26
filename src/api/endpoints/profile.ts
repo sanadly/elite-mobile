@@ -1,4 +1,3 @@
-import { API_BASE, getAuthHeaders } from '../config';
 import { UserProfile } from '../../types/user';
 import { apiFetch } from '../client';
 
@@ -13,14 +12,7 @@ export interface UpdateProfileData {
 
 export async function fetchUserProfile(): Promise<UserProfile | null> {
   try {
-    const headers = await getAuthHeaders();
-    if (!headers.Authorization) return null;
-
-    const response = await fetch(`${API_BASE}/api/mobile/profile`, { headers });
-
-    if (!response.ok) return null;
-
-    return await response.json();
+    return await apiFetch<UserProfile>('/api/mobile/profile');
   } catch (err) {
     console.warn('[Profile] Fetch failed:', err);
     return null;

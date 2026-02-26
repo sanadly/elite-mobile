@@ -16,6 +16,10 @@ export interface CartItem {
   isConcierge?: boolean;
 }
 
+/** Concierge items have unlimited stock (no cap on quantity). */
+const isConciergeItem = (item: Pick<CartItem, 'isConcierge' | 'maxStock'>) =>
+  item.isConcierge || item.maxStock === -1;
+
 interface AddItemResult {
   success: boolean;
   reason?: 'added' | 'incremented' | 'max_stock_reached';
@@ -39,8 +43,7 @@ export const useCartStore = create<CartState>()(
         const existingItem = items.find((i) => i.variantId === newItem.variantId);
 
         if (existingItem) {
-          const isConcierge = existingItem.isConcierge || existingItem.maxStock === -1;
-          if (!isConcierge && existingItem.quantity >= existingItem.maxStock) {
+          if (!isConciergeItem(existingItem) && existingItem.quantity >= existingItem.maxStock) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             return { success: false, reason: 'max_stock_reached' };
           }
@@ -56,8 +59,7 @@ export const useCartStore = create<CartState>()(
           return { success: true, reason: 'incremented' };
         }
 
-        const isConcierge = newItem.isConcierge || newItem.maxStock === -1;
-        if (!isConcierge && newItem.maxStock <= 0) {
+        if (!isConciergeItem(newItem) && newItem.maxStock <= 0) {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
           return { success: false, reason: 'max_stock_reached' };
         }
@@ -77,8 +79,7 @@ export const useCartStore = create<CartState>()(
           items: get()
             .items.map((i) => {
               if (i.variantId === variantId) {
-                const isConcierge = i.isConcierge || i.maxStock === -1;
-                const newQty = isConcierge
+                const newQty = isConciergeItem(i)
                   ? Math.max(0, quantity)
                   : Math.max(0, Math.min(quantity, i.maxStock));
                 return { ...i, quantity: newQty };

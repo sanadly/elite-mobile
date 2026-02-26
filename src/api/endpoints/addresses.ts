@@ -1,14 +1,22 @@
-import { supabase } from '../supabase';
+import { supabase, getAuthenticatedUserId } from '../supabase';
 import type { Address, AddressFormData } from '../../types/address';
 
+/** Unset all default addresses for a user. */
+async function unsetAllDefaults(userId: string): Promise<void> {
+  await supabase
+    .from('addresses')
+    .update({ is_default: false })
+    .eq('user_id', userId);
+}
+
 export async function getAddresses(): Promise<Address[]> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user?.id) return [];
+  const userId = await getAuthenticatedUserId().catch(() => null);
+  if (!userId) return [];
 
   const { data, error } = await supabase
     .from('addresses')
     .select('*')
-    .eq('user_id', session.user.id)
+    .eq('user_id', userId)
     .order('is_default', { ascending: false })
     .order('created_at', { ascending: false });
 
@@ -28,21 +36,16 @@ export async function getAddressById(id: string): Promise<Address | null> {
 }
 
 export async function createAddress(formData: AddressFormData): Promise<Address> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user?.id) throw new Error('Not authenticated');
+  const userId = await getAuthenticatedUserId();
 
-  // If setting as default, unset other defaults first
   if (formData.is_default) {
-    await supabase
-      .from('addresses')
-      .update({ is_default: false })
-      .eq('user_id', session.user.id);
+    await unsetAllDefaults(userId);
   }
 
   const { data, error } = await supabase
     .from('addresses')
     .insert({
-      user_id: session.user.id,
+      user_id: userId,
       ...formData,
     })
     .select()
@@ -53,15 +56,10 @@ export async function createAddress(formData: AddressFormData): Promise<Address>
 }
 
 export async function updateAddress(id: string, formData: AddressFormData): Promise<Address> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user?.id) throw new Error('Not authenticated');
+  const userId = await getAuthenticatedUserId();
 
-  // If setting as default, unset other defaults first
   if (formData.is_default) {
-    await supabase
-      .from('addresses')
-      .update({ is_default: false })
-      .eq('user_id', session.user.id);
+    await unsetAllDefaults(userId);
   }
 
   const { data, error } = await supabase
@@ -88,16 +86,10 @@ export async function deleteAddress(id: string): Promise<void> {
 }
 
 export async function setDefaultAddress(id: string): Promise<void> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user?.id) throw new Error('Not authenticated');
+  const userId = await getAuthenticatedUserId();
 
-  // Unset all defaults
-  await supabase
-    .from('addresses')
-    .update({ is_default: false })
-    .eq('user_id', session.user.id);
+  await unsetAllDefaults(userId);
 
-  // Set this one as default
   const { error } = await supabase
     .from('addresses')
     .update({ is_default: true })

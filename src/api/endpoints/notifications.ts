@@ -1,14 +1,14 @@
-import { supabase } from '../supabase';
+import { supabase, getAuthenticatedUserId, getOptionalUserId } from '../supabase';
 import type { AppNotification } from '../../types/notification';
 
 export async function getNotifications(): Promise<AppNotification[]> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user?.id) return [];
+  const userId = await getOptionalUserId();
+  if (!userId) return [];
 
   const { data, error } = await supabase
     .from('notifications')
     .select('*')
-    .eq('user_id', session.user.id)
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(50);
 
@@ -17,13 +17,13 @@ export async function getNotifications(): Promise<AppNotification[]> {
 }
 
 export async function getUnreadCount(): Promise<number> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user?.id) return 0;
+  const userId = await getOptionalUserId();
+  if (!userId) return 0;
 
   const { count, error } = await supabase
     .from('notifications')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', session.user.id)
+    .eq('user_id', userId)
     .eq('is_read', false);
 
   if (error) return 0;
@@ -40,13 +40,13 @@ export async function markAsRead(id: string): Promise<void> {
 }
 
 export async function markAllAsRead(): Promise<void> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user?.id) return;
+  const userId = await getOptionalUserId();
+  if (!userId) return;
 
   const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
-    .eq('user_id', session.user.id)
+    .eq('user_id', userId)
     .eq('is_read', false);
 
   if (error) throw error;

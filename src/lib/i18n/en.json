@@ -180,6 +180,8 @@
     "phone_label": "Phone Number",
     "phone_placeholder": "9XXXXXXXX",
     "city_label": "City",
+    "city_other": "Other",
+    "custom_city_placeholder": "City name...",
     "city_select": "Select your city",
     "address_label": "Address (Optional)",
     "address_placeholder": "Street, building, apartment...",
