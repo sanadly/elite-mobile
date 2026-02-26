@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, View, Text, StyleSheet, TextInputProps, ActivityIndicator } from 'react-native';
+import { TextInput, View, Text, StyleSheet, TextInputProps, ActivityIndicator, StyleProp, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors, fonts, radius, commonStyles } from '../../theme';
 
@@ -8,14 +8,15 @@ interface InputProps extends TextInputProps {
   error?: string;
   hint?: string;
   loading?: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
-export function Input({ label, error, hint, loading, style, ...props }: InputProps) {
+export function Input({ label, error, hint, loading, style, containerStyle, ...props }: InputProps) {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       {label && (
         <Text style={[styles.label, isRTL && commonStyles.rtlText]}>
           {label}

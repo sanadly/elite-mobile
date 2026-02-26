@@ -23,10 +23,7 @@ import { supabase } from '../../src/api/supabase';
 import { useProfile, useUpdateProfile } from '../../src/hooks/useProfile';
 import { useRTL } from '../../src/hooks/useRTL';
 
-interface City {
-  id: string;
-  city_name: string;
-}
+import { TOP_CITIES } from '../../src/utils/cities';
 
 export default function EditProfileScreen() {
   const { t } = useTranslation();
@@ -40,8 +37,8 @@ export default function EditProfileScreen() {
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [error, setError] = useState('');
-  const [cities, setCities] = useState<City[]>([]);
   const [showCityPicker, setShowCityPicker] = useState(false);
+  const [customCity, setCustomCity] = useState('');
 
   const normalizeDigits = (text: string): string => {
     const latinized = text.replace(/[٠-٩]/g, (d) =>
@@ -51,16 +48,19 @@ export default function EditProfileScreen() {
   };
 
   useEffect(() => {
-    fetchCities();
-  }, []);
-
-  useEffect(() => {
     if (profile) {
       setName(profile.name || '');
       // Strip +218 prefix if present
       const rawPhone = profile.phone || '';
       setPhone(rawPhone.startsWith('+218') ? rawPhone.slice(4) : rawPhone);
-      setCity(profile.city || '');
+      
+      if (profile.city && !TOP_CITIES.includes(profile.city)) {
+        setCity('أخرى');
+        setCustomCity(profile.city);
+      } else {
+        setCity(profile.city || '');
+      }
+      
       if (profile.birthday) {
         try {
           setDateOfBirth(parseISO(profile.birthday));
@@ -70,19 +70,6 @@ export default function EditProfileScreen() {
       }
     }
   }, [profile]);
-
-  const fetchCities = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('courier_fees')
-        .select('id, city_name');
-      if (!error && data) {
-        setCities(data as City[]);
-      }
-    } catch (err) {
-      console.warn('[EditProfile] Cities fetch failed:', err);
-    }
-  };
 
   const handleDateChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {
     if (Platform.OS === 'android') {
@@ -106,11 +93,13 @@ export default function EditProfileScreen() {
 
     setError('');
 
+    const finalCity = city === 'أخرى' ? customCity.trim() : city;
+
     try {
       await updateProfile.mutateAsync({
         name: name.trim(),
         phone: phone ? `+218${phone}` : '',
-        city,
+        city: finalCity,
         birthday: dateOfBirth ? format(dateOfBirth, 'yyyy-MM-dd') : null,
       });
 
@@ -196,11 +185,19 @@ export default function EditProfileScreen() {
         <CityPickerModal
           visible={showCityPicker}
           onClose={() => setShowCityPicker(false)}
-          cities={cities}
           selectedCity={city}
           onSelectCity={setCity}
           title={t('profile.edit.city_label')}
         />
+
+        {city === 'أخرى' && (
+          <Input
+            label={t('profile.edit.custom_city_label') || 'أدخل اسم المدينة'}
+            placeholder={t('profile.edit.custom_city_placeholder') || 'اسم المدينة...'}
+            value={customCity}
+            onChangeText={setCustomCity}
+          />
+        )}
 
         {/* Date of Birth */}
         <View style={styles.fieldContainer}>

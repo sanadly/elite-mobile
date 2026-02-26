@@ -21,10 +21,7 @@ import { CityPickerModal } from '../../src/components/auth/CityPickerModal';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
 
-interface City {
-  id: string;
-  city_name: string;
-}
+import { TOP_CITIES } from '../../src/utils/cities';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -38,8 +35,8 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [cities, setCities] = useState<City[]>([]);
   const [showCityPicker, setShowCityPicker] = useState(false);
+  const [customCity, setCustomCity] = useState('');
 
   const router = useRouter();
   const { t, i18n } = useTranslation();
@@ -54,22 +51,7 @@ export default function RegisterScreen() {
     return latinized.replace(/[^0-9]/g, '');
   };
 
-  useEffect(() => {
-    fetchCities();
-  }, []);
 
-  const fetchCities = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('courier_fees')
-        .select('id, city_name');
-      if (!error && data) {
-        setCities(data as City[]);
-      }
-    } catch (err) {
-      console.warn('[Register] Cities fetch failed:', err);
-    }
-  };
 
   const handleDateChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {
     if (Platform.OS === 'android') {
@@ -81,7 +63,9 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = async () => {
-    if (!name || !email || !phone || !city || !password) {
+    const finalCity = city === 'أخرى' ? customCity.trim() : city;
+    
+    if (!name || !email || !phone || !finalCity || !password) {
       setError(t('auth.register.error.validation'));
       return;
     }
@@ -123,7 +107,7 @@ export default function RegisterScreen() {
           data: {
             name,
             phone: fullPhoneNumber,
-            city,
+            city: finalCity,
             birthday: dateOfBirth ? format(dateOfBirth, 'yyyy-MM-dd') : null,
           },
         },
@@ -221,7 +205,6 @@ export default function RegisterScreen() {
                   autoComplete="tel"
                   maxLength={9}
                   textAlign="left"
-                  writingDirection="ltr"
                   style={styles.phoneInput}
                 />
               </View>
@@ -246,11 +229,20 @@ export default function RegisterScreen() {
           <CityPickerModal
             visible={showCityPicker}
             onClose={() => setShowCityPicker(false)}
-            cities={cities}
             selectedCity={city}
             onSelectCity={setCity}
             title={t('auth.register.city_label')}
           />
+
+          {/* Custom City Input */}
+          {city === 'أخرى' && (
+            <Input
+              label={t('auth.register.custom_city_label') || 'أدخل اسم المدينة'}
+              placeholder={t('auth.register.custom_city_placeholder') || 'اسم المدينة...'}
+              value={customCity}
+              onChangeText={setCustomCity}
+            />
+          )}
 
           {/* Date of Birth (Optional) */}
           <View style={styles.fieldContainer}>

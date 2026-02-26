@@ -73,19 +73,4 @@ export async function placeOrder(data: CheckoutData) {
   return result;
 }
 
-export interface City {
-  id: string;
-  city_name: string;
-  fee_local: number;
-  currency: string;
-}
 
-export async function getCities(): Promise<City[]> {
-  const { data, error } = await supabase
-    .from('courier_fees')
-    .select('id, city_name, fee_local, currency')
-    .order('city_name');
-
-  if (error) throw error;
-  return (data as City[]) || [];
-}

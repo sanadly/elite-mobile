@@ -178,7 +178,7 @@
     "full_name_label": "Full Name",
     "full_name_placeholder": "Enter your full name",
     "phone_label": "Phone Number",
-    "phone_placeholder": "+218...",
+    "phone_placeholder": "9XXXXXXXX",
     "city_label": "City",
     "city_select": "Select your city",
     "address_label": "Address (Optional)",
@@ -212,6 +212,10 @@
     "select_saved_address": "Use a saved address",
     "error": {
       "validation": "Please fill all required fields",
+      "required_name": "Full name is required",
+      "required_city": "City is required",
+      "invalid_phone": "Phone must be 9 digits starting with 9",
+      "place_order": "Failed to place order",
       "network": "Network error. Please try again.",
       "out_of_stock": "Some items are out of stock"
     }

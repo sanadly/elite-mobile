@@ -21,10 +21,7 @@ import { useAddress, useCreateAddress, useUpdateAddress } from '../../src/hooks/
 import { useRTL } from '../../src/hooks/useRTL';
 import type { AddressLabel } from '../../src/types/address';
 
-interface City {
-  id: string;
-  city_name: string;
-}
+import { TOP_CITIES } from '../../src/utils/cities';
 
 const LABEL_OPTIONS: { value: AddressLabel; icon: keyof typeof Ionicons.glyphMap }[] = [
   { value: 'home', icon: 'home-outline' },
@@ -50,8 +47,8 @@ export default function AddAddressScreen() {
   const [addressLine, setAddressLine] = useState('');
   const [isDefault, setIsDefault] = useState(false);
   const [error, setError] = useState('');
-  const [cities, setCities] = useState<City[]>([]);
   const [showCityPicker, setShowCityPicker] = useState(false);
+  const [customCity, setCustomCity] = useState('');
 
   const normalizeDigits = (text: string): string => {
     const latinized = text.replace(/[٠-٩]/g, (d) =>
@@ -61,38 +58,30 @@ export default function AddAddressScreen() {
   };
 
   useEffect(() => {
-    fetchCities();
-  }, []);
-
-  useEffect(() => {
     if (existingAddress) {
       setLabel(existingAddress.label);
       setFullName(existingAddress.full_name);
       const rawPhone = existingAddress.phone || '';
       setPhone(rawPhone.startsWith('+218') ? rawPhone.slice(4) : rawPhone);
-      setCity(existingAddress.city);
+      
+      if (existingAddress.city && !TOP_CITIES.includes(existingAddress.city)) {
+        setCity('أخرى');
+        setCustomCity(existingAddress.city);
+      } else {
+        setCity(existingAddress.city);
+      }
+      
       setAddressLine(existingAddress.address_line || '');
       setIsDefault(existingAddress.is_default);
     }
   }, [existingAddress]);
 
-  const fetchCities = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('courier_fees')
-        .select('id, city_name');
-      if (!error && data) {
-        setCities(data as City[]);
-      }
-    } catch (err) {
-      console.warn('[AddAddress] Cities fetch failed:', err);
-    }
-  };
-
   const isPending = createAddress.isPending || updateAddress.isPending;
 
   const handleSave = async () => {
-    if (!fullName.trim() || !phone || !city) {
+    const finalCity = city === 'أخرى' ? customCity.trim() : city;
+    
+    if (!fullName.trim() || !phone || !finalCity) {
       setError(t('addresses.form.error.validation'));
       return;
     }
@@ -108,7 +97,7 @@ export default function AddAddressScreen() {
       label,
       full_name: fullName.trim(),
       phone: `+218${phone}`,
-      city,
+      city: finalCity,
       address_line: addressLine.trim() || undefined,
       is_default: isDefault,
     };
@@ -216,11 +205,19 @@ export default function AddAddressScreen() {
         <CityPickerModal
           visible={showCityPicker}
           onClose={() => setShowCityPicker(false)}
-          cities={cities}
           selectedCity={city}
           onSelectCity={setCity}
           title={t('addresses.form.city_label')}
         />
+
+        {city === 'أخرى' && (
+          <Input
+            label={t('addresses.form.custom_city_label') || 'أدخل اسم المدينة'}
+            placeholder={t('addresses.form.custom_city_placeholder') || 'اسم المدينة...'}
+            value={customCity}
+            onChangeText={setCustomCity}
+          />
+        )}
 
         {/* Address Details */}
         <Input

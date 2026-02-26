@@ -178,7 +178,7 @@
     "full_name_label": "الاسم الكامل",
     "full_name_placeholder": "أدخل اسمك الكامل",
     "phone_label": "رقم الهاتف",
-    "phone_placeholder": "+218...",
+    "phone_placeholder": "9XXXXXXXX",
     "city_label": "المدينة",
     "city_select": "اختر مدينتك",
     "address_label": "العنوان (اختياري)",
@@ -212,6 +212,10 @@
     "select_saved_address": "استخدام عنوان محفوظ",
     "error": {
       "validation": "يرجى ملء جميع الحقول المطلوبة",
+      "required_name": "الاسم الكامل مطلوب",
+      "required_city": "المدينة مطلوبة",
+      "invalid_phone": "يجب أن يتكون رقم الهاتف من 9 أرقام تبدأ بـ 9",
+      "place_order": "فشل تأكيد الطلب",
       "network": "خطأ في الشبكة. يرجى المحاولة مرة أخرى.",
       "out_of_stock": "بعض المنتجات غير متوفرة"
     }

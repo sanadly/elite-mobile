@@ -10,21 +10,32 @@ import { Button, Input, Card } from '../../src/components/ui';
 import { useCartStore } from '../../src/store/cartStore';
 import { useAuthStore } from '../../src/store/authStore';
 import { useCartTotals } from '../../src/hooks/useCartTotals';
-import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
-import { validateCoupon, placeOrder, getCities, type City, type CouponValidation } from '../../src/api/endpoints/checkout';
+import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
+import { validateCoupon, placeOrder, type CouponValidation } from '../../src/api/endpoints/checkout';
 import { getDepositRates } from '../../src/api/endpoints/config';
 import { DEPOSIT_RATES, roundDepositAmount } from '../../src/lib/checkout-config';
 import { LoyaltyTier } from '../../src/types/user';
 import { useRTL } from '../../src/hooks/useRTL';
+import { TOP_CITIES } from '../../src/utils/cities';
 
-const checkoutSchema = z.object({
-  fullName: z.string().min(2, 'Full name is required'),
-  phone: z.string().min(8, 'Phone number is required'),
-  city: z.string().min(1, 'City is required'),
+const normalizeDigits = (text: string): string => {
+  const latinized = text.replace(/[٠-٩]/g, (d) =>
+    String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x0030)
+  );
+  return latinized.replace(/[^0-9]/g, '');
+};
+
+const stripPhonePrefix = (phone: string): string =>
+  phone.replace(/^\+218/, '');
+
+const baseSchema = z.object({
+  fullName: z.string(),
+  phone: z.string(),
+  city: z.string(),
   address: z.string().optional(),
 });
 
-type CheckoutFormData = z.infer<typeof checkoutSchema>;
+type CheckoutFormData = z.infer<typeof baseSchema>;
 
 export default function CheckoutScreen() {
   const router = useRouter();
@@ -35,8 +46,7 @@ export default function CheckoutScreen() {
   const { total: cartTotal } = useCartTotals();
   const { userData } = useAuthStore();
 
-  const [cities, setCities] = useState<City[]>([]);
-  const [loadingCities, setLoadingCities] = useState(true);
+
   const [depositRates, setDepositRates] = useState<Record<LoyaltyTier, number>>(DEPOSIT_RATES);
   const [couponCode, setCouponCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState<CouponValidation['discount'] | null>(null);
@@ -44,32 +54,36 @@ export default function CheckoutScreen() {
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const checkoutSchema = React.useMemo(() => z.object({
+    fullName: z.string().min(2, t('checkout.error.required_name')),
+    phone: z.string().regex(/^9[0-9]{8}$/, t('checkout.error.invalid_phone')),
+    city: z.string().min(1, t('checkout.error.required_city')),
+    address: z.string().optional(),
+  }), [t]);
+
   const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       fullName: userData?.name || '',
-      phone: userData?.phone || '',
+      phone: stripPhonePrefix(userData?.phone || ''),
       city: userData?.city || '',
       address: '',
     },
   });
 
   useEffect(() => {
-    getCities().then(setCities).finally(() => setLoadingCities(false));
     getDepositRates().then(setDepositRates);
   }, []);
 
   useEffect(() => {
     if (userData) {
       setValue('fullName', userData.name || '');
-      setValue('phone', userData.phone || '');
+      setValue('phone', stripPhonePrefix(userData.phone || ''));
       if (userData.city) setValue('city', userData.city);
     }
   }, [userData, setValue]);
 
-  const selectedCity = watch('city');
-  const cityData = cities.find(c => c.city_name === selectedCity);
-  const shippingFee = cityData?.fee_local || 0;
+  const shippingFee = 0;
 
   const subtotal = cartTotal;
   const discountAmount = appliedDiscount
@@ -97,7 +111,7 @@ export default function CheckoutScreen() {
       setAppliedDiscount(result.discount);
       setCouponError('');
     } else {
-      setCouponError(result.error || 'Invalid coupon');
+      setCouponError(result.error || t('checkout.coupon.invalid'));
       setAppliedDiscount(null);
     }
     setIsApplyingCoupon(false);
@@ -108,6 +122,7 @@ export default function CheckoutScreen() {
     try {
       const result = await placeOrder({
         ...data,
+        phone: `+218${data.phone}`,
         items: items.map(item => ({
           variantId: item.variantId,
           quantity: item.quantity,
@@ -130,7 +145,7 @@ export default function CheckoutScreen() {
         router.push(`/order-success?orderNumber=${result.orderNumber}`);
       }
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to place order');
+      alert(error instanceof Error ? error.message : t('checkout.error.place_order'));
     } finally {
       setIsSubmitting(false);
     }
@@ -160,26 +175,58 @@ export default function CheckoutScreen() {
           )} />
 
           <Controller control={control} name="phone" render={({ field: { onChange, value } }) => (
-            <Input label={t('checkout.phone_label')} value={value} onChangeText={onChange} error={errors.phone?.message} placeholder={t('checkout.phone_placeholder')} keyboardType="phone-pad" />
+            <View style={styles.phoneFieldContainer}>
+              <Text style={[styles.inputLabel, isRTL && commonStyles.rtlText]}>{t('checkout.phone_label')}</Text>
+              <View style={styles.phoneRow}>
+                <View style={styles.phonePrefix}>
+                  <Text style={styles.phonePrefixText}>+218</Text>
+                </View>
+                <View style={styles.phoneInputWrapper}>
+                  <Input
+                    placeholder={t('checkout.phone_placeholder')}
+                    value={value}
+                    onChangeText={(text) => onChange(normalizeDigits(text))}
+                    keyboardType="number-pad"
+                    autoComplete="tel"
+                    maxLength={9}
+                    textAlign="left"
+                    style={styles.phoneInput}
+                    error={errors.phone?.message}
+                  />
+                </View>
+              </View>
+            </View>
           )} />
 
-          {loadingCities ? (
-            <ActivityIndicator />
-          ) : (
-            <Controller control={control} name="city" render={({ field: { onChange, value } }) => (
-              <View style={styles.cityContainer}>
-                <Text style={[styles.inputLabel, isRTL && commonStyles.rtlText]}>{t('checkout.city_label')}</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cityScroll}>
-                  {cities.map((city) => (
-                    <Pressable key={city.id} onPress={() => onChange(city.city_name)} style={[styles.cityChip, isRTL && styles.cityChipRTL, value === city.city_name && styles.cityChipSelected]}>
-                      <Text style={[styles.cityChipText, value === city.city_name && styles.cityChipTextSelected]}>{city.city_name}</Text>
-                    </Pressable>
-                  ))}
-                </ScrollView>
-                {errors.city && <Text style={styles.errorText}>{errors.city.message}</Text>}
-              </View>
-            )} />
-          )}
+          <Controller control={control} name="city" render={({ field: { onChange, value } }) => (
+            <View style={styles.cityContainer}>
+              <Text style={[styles.inputLabel, isRTL && commonStyles.rtlText]}>{t('checkout.city_label')}</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cityScroll}>
+                {TOP_CITIES.map((cityName) => (
+                  <Pressable key={cityName} onPress={() => onChange(cityName)} style={[styles.cityChip, isRTL && styles.cityChipRTL, value === cityName && styles.cityChipSelected]}>
+                    <Text style={[styles.cityChipText, value === cityName && styles.cityChipTextSelected]}>{cityName}</Text>
+                  </Pressable>
+                ))}
+                <Pressable onPress={() => onChange('أخرى')} style={[styles.cityChip, isRTL && styles.cityChipRTL, value === 'أخرى' && styles.cityChipSelected]}>
+                  <Text style={[styles.cityChipText, value === 'أخرى' && styles.cityChipTextSelected]}>{t('checkout.city_other') || 'أخرى'}</Text>
+                </Pressable>
+              </ScrollView>
+              {errors.city && <Text style={styles.errorText}>{errors.city.message}</Text>}
+              
+              {value === 'أخرى' && (
+                <View style={{ marginTop: 12 }}>
+                  <Input 
+                    placeholder={t('checkout.custom_city_placeholder') || 'اسم المدينة...'}
+                    onChangeText={(text) => {
+                      // We handle custom string logic outside of main validation or handle using same field
+                      // Keep it simple since Schema just expects a string "city" 
+                      onChange(text);
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+          )} />
 
           <Controller control={control} name="address" render={({ field: { onChange, value } }) => (
             <Input label={t('checkout.address_label')} value={value} onChangeText={onChange} placeholder={t('checkout.address_placeholder')} multiline />
@@ -199,7 +246,13 @@ export default function CheckoutScreen() {
             </View>
           ) : (
             <View style={[styles.couponRow, isRTL && commonStyles.rowReverse]}>
-              <Input value={couponCode} onChangeText={(text) => { setCouponCode(text); setCouponError(''); }} placeholder={t('checkout.coupon.placeholder')} error={couponError} style={styles.couponInput} />
+              <Input 
+                value={couponCode} 
+                onChangeText={(text) => { setCouponCode(text); setCouponError(''); }} 
+                placeholder={t('checkout.coupon.placeholder')} 
+                error={couponError} 
+                containerStyle={styles.couponInputContainer} 
+              />
               <Button title={t('checkout.coupon.apply')} onPress={handleApplyCoupon} loading={isApplyingCoupon} size="md" style={styles.couponButton} />
             </View>
           )}
@@ -220,10 +273,7 @@ export default function CheckoutScreen() {
             </View>
           )}
 
-          <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
-            <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.shipping')}</Text>
-            <Text style={styles.summaryValue}>€{shippingFee.toFixed(2)}</Text>
-          </View>
+
 
           {requiresDeposit && (
             <View style={styles.depositInfo}>
@@ -257,6 +307,12 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 14, color: colors.muted.foreground, fontFamily: fonts.regular, marginBottom: spacing[6] },
   section: { marginBottom: spacing[4] },
   sectionTitle: { fontSize: 18, fontFamily: fonts.semibold, color: colors.foreground, marginBottom: spacing[4] },
+  phoneFieldContainer: { marginBottom: 0 },
+  phoneRow: { flexDirection: 'row', alignItems: 'flex-start' },
+  phonePrefix: { height: 44, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 12, backgroundColor: colors.secondary.DEFAULT, borderWidth: 1, borderColor: colors.input, borderTopLeftRadius: radius.lg, borderBottomLeftRadius: radius.lg, borderRightWidth: 0 },
+  phonePrefixText: { fontSize: 14, fontFamily: fonts.bold, color: colors.foreground },
+  phoneInputWrapper: { flex: 1 },
+  phoneInput: { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
   cityContainer: { marginBottom: spacing[4] },
   inputLabel: { fontSize: 14, fontFamily: fonts.medium, color: colors.foreground, marginBottom: spacing[2] },
   cityScroll: { marginBottom: spacing[1] },
@@ -267,8 +323,8 @@ const styles = StyleSheet.create({
   cityChipTextSelected: { color: colors.primary.foreground, fontFamily: fonts.medium },
   errorText: { fontSize: 12, color: colors.destructive.DEFAULT, marginTop: spacing[1] },
   couponRow: { flexDirection: 'row', gap: spacing[2], alignItems: 'flex-start' },
-  couponInput: { flex: 1, marginBottom: 0 },
-  couponButton: { marginTop: 22 },
+  couponInputContainer: { flex: 1, marginBottom: 0 },
+  couponButton: { marginTop: 0 },
   couponApplied: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing[3], backgroundColor: colors.status.success.bg, borderRadius: 8 },
   couponAppliedText: { fontSize: 14, color: colors.status.success.text, fontFamily: fonts.medium },
   removeCoupon: { fontSize: 14, color: colors.destructive.DEFAULT, fontFamily: fonts.medium },

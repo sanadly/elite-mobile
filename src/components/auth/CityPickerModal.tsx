@@ -3,15 +3,11 @@ import { View, Text, Pressable, Modal, FlatList, StyleSheet } from 'react-native
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, fonts, spacing, radius } from '../../theme';
 
-interface City {
-  id: string;
-  city_name: string;
-}
+import { TOP_CITIES } from '../../utils/cities';
 
 interface CityPickerModalProps {
   visible: boolean;
   onClose: () => void;
-  cities: City[];
   selectedCity: string;
   onSelectCity: (cityName: string) => void;
   title: string;
@@ -20,11 +16,12 @@ interface CityPickerModalProps {
 export function CityPickerModal({
   visible,
   onClose,
-  cities,
   selectedCity,
   onSelectCity,
   title,
 }: CityPickerModalProps) {
+  const allCities = [...TOP_CITIES, 'أخرى'];
+
   return (
     <Modal
       visible={visible}
@@ -41,28 +38,28 @@ export function CityPickerModal({
             </Pressable>
           </View>
           <FlatList
-            data={cities}
-            keyExtractor={(item) => item.id}
+            data={allCities}
+            keyExtractor={(item) => item}
             renderItem={({ item }) => (
               <Pressable
                 style={[
                   styles.cityItem,
-                  selectedCity === item.city_name && styles.cityItemSelected,
+                  selectedCity === item && styles.cityItemSelected,
                 ]}
                 onPress={() => {
-                  onSelectCity(item.city_name);
+                  onSelectCity(item);
                   onClose();
                 }}
               >
                 <Text
                   style={[
                     styles.cityItemText,
-                    selectedCity === item.city_name && styles.cityItemTextSelected,
+                    selectedCity === item && styles.cityItemTextSelected,
                   ]}
                 >
-                  {item.city_name}
+                  {item}
                 </Text>
-                {selectedCity === item.city_name && (
+                {selectedCity === item && (
                   <Ionicons name="checkmark" size={20} color={colors.primary.DEFAULT} />
                 )}
               </Pressable>
