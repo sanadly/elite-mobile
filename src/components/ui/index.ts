@@ -8,3 +8,4 @@ export { EmptyState } from './EmptyState';
 export { Row } from './Row';
 export { ErrorBoundary } from './ErrorBoundary';
 export { BackButton } from './BackButton';
+export { ErrorState } from './ErrorState';

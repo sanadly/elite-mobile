@@ -1,6 +1,7 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { fetchProducts, PRODUCTS_PER_PAGE } from '../api/products';
 import { queryKeys } from '../api/queryKeys';
+import type { Product } from '../types/product';
 
 export type { Product } from '../types/product';
 
@@ -20,16 +21,23 @@ export function useProducts() {
 }
 
 export function useProduct(id: string) {
+  const queryClient = useQueryClient();
+
   return useQuery({
     queryKey: queryKeys.products.detail(id),
     queryFn: async () => {
-      // Use the API which already merges all color variants by brand+model
       const products = await fetchProducts({ limit: 200 });
       const product = products.find(p => p.id === id);
       if (!product) throw new Error('Product not found');
       return product;
     },
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+    initialData: () => {
+      // Reuse data from the infinite products cache if available (avoids re-fetching 200 products)
+      const cached = queryClient.getQueryData<InfiniteData<Product[]>>(queryKeys.products.all);
+      return cached?.pages.flatMap(p => p).find(p => p.id === id);
+    },
   });
 }
 

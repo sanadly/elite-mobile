@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
 import { useProducts } from '../../src/hooks/useProducts';
 import { ProductCard } from '../../src/components/product/ProductCard';
+import { ErrorState } from '../../src/components/ui';
 import { HeroSlider } from '../../src/components/home/HeroSlider';
 import { CategorySlider } from '../../src/components/home/CategorySlider';
 import { SearchBar } from '../../src/components/search/SearchBar';
@@ -14,7 +15,7 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const isRTL = useRTL();
   const router = useRouter();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch, isRefetching } = useProducts();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch, isRefetching } = useProducts();
 
   const products = useMemo(() => data?.pages.flatMap((page) => page) ?? [], [data]);
 
@@ -59,6 +60,9 @@ export default function HomeScreen() {
           <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
         </View>
       );
+    }
+    if (isError) {
+      return <ErrorState onRetry={refetch} />;
     }
     return (
       <View style={styles.centerContainer}>

@@ -84,6 +84,8 @@ export const colors = {
     reservationBorder: 'rgba(245, 158, 11, 0.2)',
     outOfStockBg: 'rgba(239, 68, 68, 0.1)',
     outOfStockBorder: 'rgba(239, 68, 68, 0.2)',
+    reservableText: '#1d4ed8',      // Blue (reservable badge label)
+    reservableBorder: 'rgba(96, 165, 250, 0.5)',
   },
 
   // Order status colors

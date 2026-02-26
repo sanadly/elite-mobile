@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     fontSize: 13,
     fontFamily: fonts.semibold,
-    color: '#ffffff',
+    color: colors.background,
     textAlign: 'center',
   },
 });

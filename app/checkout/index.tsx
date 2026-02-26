@@ -16,6 +16,7 @@ import { getDepositRates } from '../../src/api/endpoints/config';
 import { DEPOSIT_RATES, roundDepositAmount } from '../../src/lib/checkout-config';
 import { LoyaltyTier } from '../../src/types/user';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useToast } from '../../src/hooks/useToast';
 import { TOP_CITIES } from '../../src/utils/cities';
 
 const normalizeDigits = (text: string): string => {
@@ -45,7 +46,7 @@ export default function CheckoutScreen() {
   const { items, clearCart } = useCartStore();
   const { total: cartTotal } = useCartTotals();
   const { userData } = useAuthStore();
-
+  const toast = useToast();
 
   const [depositRates, setDepositRates] = useState<Record<LoyaltyTier, number>>(DEPOSIT_RATES);
   const [couponCode, setCouponCode] = useState('');
@@ -145,7 +146,7 @@ export default function CheckoutScreen() {
         router.push(`/order-success?orderNumber=${result.orderNumber}`);
       }
     } catch (error) {
-      alert(error instanceof Error ? error.message : t('checkout.error.place_order'));
+      toast.error(error instanceof Error ? error.message : t('checkout.error.place_order'));
     } finally {
       setIsSubmitting(false);
     }
@@ -214,7 +215,7 @@ export default function CheckoutScreen() {
               {errors.city && <Text style={styles.errorText}>{errors.city.message}</Text>}
               
               {value === 'أخرى' && (
-                <View style={{ marginTop: 12 }}>
+                <View style={{ marginTop: spacing[3] }}>
                   <Input 
                     placeholder={t('checkout.custom_city_placeholder') || 'اسم المدينة...'}
                     onChangeText={(text) => {
@@ -316,7 +317,7 @@ const styles = StyleSheet.create({
   cityContainer: { marginBottom: spacing[4] },
   inputLabel: { fontSize: 14, fontFamily: fonts.medium, color: colors.foreground, marginBottom: spacing[2] },
   cityScroll: { marginBottom: spacing[1] },
-  cityChip: { paddingHorizontal: spacing[4], paddingVertical: spacing[2], borderRadius: 999, borderWidth: 1, borderColor: colors.border, marginRight: spacing[2], backgroundColor: colors.background },
+  cityChip: { paddingHorizontal: spacing[4], paddingVertical: spacing[2], borderRadius: radius.full, borderWidth: 1, borderColor: colors.border, marginRight: spacing[2], backgroundColor: colors.background },
   cityChipRTL: { marginRight: 0, marginLeft: spacing[2] },
   cityChipSelected: { borderColor: colors.primary.DEFAULT, backgroundColor: colors.primary.DEFAULT },
   cityChipText: { fontSize: 14, color: colors.foreground, fontFamily: fonts.regular },
@@ -325,14 +326,14 @@ const styles = StyleSheet.create({
   couponRow: { flexDirection: 'row', gap: spacing[2], alignItems: 'flex-start' },
   couponInputContainer: { flex: 1, marginBottom: 0 },
   couponButton: { marginTop: 0 },
-  couponApplied: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing[3], backgroundColor: colors.status.success.bg, borderRadius: 8 },
+  couponApplied: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing[3], backgroundColor: colors.status.success.bg, borderRadius: radius.md },
   couponAppliedText: { fontSize: 14, color: colors.status.success.text, fontFamily: fonts.medium },
   removeCoupon: { fontSize: 14, color: colors.destructive.DEFAULT, fontFamily: fonts.medium },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing[2] },
   summaryLabel: { fontSize: 14, color: colors.muted.foreground, fontFamily: fonts.regular },
   summaryValue: { fontSize: 14, color: colors.foreground, fontFamily: fonts.medium },
   discountValue: { color: colors.status.success.text },
-  depositInfo: { padding: spacing[3], backgroundColor: colors.status.warning.bg, borderRadius: 8, marginVertical: spacing[2] },
+  depositInfo: { padding: spacing[3], backgroundColor: colors.status.warning.bg, borderRadius: radius.md, marginVertical: spacing[2] },
   depositText: { fontSize: 14, color: colors.status.warning.text, fontFamily: fonts.medium },
   depositSubtext: { fontSize: 12, color: colors.status.warning.text, fontFamily: fonts.regular, marginTop: spacing[1] },
   totalRow: { marginTop: spacing[3], paddingTop: spacing[3], borderTopWidth: 1, borderTopColor: colors.border },

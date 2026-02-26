@@ -45,7 +45,7 @@ export function FilterChips({ onOpenFilters, onOpenSort }: FilterChipsProps) {
         <Ionicons
           name="flash"
           size={14}
-          color={immediateDelivery ? '#ffffff' : colors.availability.emerald}
+          color={immediateDelivery ? colors.background : colors.availability.emerald}
         />
         <Text
           style={[
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     color: colors.availability.emerald,
   },
   chipTextDeliveryActive: {
-    color: '#ffffff',
+    color: colors.background,
   },
   badge: {
     backgroundColor: colors.primary.foreground,

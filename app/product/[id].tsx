@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,26 +7,24 @@ import {
   ActivityIndicator,
   Dimensions,
   Pressable,
-  FlatList,
-  ViewToken,
 } from 'react-native';
-import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { useProduct } from '../../src/hooks/useProducts';
 import { useBrand } from '../../src/hooks/useBrand';
 import { useCartStore } from '../../src/store/cartStore';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
-import { Button, AvailabilityBadge, BackButton } from '../../src/components/ui';
+import { Button, AvailabilityBadge, ErrorState } from '../../src/components/ui';
+import { ImageGallery } from '../../src/components/product/ImageGallery';
+import { BrandProfileCard } from '../../src/components/product/BrandProfileCard';
 import { useRTL } from '../../src/hooks/useRTL';
 
 const { width } = Dimensions.get('window');
 const SIZE_COLUMNS = 5;
 const SIZE_GRID_PADDING = 4;
-const SIZE_GAP = 8; // spacing[2]
-const SIZE_CONTAINER_H_PADDING = 20; // spacing[5]
+const SIZE_GAP = 8;
+const SIZE_CONTAINER_H_PADDING = 20;
 const SIZE_ITEM_WIDTH =
   (width - SIZE_CONTAINER_H_PADDING * 2 - SIZE_GRID_PADDING * 2 - SIZE_GAP * (SIZE_COLUMNS - 1)) / SIZE_COLUMNS;
 
@@ -35,25 +33,13 @@ export default function ProductDetailScreen() {
   const { t, i18n } = useTranslation();
   const isRTL = useRTL();
   const lang = i18n.language as 'en' | 'ar';
-  const { data: product, isLoading } = useProduct(id);
+  const { data: product, isLoading, isError, refetch } = useProduct(id);
   const { data: brand } = useBrand(product?.brand);
   const { addItem } = useCartStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const imageListRef = useRef<FlatList>(null);
-
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index != null) {
-        setActiveImageIndex(viewableItems[0].index);
-      }
-    }
-  ).current;
-
-  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
   if (isLoading) {
     return (
@@ -64,11 +50,20 @@ export default function ProductDetailScreen() {
     );
   }
 
+  if (isError) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <ErrorState onRetry={refetch} />
+      </View>
+    );
+  }
+
   if (!product) {
     return (
       <View style={styles.loadingContainer}>
         <Stack.Screen options={{ headerShown: false }} />
-        <Text style={styles.errorText}>{t('errors.not_found')}</Text>
+        <ErrorState message={t('errors.not_found')} />
       </View>
     );
   }
@@ -77,7 +72,6 @@ export default function ProductDetailScreen() {
   const allSizes = variant?.sizes || [];
   const selectedSizeData = variant?.sizes?.find(s => s.size === selectedSize);
   const images = (variant?.images?.length ? variant.images : product.images) || [];
-  const hasMultipleVariants = (product.variants?.length || 0) > 1;
 
   const totalStock = product.variants?.reduce(
     (sum, v) => sum + v.sizes.reduce((s, size) => s + (size.stock || 0), 0),
@@ -87,7 +81,6 @@ export default function ProductDetailScreen() {
   const showOutOfStock = product.show_out_of_stock === true;
   const isFullyUnavailable = totalStock === 0 && !showOutOfStock;
 
-  // Availability for the selected size
   const selectedSizeAvailability = (() => {
     if (!selectedSize) return null;
     const sizeStock = selectedSizeData?.stock || 0;
@@ -96,7 +89,6 @@ export default function ProductDetailScreen() {
     return 'out_of_stock' as const;
   })();
 
-  // Availability for the current variant (when no size selected yet)
   const variantAvailability = (() => {
     if (variantStock > 0) return 'immediate' as const;
     if (showOutOfStock) return 'reservation' as const;
@@ -136,63 +128,12 @@ export default function ProductDetailScreen() {
         contentContainerStyle={{ paddingBottom: 100 + insets.bottom }}
       >
         {/* Image Gallery */}
-        <View style={styles.imageGalleryContainer}>
-          {images.length > 0 ? (
-            <>
-              <FlatList
-                key={selectedVariant}
-                ref={imageListRef}
-                data={images}
-                extraData={selectedVariant}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                onViewableItemsChanged={onViewableItemsChanged}
-                viewabilityConfig={viewabilityConfig}
-                keyExtractor={(item, i) => `${selectedVariant}-${i}`}
-                renderItem={({ item }) => (
-                  <View style={styles.imageSlide}>
-                    <Image
-                      source={{ uri: item }}
-                      style={styles.productImage}
-                      contentFit="cover"
-                      transition={200}
-                      cachePolicy="memory-disk"
-                    />
-                  </View>
-                )}
-                getItemLayout={(_, index) => ({
-                  length: width,
-                  offset: width * index,
-                  index,
-                })}
-              />
-              {images.length > 1 && (
-                <View style={styles.dotsContainer}>
-                  {images.map((_, i) => (
-                    <View
-                      key={i}
-                      style={[
-                        styles.dot,
-                        activeImageIndex === i ? styles.dotActive : styles.dotInactive,
-                      ]}
-                    />
-                  ))}
-                </View>
-              )}
-            </>
-          ) : (
-            <View style={[styles.imageSlide, styles.placeholderImage]}>
-              <Text style={styles.placeholderText}>{t('product_card.no_image')}</Text>
-            </View>
-          )}
-
-          {/* Back Button */}
-          <BackButton
-            variant="floating"
-            style={[styles.backButton, isRTL && styles.backButtonRTL]}
-          />
-        </View>
+        <ImageGallery
+          images={images}
+          selectedVariant={selectedVariant}
+          isRTL={isRTL}
+          noImageLabel={t('product_card.no_image')}
+        />
 
         {/* Product Info */}
         <View style={styles.infoContainer}>
@@ -233,8 +174,6 @@ export default function ProductDetailScreen() {
                       onPress={() => {
                         setSelectedVariant(i);
                         setSelectedSize(null);
-                        setActiveImageIndex(0);
-                        imageListRef.current?.scrollToOffset({ offset: 0, animated: false });
                       }}
                       style={[
                         styles.colorOption,
@@ -314,47 +253,13 @@ export default function ProductDetailScreen() {
           {product.brand && (
             <>
               <View style={styles.divider} />
-              <View style={styles.brandCard}>
-                <View style={[styles.brandHeader, isRTL && commonStyles.rowReverse]}>
-                  {brand?.logo_url && (
-                    <View style={styles.brandLogoContainer}>
-                      <Image
-                        source={{ uri: brand.logo_url }}
-                        style={styles.brandLogo}
-                        contentFit="contain"
-                        cachePolicy="memory-disk"
-                      />
-                    </View>
-                  )}
-                  <View style={styles.brandHeaderText}>
-                    <Text style={[styles.brandName, isRTL && commonStyles.rtlText]}>
-                      {brand?.name || product.brand}
-                    </Text>
-                  </View>
-                </View>
-                {brand && (brand.description_en || brand.description_ar || brand.description) && (
-                  <Text style={[styles.brandDescription, isRTL && commonStyles.rtlText]}>
-                    {lang === 'ar'
-                      ? (brand.description_ar || brand.description_en || brand.description)
-                      : (brand.description_en || brand.description || brand.description_ar)}
-                  </Text>
-                )}
-                <Pressable
-                  style={[styles.brandLinkRow, isRTL && commonStyles.rowReverse]}
-                  onPress={() => {
-                    router.push(`/brand/${encodeURIComponent(product.brand)}` as any);
-                  }}
-                >
-                  <Text style={styles.brandLinkText}>
-                    {t('products.view_all_from_brand', { brand: brand?.name || product.brand })}
-                  </Text>
-                  <Ionicons
-                    name={isRTL ? 'chevron-back' : 'chevron-forward'}
-                    size={14}
-                    color={colors.primary.DEFAULT}
-                  />
-                </Pressable>
-              </View>
+              <BrandProfileCard
+                brandName={product.brand}
+                brand={brand}
+                lang={lang}
+                isRTL={isRTL}
+                viewAllLabel={t('products.view_all_from_brand', { brand: brand?.name || product.brand })}
+              />
             </>
           )}
         </View>
@@ -394,66 +299,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background,
   },
-  errorText: {
-    fontSize: typography.fontSize.lg,
-    fontFamily: fonts.medium,
-    color: colors.muted.foreground,
-  },
-
-  // Image Gallery
-  imageGalleryContainer: {
-    position: 'relative',
-    backgroundColor: colors.muted.DEFAULT,
-  },
-  imageSlide: {
-    width,
-    aspectRatio: 0.85,
-  },
-  productImage: {
-    width: '100%',
-    height: '100%',
-  },
-  placeholderImage: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.secondary.DEFAULT + '80',
-  },
-  placeholderText: {
-    fontSize: typography.fontSize.base,
-    fontFamily: fonts.medium,
-    color: colors.muted.foreground,
-  },
-  dotsContainer: {
-    position: 'absolute',
-    bottom: spacing[4],
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6,
-  },
-  dot: {
-    height: 6,
-    borderRadius: 3,
-  },
-  dotActive: {
-    width: 24,
-    backgroundColor: colors.primary.DEFAULT,
-  },
-  dotInactive: {
-    width: 6,
-    backgroundColor: colors.overlay.light60,
-  },
-  backButton: {
-    position: 'absolute',
-    top: spacing[12] + spacing[2],
-    left: spacing[4],
-  },
-  backButtonRTL: {
-    left: undefined,
-    right: spacing[4],
-  },
 
   // Product Info
   infoContainer: {
@@ -489,7 +334,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     color: colors.foreground,
   },
-  // Availability Badge
   description: {
     fontSize: typography.fontSize.sm,
     fontFamily: fonts.regular,
@@ -502,7 +346,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
     marginVertical: spacing[5],
   },
-  // Sections
   section: {
     marginBottom: spacing[5],
   },
@@ -545,7 +388,7 @@ const styles = StyleSheet.create({
     height: 14,
     borderRadius: 7,
     borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.1)',
+    borderColor: colors.overlay.dark35,
   },
   colorOptionText: {
     fontSize: typography.fontSize.sm,
@@ -610,59 +453,6 @@ const styles = StyleSheet.create({
   },
   sizeOptionTextDisabled: {
     color: colors.muted.foreground,
-  },
-
-  // Brand Profile
-  brandCard: {
-    backgroundColor: colors.card?.DEFAULT ? colors.card.DEFAULT + '80' : colors.background + '80',
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border + '66',
-    padding: spacing[6],
-    gap: spacing[4],
-    marginBottom: spacing[5],
-  },
-  brandHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[3],
-  },
-  brandLogoContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.lg,
-    overflow: 'hidden',
-    backgroundColor: colors.background,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  brandLogo: {
-    width: '100%',
-    height: '100%',
-  },
-  brandHeaderText: {
-    flex: 1,
-  },
-  brandName: {
-    fontSize: typography.fontSize.base,
-    fontFamily: fonts.bold,
-    color: colors.foreground,
-  },
-  brandDescription: {
-    fontSize: typography.fontSize.sm,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-    lineHeight: typography.fontSize.sm * 1.6,
-  },
-  brandLinkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[1],
-  },
-  brandLinkText: {
-    fontSize: typography.fontSize.sm,
-    fontFamily: fonts.semibold,
-    color: colors.primary.DEFAULT,
   },
 
   // Bottom CTA

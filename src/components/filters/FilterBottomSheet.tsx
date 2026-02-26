@@ -8,6 +8,7 @@ import { useFilterStore } from '../../store/filterStore';
 import { useBrands } from '../../hooks/useBrand';
 import { useRTL } from '../../hooks/useRTL';
 import { CATEGORIES } from '../../constants/categories';
+import { FilterChipGroup } from './FilterChipGroup';
 
 const GENDERS = [
   { key: 'men', label: 'filters.gender_men' },
@@ -129,41 +130,12 @@ export const FilterBottomSheet = forwardRef<BottomSheet, FilterBottomSheetProps>
             <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>
               {t('filters.category')}
             </Text>
-            <View style={styles.chipGrid}>
-              <Pressable
-                onPress={() => setCategory('')}
-                style={[styles.filterChip, !category && styles.filterChipActive]}
-              >
-                <Text
-                  style={[
-                    styles.filterChipText,
-                    !category && styles.filterChipTextActive,
-                  ]}
-                >
-                  {t('filters.all_categories')}
-                </Text>
-              </Pressable>
-
-              {CATEGORIES.map((cat) => (
-                <Pressable
-                  key={cat}
-                  onPress={() => setCategory(category === cat ? '' : cat)}
-                  style={[
-                    styles.filterChip,
-                    category === cat && styles.filterChipActive,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.filterChipText,
-                      category === cat && styles.filterChipTextActive,
-                    ]}
-                  >
-                    {t(`home.categories.${cat}`)}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+            <FilterChipGroup
+              items={CATEGORIES.map((cat) => ({ key: cat, label: t(`home.categories.${cat}`) }))}
+              selectedKey={category}
+              onSelect={setCategory}
+              allLabel={t('filters.all_categories')}
+            />
           </View>
 
           {/* Gender Section */}
@@ -171,41 +143,12 @@ export const FilterBottomSheet = forwardRef<BottomSheet, FilterBottomSheetProps>
             <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>
               {t('filters.gender')}
             </Text>
-            <View style={styles.chipGrid}>
-              <Pressable
-                onPress={() => setGender('')}
-                style={[styles.filterChip, !gender && styles.filterChipActive]}
-              >
-                <Text
-                  style={[
-                    styles.filterChipText,
-                    !gender && styles.filterChipTextActive,
-                  ]}
-                >
-                  {t('filters.all_categories')}
-                </Text>
-              </Pressable>
-
-              {GENDERS.map((g) => (
-                <Pressable
-                  key={g.key}
-                  onPress={() => setGender(gender === g.key ? '' : g.key)}
-                  style={[
-                    styles.filterChip,
-                    gender === g.key && styles.filterChipActive,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.filterChipText,
-                      gender === g.key && styles.filterChipTextActive,
-                    ]}
-                  >
-                    {t(g.label)}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+            <FilterChipGroup
+              items={GENDERS.map((g) => ({ key: g.key, label: t(g.label) }))}
+              selectedKey={gender}
+              onSelect={setGender}
+              allLabel={t('filters.all_categories')}
+            />
           </View>
 
           {/* Brand Section */}
@@ -214,41 +157,12 @@ export const FilterBottomSheet = forwardRef<BottomSheet, FilterBottomSheetProps>
               <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>
                 {t('filters.brand')}
               </Text>
-              <View style={styles.chipGrid}>
-                <Pressable
-                  onPress={() => setBrand('')}
-                  style={[styles.filterChip, !brand && styles.filterChipActive]}
-                >
-                  <Text
-                    style={[
-                      styles.filterChipText,
-                      !brand && styles.filterChipTextActive,
-                    ]}
-                  >
-                    {t('filters.all_categories')}
-                  </Text>
-                </Pressable>
-
-                {availableBrands.map((b) => (
-                  <Pressable
-                    key={b}
-                    onPress={() => setBrand(brand === b ? '' : b)}
-                    style={[
-                      styles.filterChip,
-                      brand === b && styles.filterChipActive,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.filterChipText,
-                        brand === b && styles.filterChipTextActive,
-                      ]}
-                    >
-                      {b}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+              <FilterChipGroup
+                items={availableBrands.map((b) => ({ key: b, label: b }))}
+                selectedKey={brand}
+                onSelect={setBrand}
+                allLabel={t('filters.all_categories')}
+              />
             </View>
           )}
 
@@ -374,31 +288,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semibold,
     color: colors.foreground,
     marginBottom: spacing[3],
-  },
-  chipGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing[2],
-  },
-  filterChip: {
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[2],
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.background,
-  },
-  filterChipActive: {
-    backgroundColor: colors.primary.DEFAULT,
-    borderColor: colors.primary.DEFAULT,
-  },
-  filterChipText: {
-    fontSize: 14,
-    fontFamily: fonts.medium,
-    color: colors.foreground,
-  },
-  filterChipTextActive: {
-    color: colors.primary.foreground,
   },
   switchRow: {
     flexDirection: 'row',

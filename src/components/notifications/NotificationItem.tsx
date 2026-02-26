@@ -16,7 +16,7 @@ const TYPE_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
 
 const TYPE_COLORS: Record<string, string> = {
   order_update: colors.primary.DEFAULT,
-  promotion: '#F59E0B',
+  promotion: colors.availability.reservation,
   system: colors.muted.foreground,
 };
 

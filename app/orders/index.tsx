@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useOrders } from '../../src/hooks/useOrders';
 import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
-import { Card, EmptyState } from '../../src/components/ui';
+import { Card, EmptyState, ErrorState } from '../../src/components/ui';
 import { SkeletonList } from '../../src/components/feedback';
 import { format } from 'date-fns';
 import { useRTL } from '../../src/hooks/useRTL';
@@ -23,7 +23,7 @@ export default function OrdersScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
-  const { data: orders, isLoading, refetch, isRefetching } = useOrders();
+  const { data: orders, isLoading, isError, refetch, isRefetching } = useOrders();
 
   const getStatusLabel = (status: string) => {
     const labels: { [key: string]: string } = {
@@ -42,6 +42,15 @@ export default function OrdersScreen() {
       <View style={styles.container}>
         <Stack.Screen options={{ title: t('orders.title') }} />
         <SkeletonList count={5} type="order" />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.container}>
+        <Stack.Screen options={{ title: t('orders.title') }} />
+        <ErrorState onRetry={refetch} />
       </View>
     );
   }
