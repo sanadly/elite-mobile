@@ -17,21 +17,15 @@ export function ProductCard({ product }: ProductCardProps) {
   const isRTL = useRTL();
   const [imageLoading, setImageLoading] = useState(true);
 
-  const imageUrl = product.variants?.[0]?.images?.[0];
+  const imageUrl = product.images?.[0] || product.variants?.[0]?.images?.[0];
 
-  const totalStock = product.variants?.reduce(
-    (sum, variant) => sum + variant.sizes.reduce((s, size) => s + size.stock, 0),
-    0
-  ) || 0;
+  const isImmediateDelivery = product.hasStock === true;
+  const isReservable = product.show_out_of_stock === true;
+  const stockRemaining = product.stockRemaining || 0;
 
-  const isOutOfStock = totalStock === 0;
-  const isImmediateDelivery = totalStock > 0;
+  const availableColors = product.availableColors || [];
 
-  const availableColors = product.variants
-    ?.map(v => v.color)
-    .filter(c => c.toLowerCase() !== 'default') || [];
-
-  const accessibilityLabel = `${product.brand} ${product.model}, ${t('product_card.price')} ${product.price} euros${isOutOfStock ? `, ${t('product_card.out_of_stock')}` : isImmediateDelivery ? `, ${t('product_card.immediate_delivery')}` : ''}`;
+  const accessibilityLabel = `${product.brand} ${product.model}, ${t('product_card.price')} ${product.price} euros${isImmediateDelivery ? `, ${t('product_card.immediate_delivery')}` : ''}${isReservable ? `, ${t('product_card.available_by_reservation')}` : ''}`;
 
   return (
     <Pressable
@@ -46,7 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <>
             <Image
               source={{ uri: imageUrl }}
-              style={[styles.image, isOutOfStock && styles.imageOutOfStock]}
+              style={styles.image}
               contentFit="cover"
               transition={200}
               cachePolicy="memory-disk"
@@ -67,23 +61,26 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <View style={styles.gradientOverlay} />
 
-        {isImmediateDelivery && (
-          <View style={[styles.deliveryBadge, isRTL && styles.deliveryBadgeRTL]}>
-            <View style={styles.pulseDot} />
-            <Text style={styles.deliveryText}>{t('product_card.immediate_delivery')}</Text>
+        {(isImmediateDelivery || isReservable) && (
+          <View style={[styles.badgeContainer, isRTL && styles.badgeContainerRTL]}>
+            {isImmediateDelivery && (
+              <View style={styles.deliveryBadge}>
+                <View style={styles.pulseDot} />
+                <Text style={styles.deliveryText}>{t('product_card.immediate_delivery')}</Text>
+              </View>
+            )}
+            {isReservable && (
+              <View style={styles.reservableBadge}>
+                <Text style={styles.reservableText}>{t('product_card.available_by_reservation')}</Text>
+              </View>
+            )}
           </View>
         )}
 
-        {isOutOfStock && (
-          <View style={[styles.outOfStockBadge, isRTL && styles.outOfStockBadgeRTL]}>
-            <Text style={styles.outOfStockText}>{t('product_card.out_of_stock')}</Text>
-          </View>
-        )}
-
-        {totalStock > 0 && totalStock < 10 && (
+        {stockRemaining === 1 && (
           <View style={styles.stockIndicator}>
             <Text style={styles.stockText}>
-              {t('product_card.only_x_left', { count: totalStock })}
+              {t('product_card.only_1_left')}
             </Text>
           </View>
         )}
@@ -113,18 +110,17 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.8 },
   imageContainer: { width: '100%', aspectRatio: 1, backgroundColor: colors.secondary.DEFAULT + '80', borderRadius: radius.lg, overflow: 'hidden', position: 'relative' },
   image: { width: '100%', height: '100%' },
-  imageOutOfStock: { opacity: 0.5 },
   imageLoader: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.muted.DEFAULT },
   placeholder: { justifyContent: 'center', alignItems: 'center', backgroundColor: colors.secondary.DEFAULT + '80' },
   placeholderText: { fontSize: typography.fontSize.sm, fontFamily: fonts.medium, color: colors.muted.foreground },
   gradientOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%', backgroundColor: 'transparent' },
-  deliveryBadge: { position: 'absolute', top: spacing[3], left: spacing[3], flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingHorizontal: spacing[2] + 2, paddingVertical: spacing[1], borderRadius: 999, borderWidth: 1, borderColor: 'rgba(134, 239, 172, 0.5)', gap: 4 },
-  deliveryBadgeRTL: { left: undefined, right: spacing[3], flexDirection: 'row-reverse' },
+  badgeContainer: { position: 'absolute', top: spacing[3], left: spacing[3], gap: 4 },
+  badgeContainerRTL: { left: undefined, right: spacing[3], alignItems: 'flex-end' },
+  deliveryBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingHorizontal: spacing[2] + 2, paddingVertical: spacing[1], borderRadius: 999, borderWidth: 1, borderColor: 'rgba(134, 239, 172, 0.5)', gap: 4 },
+  reservableBadge: { backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingHorizontal: spacing[2] + 2, paddingVertical: spacing[1], borderRadius: 999, borderWidth: 1, borderColor: 'rgba(96, 165, 250, 0.5)' },
+  reservableText: { fontSize: 10, fontFamily: fonts.semibold, color: '#1d4ed8', letterSpacing: 0.5 },
   pulseDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#10b981' },
   deliveryText: { fontSize: 10, fontFamily: fonts.semibold, color: '#15803d', textTransform: 'uppercase', letterSpacing: 0.5 },
-  outOfStockBadge: { position: 'absolute', top: spacing[3], right: spacing[3], backgroundColor: 'rgba(0, 0, 0, 0.7)', paddingHorizontal: spacing[3], paddingVertical: spacing[1] + 2, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)' },
-  outOfStockBadgeRTL: { right: undefined, left: spacing[3] },
-  outOfStockText: { fontSize: 10, fontFamily: fonts.semibold, color: 'rgba(255, 255, 255, 0.9)', textTransform: 'uppercase', letterSpacing: 0.5 },
   stockIndicator: { position: 'absolute', bottom: spacing[3], left: spacing[3], right: spacing[3], backgroundColor: 'rgba(245, 158, 11, 0.95)', paddingHorizontal: spacing[2], paddingVertical: spacing[1], borderRadius: 4 },
   stockText: { fontSize: 10, fontFamily: fonts.bold, color: '#fff', textAlign: 'center', textTransform: 'uppercase', letterSpacing: 0.3 },
   info: { paddingTop: spacing[4], gap: spacing[1] },

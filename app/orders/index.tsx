@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable, RefreshControl } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useOrders } from '../../src/hooks/useOrders';
@@ -40,6 +40,7 @@ export default function OrdersScreen() {
   if (isLoading) {
     return (
       <View style={styles.container}>
+        <Stack.Screen options={{ title: t('orders.title') }} />
         <SkeletonList count={5} type="order" />
       </View>
     );
@@ -48,6 +49,7 @@ export default function OrdersScreen() {
   if (!orders || orders.length === 0) {
     return (
       <View style={styles.emptyContainer}>
+        <Stack.Screen options={{ title: t('orders.title') }} />
         <Ionicons name="receipt-outline" size={80} color={colors.muted.foreground} />
         <Text style={styles.emptyText}>{t('orders.empty')}</Text>
         <Text style={styles.emptySubtext}>{t('orders.empty_subtitle')}</Text>
@@ -58,6 +60,7 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{ title: t('orders.title') }} />
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id}

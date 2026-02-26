@@ -72,6 +72,21 @@
     },
     "logout": "تسجيل الخروج"
   },
+  "home": {
+    "categories": {
+      "title": "الفئات",
+      "watches": "ساعات",
+      "bags": "حقائب",
+      "shoes": "أحذية",
+      "clothes": "ملابس",
+      "accessories": "إكسسوارات",
+      "parfums": "عطور",
+      "kids": "أطفال",
+      "cosmetics": "مستحضرات تجميل",
+      "other": "أخرى"
+    },
+    "featured": "منتجات مميزة"
+  },
   "products": {
     "title": "المنتجات",
     "search_placeholder": "ابحث عن المنتجات، العلامات التجارية...",
@@ -88,15 +103,18 @@
     "select_size": "اختر المقاس",
     "add_to_cart": "أضف إلى السلة",
     "added_to_cart": "تمت الإضافة إلى السلة!",
-    "product_detail": "تفاصيل المنتج"
+    "product_detail": "تفاصيل المنتج",
+    "about_brand": "عن {{brand}}",
+    "view_all_from_brand": "عرض جميع منتجات {{brand}}"
   },
   "product_card": {
-    "immediate_delivery": "توصيل فوري",
+    "immediate_delivery": "تسليم فوري",
+    "available_by_reservation": "متوفر بالحجز",
     "out_of_stock": "نفذ من المخزون",
     "no_image": "لا توجد صورة",
     "price": "السعر",
     "colors_available": "{{count}} ألوان متاحة",
-    "only_x_left": "فقط {{count}} متبقي!"
+    "only_1_left": "فقط 1 متبقي!"
   },
   "cart": {
     "title": "سلة التسوق",
@@ -242,6 +260,11 @@
     "unauthorized": "يرجى تسجيل الدخول للمتابعة",
     "try_again": "حاول مرة أخرى",
     "offline": "لا يوجد اتصال بالإنترنت"
+  },
+  "tabs": {
+    "shop": "المتجر",
+    "cart": "السلة",
+    "account": "الحساب"
   },
   "accessibility": {
     "tap_to_view_product": "انقر مرتين لعرض تفاصيل المنتج",

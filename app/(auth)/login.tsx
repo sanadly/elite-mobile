@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Input, AuthLanguageToggle } from '../../src/components/ui';
 import { colors, typography, fonts, spacing } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
@@ -18,6 +19,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
+  const insets = useSafeAreaInsets();
   const { setUser, setUserData, setSession } = useAuthStore();
 
   const handleLogin = async () => {
@@ -72,7 +74,7 @@ export default function LoginScreen() {
       style={styles.container}
     >
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + spacing[4] }]}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.topBar}>
@@ -146,7 +148,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: spacing[6],
-    paddingTop: spacing[16],
   },
   topBar: {
     alignItems: 'center',

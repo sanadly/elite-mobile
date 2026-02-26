@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from '@expo-google-fonts/alexandria/useFonts';
@@ -13,6 +13,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import '../src/lib/i18n';
 import { NetworkBanner } from '../src/components/feedback';
+import { colors, fonts } from '../src/theme';
 
 // Keep native splash visible until we're ready
 SplashScreen.preventAutoHideAsync();
@@ -50,7 +51,18 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <NetworkBanner />
-        <Slot />
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: colors.primary.DEFAULT },
+            headerTintColor: colors.primary.foreground,
+            headerTitleStyle: { fontFamily: fonts.semibold },
+          }}
+        >
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="order-success" options={{ headerShown: false }} />
+        </Stack>
       </SafeAreaProvider>
     </QueryClientProvider>
   );

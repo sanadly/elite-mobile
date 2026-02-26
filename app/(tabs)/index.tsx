@@ -1,33 +1,30 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors, typography, fonts, spacing } from '../../src/theme';
 import { useProducts } from '../../src/hooks/useProducts';
 import { ProductCard } from '../../src/components/product/ProductCard';
+import { HeroSlider } from '../../src/components/home/HeroSlider';
+import { CategorySlider } from '../../src/components/home/CategorySlider';
+import { useRTL } from '../../src/hooks/useRTL';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const isRTL = useRTL();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch, isRefetching } = useProducts();
 
   const products = useMemo(() => data?.pages.flatMap((page) => page) ?? [], [data]);
 
   const renderHeader = () => (
     <View>
-      {/* Hero Section - matches website style */}
-      <View style={styles.hero}>
-        <Image
-          source={require('../../assets/images/logo/header-logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.heroTitle}>Elite Style</Text>
-        <Text style={styles.heroSubtitle}>إيليت ستايل</Text>
-      </View>
+      <HeroSlider />
+      <CategorySlider />
 
-      {/* Products Header */}
+      {/* Products Section Header */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>{t('products.title')}</Text>
-        <Text style={styles.sectionSubtitle}>{t('products.loading')}</Text>
+        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>
+          {t('home.featured')}
+        </Text>
       </View>
     </View>
   );
@@ -87,61 +84,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  
-  // Hero Section - minimal and elegant like website
-  hero: {
-    alignItems: 'center',
-    paddingVertical: spacing[12],
-    paddingHorizontal: spacing[6],
-    backgroundColor: colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  logo: {
-    width: 120,
-    height: 60,
-    marginBottom: spacing[4],
-  },
-  heroTitle: {
-    fontSize: 36, // Large, elegant
-    fontFamily: fonts.bold,
-    color: colors.primary.DEFAULT,
-    letterSpacing: -0.5,
-  },
-  heroSubtitle: {
-    fontSize: 20,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-    marginTop: spacing[1],
-  },
-  
-  // Section Header
   sectionHeader: {
     paddingHorizontal: spacing[4],
     paddingTop: spacing[8],
     paddingBottom: spacing[4],
   },
   sectionTitle: {
-    fontSize: 24, // text-2xl
+    fontSize: 20,
     fontFamily: fonts.bold,
     color: colors.foreground,
-    letterSpacing: -0.5,
+    letterSpacing: -0.3,
   },
-  sectionSubtitle: {
-    fontSize: 14,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-    marginTop: spacing[1],
+  rtlText: {
+    textAlign: 'right',
+    writingDirection: 'rtl',
   },
-  
-  // Product Grid
   list: {
     paddingBottom: spacing[6],
   },
   row: {
     paddingHorizontal: spacing[2],
   },
-  
   footer: {
     padding: spacing[4],
     alignItems: 'center',

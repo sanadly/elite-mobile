@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '../src/components/ui';
 import { colors, typography, fonts, spacing } from '../src/theme';
@@ -12,7 +13,7 @@ export default function OrderSuccessScreen() {
   const { t } = useTranslation();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.iconContainer}>
           <Ionicons name="checkmark-circle" size={80} color={colors.status.success.text} />
@@ -51,7 +52,7 @@ export default function OrderSuccessScreen() {
           style={styles.button}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

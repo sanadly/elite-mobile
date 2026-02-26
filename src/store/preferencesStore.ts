@@ -15,8 +15,8 @@ interface PreferencesState {
 export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set, get) => ({
-      language: 'en',
-      isRTL: false,
+      language: 'ar',
+      isRTL: true,
 
       setLanguage: async (language: Language) => {
         const currentLanguage = get().language;

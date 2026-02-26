@@ -72,6 +72,21 @@
     },
     "logout": "Logout"
   },
+  "home": {
+    "categories": {
+      "title": "Categories",
+      "watches": "Watches",
+      "bags": "Bags",
+      "shoes": "Shoes",
+      "clothes": "Clothes",
+      "accessories": "Accessories",
+      "parfums": "Perfumes",
+      "kids": "Kids",
+      "cosmetics": "Cosmetics",
+      "other": "Other"
+    },
+    "featured": "Featured Products"
+  },
   "products": {
     "title": "Shop",
     "search_placeholder": "Search products, brands...",
@@ -88,15 +103,18 @@
     "select_size": "Select Size",
     "add_to_cart": "Add to Cart",
     "added_to_cart": "Added to cart!",
-    "product_detail": "Product Details"
+    "product_detail": "Product Details",
+    "about_brand": "About {{brand}}",
+    "view_all_from_brand": "View all {{brand}} products"
   },
   "product_card": {
     "immediate_delivery": "IMMEDIATE DELIVERY",
+    "available_by_reservation": "AVAILABLE BY RESERVATION",
     "out_of_stock": "OUT OF STOCK",
     "no_image": "No Image",
     "price": "Price",
     "colors_available": "{{count}} colors available",
-    "only_x_left": "Only {{count}} left!"
+    "only_1_left": "Only 1 left!"
   },
   "cart": {
     "title": "Shopping Cart",
@@ -242,6 +260,11 @@
     "unauthorized": "Please sign in to continue",
     "try_again": "Try Again",
     "offline": "No internet connection"
+  },
+  "tabs": {
+    "shop": "Shop",
+    "cart": "Cart",
+    "account": "Account"
   },
   "accessibility": {
     "tap_to_view_product": "Double tap to view product details",

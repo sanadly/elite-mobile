@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Pressable } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useOrder } from '../../src/hooks/useOrders';
@@ -45,9 +45,7 @@ export default function OrderDetailScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Pressable onPress={() => router.back()} style={styles.backButton}>
-        <Ionicons name={isRTL ? 'arrow-forward' : 'arrow-back'} size={24} color={colors.foreground} />
-      </Pressable>
+      <Stack.Screen options={{ title: `#${order.order_number}` }} />
 
       <Text style={[styles.title, isRTL && styles.rtlText]}>Order #{order.order_number}</Text>
       <Text style={[styles.date, isRTL && styles.rtlText]}>{format(new Date(order.created_at), 'MMMM dd, yyyy • HH:mm')}</Text>

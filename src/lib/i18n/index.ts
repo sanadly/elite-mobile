@@ -12,9 +12,9 @@ const LANGUAGE_KEY = '@elite_language';
 const getStoredLanguage = async (): Promise<string> => {
   try {
     const stored = await AsyncStorage.getItem(LANGUAGE_KEY);
-    return stored || Localization.getLocales()[0].languageCode || 'en';
+    return stored || Localization.getLocales()[0].languageCode || 'ar';
   } catch {
-    return 'en';
+    return 'ar';
   }
 };
 
@@ -40,7 +40,7 @@ const initI18n = async () => {
         ar: { translation: ar },
       },
       lng: language,
-      fallbackLng: 'en',
+      fallbackLng: 'ar',
       interpolation: {
         escapeValue: false,
       },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -131,6 +131,7 @@ export default function CheckoutScreen() {
   if (items.length === 0) {
     return (
       <View style={styles.emptyContainer}>
+        <Stack.Screen options={{ title: t('checkout.title') }} />
         <Text style={styles.emptyText}>{t('cart.empty')}</Text>
         <Button title={t('cart.continue_shopping')} onPress={() => router.push('/(tabs)')} style={styles.button} />
       </View>
@@ -139,8 +140,8 @@ export default function CheckoutScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      <Stack.Screen options={{ title: t('checkout.title') }} />
       <View style={styles.content}>
-        <Text style={[styles.title, isRTL && styles.rtlText]}>{t('checkout.title')}</Text>
         <Text style={[styles.subtitle, isRTL && styles.rtlText]}>{t('checkout.subtitle')}</Text>
 
         <Card style={styles.section}>

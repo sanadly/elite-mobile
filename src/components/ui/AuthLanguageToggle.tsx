@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { setStoredLanguage } from '../../lib/i18n';
+import { usePreferencesStore } from '../../store/preferencesStore';
 import { colors, spacing, typography, fonts } from '../../theme';
 
 export function AuthLanguageToggle() {
   const { i18n } = useTranslation();
+  const setLanguage = usePreferencesStore((s) => s.setLanguage);
   const [switching, setSwitching] = useState(false);
   const language = i18n.language;
 
@@ -14,8 +15,7 @@ export function AuthLanguageToggle() {
     setSwitching(true);
     try {
       const next = language === 'en' ? 'ar' : 'en';
-      await i18n.changeLanguage(next);
-      await setStoredLanguage(next);
+      await setLanguage(next);
     } catch (err) {
       console.warn('Language switch failed:', err);
     } finally {

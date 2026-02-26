@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,12 +10,13 @@ import { LoyaltyCard } from '../../src/components/loyalty/LoyaltyCard';
 import { useRTL } from '../../src/hooks/useRTL';
 
 export default function AccountScreen() {
-  const { userData, logout } = useAuthStore();
+  const { user, userData, logout } = useAuthStore();
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
 
-  if (!userData) {
+  // Not logged in — show guest screen
+  if (!user) {
     return (
       <View style={styles.guestContainer}>
         <Text style={styles.guestTitle}>{t('account.guest.title')}</Text>
@@ -49,6 +50,9 @@ export default function AccountScreen() {
     </Pressable>
   );
 
+  const displayName = userData?.name || user.user_metadata?.name || user.email || '';
+  const displayEmail = userData?.email || user.email || '';
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Profile Header */}
@@ -57,14 +61,14 @@ export default function AccountScreen() {
           <View style={styles.avatar}>
             <Ionicons name="person" size={32} color={colors.primary.DEFAULT} />
           </View>
-          <Text style={styles.name}>{userData.name}</Text>
-          <Text style={styles.email}>{userData.email}</Text>
+          <Text style={styles.name}>{displayName}</Text>
+          <Text style={styles.email}>{displayEmail}</Text>
         </View>
       </Card>
 
       {/* Loyalty Card */}
       <View style={styles.loyaltyContainer}>
-        <LoyaltyCard totalSpend={userData.totalSpend || 0} />
+        <LoyaltyCard totalSpend={userData?.totalSpend || 0} />
       </View>
 
       {/* Menu Items */}

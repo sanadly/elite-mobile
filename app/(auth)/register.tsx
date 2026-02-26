@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
@@ -43,6 +44,7 @@ export default function RegisterScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const insets = useSafeAreaInsets();
 
   const normalizeDigits = (text: string): string => {
     // Convert Arabic-Indic numerals (٠١٢٣٤٥٦٧٨٩) to Latin (0123456789)
@@ -166,7 +168,7 @@ export default function RegisterScreen() {
       style={styles.container}
     >
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + spacing[4] }]}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.topBar}>
@@ -406,7 +408,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: spacing[6],
-    paddingTop: spacing[16],
   },
   topBar: {
     alignItems: 'center',

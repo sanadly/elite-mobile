@@ -100,7 +100,7 @@ export function LoyaltyCard({ totalSpend }: LoyaltyCardProps) {
                 <Ionicons name={TIER_ICONS[progress.nextTier]} size={18} color={TIER_COLORS[progress.nextTier]} />
                 <Text style={[styles.nextTierName, { color: TIER_COLORS[progress.nextTier] }]}>{getTierName(progress.nextTier)}</Text>
               </View>
-              <Text style={[styles.remainingAmount, isRTL && styles.rtlText]}>{t('loyalty.unlock', { amount: progress.amountToNextTier.toFixed(0) })}</Text>
+              <Text style={[styles.remainingAmount, isRTL && styles.rtlText]}>{t('loyalty.unlock', { amount: progress.spendNeeded.toFixed(0) })}</Text>
             </>
           )}
 
