@@ -22,12 +22,16 @@ import { colors, typography, fonts, spacing, radius, commonStyles } from '../../
 import { supabase } from '../../src/api/supabase';
 import { useProfile, useUpdateProfile } from '../../src/hooks/useProfile';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 
 import { TOP_CITIES } from '../../src/utils/cities';
 
 export default function EditProfileScreen() {
+  const isAuthenticated = useRequireAuth();
   const { t } = useTranslation();
   const isRTL = useRTL();
+
+  if (!isAuthenticated) return null;
   const { data: profile, isLoading: profileLoading } = useProfile();
   const updateProfile = useUpdateProfile();
 

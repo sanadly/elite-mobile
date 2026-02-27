@@ -1,7 +1,7 @@
 import { supabase, getAuthenticatedUserId } from '../supabase';
 import { Order } from '../../types/order';
 
-export type { Order, OrderItem, OrderStatusHistory } from '../../types/order';
+export type { Order, OrderItem, OrderStatusHistory, OrderType } from '../../types/order';
 
 export async function getOrders() {
   const userId = await getAuthenticatedUserId();
@@ -13,12 +13,15 @@ export async function getOrders() {
       order_number,
       created_at,
       status,
+      type,
       total_eur,
       shipping_fee,
       discount_amount,
       deposit_amount,
       payment_method,
       coupon_code,
+      tracking_number,
+      courier,
       shipping_address
     `)
     .eq('customer_id', userId)
@@ -38,12 +41,15 @@ export async function getOrderById(orderId: string) {
       order_number,
       created_at,
       status,
+      type,
       total_eur,
       shipping_fee,
       discount_amount,
       deposit_amount,
       payment_method,
       coupon_code,
+      tracking_number,
+      courier,
       shipping_address,
       status_history
     `)

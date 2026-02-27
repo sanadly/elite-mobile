@@ -8,12 +8,16 @@ import { Button } from '../../src/components/ui';
 import { AddressCard } from '../../src/components/addresses/AddressCard';
 import { useAddresses, useDeleteAddress, useSetDefaultAddress } from '../../src/hooks/useAddresses';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 import type { Address } from '../../src/types/address';
 
 export default function AddressListScreen() {
+  const isAuthenticated = useRequireAuth();
   const { t } = useTranslation();
   const isRTL = useRTL();
   const router = useRouter();
+
+  if (!isAuthenticated) return null;
   const { data: addresses, isLoading, refetch } = useAddresses();
   const deleteAddress = useDeleteAddress();
   const setDefault = useSetDefaultAddress();

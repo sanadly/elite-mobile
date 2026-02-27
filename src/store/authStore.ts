@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { User, Session } from '@supabase/supabase-js';
 import { UserData } from '../types/user';
+import { supabase } from '../api/supabase';
 
 interface AuthState {
   user: User | null;
@@ -11,7 +12,7 @@ interface AuthState {
   setUserData: (data: UserData | null) => void;
   setSession: (session: Session | null) => void;
   setLoading: (loading: boolean) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -24,8 +25,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   setUserData: (userData) => set({ userData }),
   setSession: (session) => set({ session }),
   setLoading: (loading) => set({ loading }),
-  
-  logout: () => {
+
+  logout: async () => {
+    await supabase.auth.signOut();
     set({
       user: null,
       userData: null,

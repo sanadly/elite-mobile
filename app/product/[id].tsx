@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
+  Share,
   Dimensions,
   Pressable,
 } from 'react-native';
@@ -19,6 +19,10 @@ import { Button, AvailabilityBadge, ErrorState } from '../../src/components/ui';
 import { ImageGallery } from '../../src/components/product/ImageGallery';
 import { BrandProfileCard } from '../../src/components/product/BrandProfileCard';
 import { useRTL } from '../../src/hooks/useRTL';
+import { ProductDetailSkeleton } from '../../src/components/feedback';
+import * as Haptics from 'expo-haptics';
+import { useRecentlyViewedStore } from '../../src/store/recentlyViewedStore';
+import { SimilarProducts } from '../../src/components/product/SimilarProducts';
 
 const { width } = Dimensions.get('window');
 const SIZE_COLUMNS = 5;
@@ -40,12 +44,28 @@ export default function ProductDetailScreen() {
   const insets = useSafeAreaInsets();
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const addToRecentlyViewed = useRecentlyViewedStore((s) => s.addProduct);
+
+  useEffect(() => {
+    if (product) {
+      const image = product.variants?.[0]?.images?.[0] || product.images?.[0];
+      addToRecentlyViewed({
+        id: product.id,
+        brand: product.brand,
+        model: product.model,
+        price: product.price,
+        image,
+      });
+    }
+  }, [product?.id]);
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.container}>
         <Stack.Screen options={{ headerShown: false }} />
-        <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <ProductDetailSkeleton />
+        </ScrollView>
       </View>
     );
   }
@@ -112,11 +132,22 @@ export default function ProductDetailScreen() {
       maxStock: isConcierge ? -1 : sizeStock,
       isConcierge,
     });
-    if (result.success) router.push('/(tabs)/cart');
+    if (result.success) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.push('/(tabs)/cart');
+    }
   };
 
   const productName = product.name?.[lang] || product.name?.en || product.model;
   const productDescription = product.description?.[lang] || product.description?.en;
+
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `${product.brand} ${product.model} - \u20AC${product.price.toFixed(2)}\nhttps://elitestyle.ly/products/${product.id}`,
+      });
+    } catch {}
+  };
 
   return (
     <View style={styles.container}>
@@ -134,6 +165,7 @@ export default function ProductDetailScreen() {
           selectedVariant={selectedVariant}
           isRTL={isRTL}
           noImageLabel={t('product_card.no_image')}
+          onShare={handleShare}
         />
 
         {/* Product Info */}
@@ -173,6 +205,7 @@ export default function ProductDetailScreen() {
                     <Pressable
                       key={i}
                       onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                         setSelectedVariant(i);
                         setSelectedSize(null);
                       }}
@@ -222,7 +255,12 @@ export default function ProductDetailScreen() {
                   return (
                     <View key={s.size} style={styles.sizeOptionWrapper}>
                       <Pressable
-                        onPress={() => canSelect && setSelectedSize(s.size)}
+                        onPress={() => {
+                          if (canSelect) {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setSelectedSize(s.size);
+                          }
+                        }}
                         disabled={!canSelect}
                         style={[
                           styles.sizeOption,
@@ -263,6 +301,10 @@ export default function ProductDetailScreen() {
               />
             </>
           )}
+
+          {/* You May Also Like */}
+          <View style={styles.divider} />
+          <SimilarProducts productId={product.id} />
         </View>
       </ScrollView>
 

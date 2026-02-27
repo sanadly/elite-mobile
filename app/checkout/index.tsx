@@ -16,6 +16,7 @@ import { getDepositRates } from '../../src/api/endpoints/config';
 import { DEPOSIT_RATES, roundDepositAmount } from '../../src/lib/checkout-config';
 import { LoyaltyTier } from '../../src/types/user';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 import { useToast } from '../../src/hooks/useToast';
 import { TOP_CITIES } from '../../src/utils/cities';
 
@@ -39,10 +40,13 @@ const baseSchema = z.object({
 type CheckoutFormData = z.infer<typeof baseSchema>;
 
 export default function CheckoutScreen() {
+  const isAuthenticated = useRequireAuth();
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
   const insets = useSafeAreaInsets();
+
+  if (!isAuthenticated) return null;
   const { items, clearCart } = useCartStore();
   const { total: cartTotal } = useCartTotals();
   const { userData } = useAuthStore();

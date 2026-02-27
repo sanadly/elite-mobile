@@ -8,7 +8,9 @@ import { colors, typography, fonts, spacing, commonStyles } from '../../src/them
 import { Card, Button, Row } from '../../src/components/ui';
 import { format } from 'date-fns';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 import type { Order, OrderItem } from '../../src/types/order';
+import { OrderTrackingMap } from '../../src/components/orders/OrderTrackingMap';
 
 const STATUS_TIMELINE = ['pending', 'confirmed', 'processing', 'shipped', 'delivered'] as const;
 const STATUS_ICONS: Record<string, string> = {
@@ -158,11 +160,14 @@ function OrderSummary({ order }: { order: Order }) {
 // ─── Main Screen ──────────────────────────────────────────────
 
 export default function OrderDetailScreen() {
+  const isAuthenticated = useRequireAuth();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
   const { data: order, isLoading } = useOrder(id);
+
+  if (!isAuthenticated) return null;
 
   if (isLoading) return <View style={styles.loadingContainer}><Text style={styles.loadingText}>{t('common.loading')}</Text></View>;
   if (!order) return (
@@ -184,6 +189,10 @@ export default function OrderDetailScreen() {
         <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('orders.detail.order_status')}</Text>
         <OrderTimeline order={order} />
       </Card>
+
+      {(order.status === 'shipped' || order.status === 'delivered') && (
+        <OrderTrackingMap order={order} />
+      )}
 
       <ShippingInfo address={order.shipping_address} />
 

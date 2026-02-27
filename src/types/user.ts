@@ -1,6 +1,6 @@
 export type LoyaltyTier = 'classic' | 'prestige' | 'black';
 
-export type UserRole = 'admin' | 'customer' | 'concierge';
+export type UserRole = 'admin' | 'customer' | 'concierge' | 'staff';
 
 export interface UserProfile {
   id: string;

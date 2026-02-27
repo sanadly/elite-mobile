@@ -120,7 +120,8 @@
       "cosmetics": "Cosmetics",
       "other": "Other"
     },
-    "featured": "Featured Products"
+    "featured": "Featured Products",
+    "recently_viewed": "Recently Viewed"
   },
   "products": {
     "title": "Shop",
@@ -140,7 +141,8 @@
     "added_to_cart": "Added to cart!",
     "product_detail": "Product Details",
     "about_brand": "About {{brand}}",
-    "view_all_from_brand": "View all {{brand}} products"
+    "view_all_from_brand": "View all {{brand}} products",
+    "you_may_also_like": "You May Also Like"
   },
   "brand": {
     "products_count": "{{count}} products"
@@ -267,7 +269,10 @@
       "help_text": "If you have any questions about your order, please contact our customer support.",
       "not_found": "Order not found",
       "back_to_orders": "Back to Orders",
-      "cancelled_message": "Order Cancelled"
+      "cancelled_message": "Order Cancelled",
+      "tracking": "Tracking",
+      "delivered_to": "Delivered to {{city}}",
+      "delivery_map": "Delivery Location"
     }
   },
   "account": {
@@ -283,7 +288,27 @@
       "profile": "Profile Settings",
       "addresses": "Addresses",
       "notifications": "Notifications",
-      "language": "Language"
+      "language": "Language",
+      "privacy_policy": "Privacy Policy",
+      "delete_account": "Delete Account"
+    },
+    "delete": {
+      "title": "Delete Account",
+      "warning_title": "This action is permanent",
+      "warning_message": "Deleting your account will permanently remove all your data. This cannot be undone.",
+      "lose_orders": "Your order history will be anonymised",
+      "lose_addresses": "Your saved addresses will be deleted",
+      "lose_profile": "Your profile information will be removed",
+      "lose_loyalty": "Your loyalty tier and progress will be lost",
+      "enter_password": "Enter your password to confirm",
+      "password_required": "Password is required",
+      "wrong_password": "Incorrect password",
+      "button": "Delete My Account",
+      "deleting": "Deleting account...",
+      "confirm_title": "Are you sure?",
+      "confirm_message": "This will permanently delete your account and all associated data.",
+      "confirm_button": "Delete",
+      "error": "Failed to delete account. Please try again."
     },
     "logout": "Logout"
   },
@@ -448,6 +473,26 @@
     "shop": "Shop",
     "cart": "Cart",
     "account": "Account"
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome",
+      "subtitle": "Discover luxury brands, curated for you",
+      "why_us": "Why Elite Style?",
+      "feature_1_title": "First Luxury Platform in Libya",
+      "feature_1_subtitle": "Your gateway to premium international brands",
+      "feature_2_title": "Loyalty & Rewards",
+      "feature_2_subtitle": "Earn rewards with every purchase and unlock exclusive benefits",
+      "feature_3_title": "Authentic Premium Brands",
+      "feature_3_subtitle": "500+ verified luxury products from world-renowned brands",
+      "continue": "Continue"
+    },
+    "notifications": {
+      "title": "Stay Informed",
+      "subtitle": "Get notified about the latest arrivals, exclusive collections, and special offers",
+      "enable": "Enable Notifications",
+      "not_now": "Not Now"
+    }
   },
   "accessibility": {
     "tap_to_view_product": "Double tap to view product details",

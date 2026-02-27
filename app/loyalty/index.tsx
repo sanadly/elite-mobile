@@ -20,6 +20,7 @@ import {
 import type { LoyaltyTier } from '../../src/types/user';
 import { useRTL } from '../../src/hooks/useRTL';
 import { Card } from '../../src/components/ui';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -38,9 +39,12 @@ const TIER_ICONS: Record<LoyaltyTier, keyof typeof Ionicons.glyphMap> = {
 const TIER_ORDER: LoyaltyTier[] = ['classic', 'prestige', 'black'];
 
 export default function LoyaltyDetailScreen() {
+  const isAuthenticated = useRequireAuth();
   const { t } = useTranslation();
   const isRTL = useRTL();
   const { userData } = useAuthStore();
+
+  if (!isAuthenticated) return null;
   const totalSpend = userData?.totalSpend || 0;
   const currentTier = calculateLoyaltyTier(totalSpend);
   const progress = getLoyaltyProgress(totalSpend, currentTier);

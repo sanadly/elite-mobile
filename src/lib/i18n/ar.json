@@ -120,7 +120,8 @@
       "cosmetics": "مستحضرات تجميل",
       "other": "أخرى"
     },
-    "featured": "منتجات مميزة"
+    "featured": "منتجات مميزة",
+    "recently_viewed": "شوهدت مؤخراً"
   },
   "products": {
     "title": "المنتجات",
@@ -140,7 +141,8 @@
     "added_to_cart": "تمت الإضافة إلى السلة!",
     "product_detail": "تفاصيل المنتج",
     "about_brand": "عن {{brand}}",
-    "view_all_from_brand": "عرض جميع منتجات {{brand}}"
+    "view_all_from_brand": "عرض جميع منتجات {{brand}}",
+    "you_may_also_like": "قد يعجبك أيضاً"
   },
   "brand": {
     "products_count": "{{count}} منتجات"
@@ -267,7 +269,10 @@
       "help_text": "إذا كان لديك أي استفسارات حول طلبك، يرجى التواصل مع خدمة العملاء.",
       "not_found": "الطلب غير موجود",
       "back_to_orders": "العودة إلى الطلبات",
-      "cancelled_message": "تم إلغاء الطلب"
+      "cancelled_message": "تم إلغاء الطلب",
+      "tracking": "التتبع",
+      "delivered_to": "تم التوصيل إلى {{city}}",
+      "delivery_map": "موقع التوصيل"
     }
   },
   "account": {
@@ -283,7 +288,27 @@
       "profile": "إعدادات الحساب",
       "addresses": "العناوين",
       "notifications": "الإشعارات",
-      "language": "اللغة"
+      "language": "اللغة",
+      "privacy_policy": "سياسة الخصوصية",
+      "delete_account": "حذف الحساب"
+    },
+    "delete": {
+      "title": "حذف الحساب",
+      "warning_title": "هذا الإجراء نهائي",
+      "warning_message": "حذف حسابك سيؤدي إلى إزالة جميع بياناتك بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+      "lose_orders": "سيتم إخفاء هوية سجل طلباتك",
+      "lose_addresses": "سيتم حذف عناوينك المحفوظة",
+      "lose_profile": "سيتم إزالة معلومات ملفك الشخصي",
+      "lose_loyalty": "ستفقد مستوى الولاء وتقدمك",
+      "enter_password": "أدخل كلمة المرور للتأكيد",
+      "password_required": "كلمة المرور مطلوبة",
+      "wrong_password": "كلمة المرور غير صحيحة",
+      "button": "حذف حسابي",
+      "deleting": "جاري حذف الحساب...",
+      "confirm_title": "هل أنت متأكد؟",
+      "confirm_message": "سيؤدي هذا إلى حذف حسابك وجميع البيانات المرتبطة به بشكل دائم.",
+      "confirm_button": "حذف",
+      "error": "فشل حذف الحساب. يرجى المحاولة مرة أخرى."
     },
     "logout": "تسجيل الخروج"
   },
@@ -448,6 +473,26 @@
     "shop": "المتجر",
     "cart": "السلة",
     "account": "الحساب"
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "مرحباً",
+      "subtitle": "اكتشف العلامات التجارية الفاخرة، مختارة لك",
+      "why_us": "لماذا إليت ستايل؟",
+      "feature_1_title": "أول منصة تسوق فاخر في ليبيا",
+      "feature_1_subtitle": "بوابتك إلى العلامات التجارية العالمية المميزة",
+      "feature_2_title": "نظام ولاء ومكافآت",
+      "feature_2_subtitle": "اكسب مكافآت مع كل عملية شراء واحصل على مزايا حصرية",
+      "feature_3_title": "علامات تجارية أصلية ومميزة",
+      "feature_3_subtitle": "أكثر من 500 منتج فاخر من أشهر العلامات التجارية العالمية",
+      "continue": "متابعة"
+    },
+    "notifications": {
+      "title": "ابقَ على اطلاع",
+      "subtitle": "احصل على إشعارات بأحدث الوصولات والمجموعات الحصرية والعروض الخاصة",
+      "enable": "تفعيل الإشعارات",
+      "not_now": "ليس الآن"
+    }
   },
   "accessibility": {
     "tap_to_view_product": "انقر مرتين لعرض تفاصيل المنتج",

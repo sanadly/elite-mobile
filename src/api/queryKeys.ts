@@ -6,6 +6,7 @@ export const queryKeys = {
     byCategory: (category: string) => [...queryKeys.products.all, 'category', category] as const,
     byBrand: (brand: string) => [...queryKeys.products.all, 'brand', brand] as const,
     filtered: (filters: Record<string, unknown>) => ['filtered-products', ...Object.values(filters)] as const,
+    similar: (id: string) => [...queryKeys.products.all, 'similar', id] as const,
   },
   brands: {
     all: ['brands'] as const,

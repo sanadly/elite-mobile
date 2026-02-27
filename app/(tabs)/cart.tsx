@@ -9,6 +9,8 @@ import { colors, typography, fonts, spacing, commonStyles } from '../../src/them
 import { Card, Button, AvailabilityBadge, EmptyState } from '../../src/components/ui';
 import { useRTL } from '../../src/hooks/useRTL';
 import { useCartTotals } from '../../src/hooks/useCartTotals';
+import { useAuthStore } from '../../src/store/authStore';
+import * as Haptics from 'expo-haptics';
 
 export default function CartScreen() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function CartScreen() {
   const insets = useSafeAreaInsets();
   const { items, removeItem, updateQuantity } = useCartStore();
   const { count: cartCount, total: cartTotal } = useCartTotals();
+  const user = useAuthStore((s) => s.user);
 
   if (items.length === 0) {
     return (
@@ -60,7 +63,7 @@ export default function CartScreen() {
                 <Text style={[styles.itemPrice, isRTL && commonStyles.rtlText]}>€{item.price.toFixed(2)}</Text>
               </View>
 
-              <Pressable onPress={() => removeItem(item.variantId)} style={styles.removeButton}>
+              <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); removeItem(item.variantId); }} style={styles.removeButton}>
                 <Ionicons name="trash-outline" size={20} color={colors.destructive.DEFAULT} />
               </Pressable>
             </View>
@@ -68,14 +71,14 @@ export default function CartScreen() {
             {/* Quantity Controls */}
             <View style={[styles.quantityRow, isRTL && styles.quantityRowRTL]}>
               <Pressable
-                onPress={() => updateQuantity(item.variantId, item.quantity - 1)}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); updateQuantity(item.variantId, item.quantity - 1); }}
                 style={styles.quantityButton}
               >
                 <Ionicons name="remove" size={20} color={colors.foreground} />
               </Pressable>
               <Text style={styles.quantityText}>{item.quantity}</Text>
               <Pressable
-                onPress={() => updateQuantity(item.variantId, item.quantity + 1)}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); updateQuantity(item.variantId, item.quantity + 1); }}
                 style={styles.quantityButton}
                 disabled={!item.isConcierge && item.quantity >= item.maxStock}
               >
@@ -97,7 +100,7 @@ export default function CartScreen() {
         </View>
         <Button
           title={t('cart.proceed_to_checkout')}
-          onPress={() => router.push('/checkout')}
+          onPress={() => user ? router.push('/checkout') : router.push('/(auth)/login')}
           size="lg"
         />
       </View>

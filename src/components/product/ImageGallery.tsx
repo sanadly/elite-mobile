@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, ViewToken } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, ViewToken, Pressable } from 'react-native';
 import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
+import ImageViewing from 'react-native-image-viewing';
 import { colors, typography, fonts, spacing } from '../../theme';
 import { BackButton } from '../ui';
 
@@ -11,10 +13,12 @@ interface ImageGalleryProps {
   selectedVariant: number;
   isRTL: boolean;
   noImageLabel: string;
+  onShare?: () => void;
 }
 
-export function ImageGallery({ images, selectedVariant, isRTL, noImageLabel }: ImageGalleryProps) {
+export function ImageGallery({ images, selectedVariant, isRTL, noImageLabel, onShare }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [zoomVisible, setZoomVisible] = useState(false);
   const listRef = useRef<FlatList>(null);
 
   const onViewableItemsChanged = useRef(
@@ -43,7 +47,7 @@ export function ImageGallery({ images, selectedVariant, isRTL, noImageLabel }: I
             viewabilityConfig={viewabilityConfig}
             keyExtractor={(_, i) => `${selectedVariant}-${i}`}
             renderItem={({ item }) => (
-              <View style={styles.imageSlide}>
+              <Pressable style={styles.imageSlide} onPress={() => setZoomVisible(true)}>
                 <Image
                   source={{ uri: item }}
                   style={styles.productImage}
@@ -51,7 +55,7 @@ export function ImageGallery({ images, selectedVariant, isRTL, noImageLabel }: I
                   transition={200}
                   cachePolicy="memory-disk"
                 />
-              </View>
+              </Pressable>
             )}
             getItemLayout={(_, index) => ({
               length: width,
@@ -82,6 +86,23 @@ export function ImageGallery({ images, selectedVariant, isRTL, noImageLabel }: I
       <BackButton
         variant="floating"
         style={[styles.backButton, isRTL && styles.backButtonRTL]}
+      />
+
+      {onShare && (
+        <Pressable
+          onPress={onShare}
+          style={[styles.shareButton, isRTL && styles.shareButtonRTL]}
+          hitSlop={8}
+        >
+          <Ionicons name="share-outline" size={20} color={colors.foreground} />
+        </Pressable>
+      )}
+
+      <ImageViewing
+        images={images.map((uri) => ({ uri }))}
+        imageIndex={activeIndex}
+        visible={zoomVisible}
+        onRequestClose={() => setZoomVisible(false)}
       />
     </View>
   );
@@ -140,5 +161,20 @@ const styles = StyleSheet.create({
   backButtonRTL: {
     left: undefined,
     right: spacing[4],
+  },
+  shareButton: {
+    position: 'absolute',
+    top: spacing[12] + spacing[2],
+    right: spacing[4],
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.overlay.light90,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shareButtonRTL: {
+    right: undefined,
+    left: spacing[4],
   },
 });

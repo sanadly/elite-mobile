@@ -1,5 +1,6 @@
 export interface Product {
   id: string;
+  slug?: string;
   brand: string;
   model: string;
   name: {
@@ -11,6 +12,7 @@ export interface Product {
     ar: string;
   };
   category: string;
+  gender?: string;
   price: number;
   images?: string[];
   is_active: boolean;

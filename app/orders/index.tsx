@@ -9,6 +9,7 @@ import { Card, EmptyState, ErrorState } from '../../src/components/ui';
 import { SkeletonList } from '../../src/components/feedback';
 import { format } from 'date-fns';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 
 const STATUS_COLORS = {
   pending: { bg: colors.status.pending.bg, text: colors.status.pending.text },
@@ -20,10 +21,13 @@ const STATUS_COLORS = {
 };
 
 export default function OrdersScreen() {
+  const isAuthenticated = useRequireAuth();
   const router = useRouter();
   const { t } = useTranslation();
   const isRTL = useRTL();
   const { data: orders, isLoading, isError, refetch, isRefetching } = useOrders();
+
+  if (!isAuthenticated) return null;
 
   const getStatusLabel = (status: string) => {
     const labels: { [key: string]: string } = {

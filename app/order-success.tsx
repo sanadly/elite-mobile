@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Button } from '../src/components/ui';
 import { colors, typography, fonts, spacing } from '../src/theme';
 
@@ -11,6 +12,10 @@ export default function OrderSuccessScreen() {
   const { orderNumber } = useLocalSearchParams<{ orderNumber: string }>();
   const router = useRouter();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

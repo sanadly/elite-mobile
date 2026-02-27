@@ -12,6 +12,7 @@ import {
   useDeleteNotification,
 } from '../../src/hooks/useNotifications';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 import type { AppNotification } from '../../src/types/notification';
 import { isToday, isYesterday, isThisWeek } from 'date-fns';
 
@@ -44,9 +45,12 @@ function groupByDate(notifications: AppNotification[], t: (key: string) => strin
 }
 
 export default function NotificationsScreen() {
+  const isAuthenticated = useRequireAuth();
   const { t } = useTranslation();
   const isRTL = useRTL();
   const router = useRouter();
+
+  if (!isAuthenticated) return null;
   const { data: notifications, isLoading, refetch } = useNotifications();
   const markRead = useMarkAsRead();
   const markAllRead = useMarkAllAsRead();

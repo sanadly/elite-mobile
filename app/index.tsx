@@ -6,6 +6,7 @@ import { supabase } from '../src/api/supabase';
 import { fetchUserProfile } from '../src/api/endpoints/profile';
 import { mapProfileToUserData } from '../src/utils/profile';
 import { colors } from '../src/theme';
+import { usePreferencesStore } from '../src/store/preferencesStore';
 
 const MIN_SPLASH_MS = 2500;
 const AUTH_TIMEOUT_MS = 5000;
@@ -92,18 +93,28 @@ export default function Index() {
     };
   }, []);
 
+  const hasSeenOnboarding = usePreferencesStore((s) => s.hasSeenOnboarding);
+  const prefsHydrated = usePreferencesStore((s) => s._hasHydrated);
+
   useEffect(() => {
-    if (loading || !splashReady) return;
+    if (loading || !splashReady || !prefsHydrated) return;
+
+    // Show onboarding on first launch
+    if (!hasSeenOnboarding) {
+      router.replace('/onboarding');
+      return;
+    }
 
     const inAuthGroup = segments[0] === '(auth)';
     const inTabsGroup = segments[0] === '(tabs)';
 
-    if (!user && !inAuthGroup) {
-      router.replace('/(auth)/login');
+    if (!user && !inAuthGroup && !inTabsGroup) {
+      // Allow guests to browse — send them to tabs instead of login
+      router.replace('/(tabs)');
     } else if (user && !inTabsGroup) {
       router.replace('/(tabs)');
     }
-  }, [user, segments, loading, splashReady]);
+  }, [user, segments, loading, splashReady, hasSeenOnboarding, prefsHydrated]);
 
   return (
     <View style={styles.container}>

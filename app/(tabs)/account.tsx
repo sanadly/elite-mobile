@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +8,8 @@ import { colors, typography, fonts, spacing } from '../../src/theme';
 import { Card, Button } from '../../src/components/ui';
 import { LoyaltyCard } from '../../src/components/loyalty/LoyaltyCard';
 import { useRTL } from '../../src/hooks/useRTL';
+
+const PRIVACY_POLICY_URL = 'https://elitestyle.ly/privacy-policy';
 
 export default function AccountScreen() {
   const { user, userData, logout } = useAuthStore();
@@ -98,6 +100,11 @@ export default function AccountScreen() {
           title={t('account.menu.language')}
           onPress={() => router.push('/settings')}
         />
+        <MenuItem
+          icon="shield-checkmark-outline"
+          title={t('account.menu.privacy_policy')}
+          onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
+        />
       </Card>
 
       <Button
@@ -107,6 +114,13 @@ export default function AccountScreen() {
         size="lg"
         style={styles.logoutButton}
       />
+
+      <Pressable
+        style={styles.deleteAccountButton}
+        onPress={() => router.push('/delete-account')}
+      >
+        <Text style={styles.deleteAccountText}>{t('account.menu.delete_account')}</Text>
+      </Pressable>
 
       <View style={styles.bottomSpacing} />
     </ScrollView>
@@ -213,6 +227,15 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     margin: spacing[4],
+  },
+  deleteAccountButton: {
+    alignItems: 'center',
+    padding: spacing[3],
+  },
+  deleteAccountText: {
+    fontSize: typography.fontSize.sm,
+    fontFamily: fonts.regular,
+    color: colors.destructive.DEFAULT,
   },
   bottomSpacing: {
     height: spacing[6],

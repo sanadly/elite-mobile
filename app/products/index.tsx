@@ -23,6 +23,7 @@ import { FilterChips } from '../../src/components/filters/FilterChips';
 import { FilterBottomSheet } from '../../src/components/filters/FilterBottomSheet';
 import { SortModal } from '../../src/components/filters/SortModal';
 import { useRTL } from '../../src/hooks/useRTL';
+import { ProductGridSkeleton } from '../../src/components/feedback';
 
 export default function ProductsScreen() {
   const { category: initialCategory, brand: initialBrand, search: initialSearch } =
@@ -89,11 +90,7 @@ export default function ProductsScreen() {
 
   const renderEmpty = () => {
     if (isLoading) {
-      return (
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
-        </View>
-      );
+      return <ProductGridSkeleton count={6} />;
     }
     return (
       <View style={styles.centerContainer}>

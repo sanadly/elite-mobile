@@ -10,6 +10,8 @@ import { HeroSlider } from '../../src/components/home/HeroSlider';
 import { CategorySlider } from '../../src/components/home/CategorySlider';
 import { SearchBar } from '../../src/components/search/SearchBar';
 import { useRTL } from '../../src/hooks/useRTL';
+import { HomeScreenSkeleton } from '../../src/components/feedback';
+import { RecentlyViewed } from '../../src/components/home/RecentlyViewed';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -35,6 +37,8 @@ export default function HomeScreen() {
 
       <CategorySlider />
 
+      <RecentlyViewed />
+
       {/* Products Section Header */}
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>
@@ -55,11 +59,7 @@ export default function HomeScreen() {
 
   const renderEmpty = () => {
     if (isLoading) {
-      return (
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
-        </View>
-      );
+      return <HomeScreenSkeleton />;
     }
     if (isError) {
       return <ErrorState onRetry={refetch} />;

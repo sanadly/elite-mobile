@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery, useQueryClient, type InfiniteData } from '@tanstack/react-query';
-import { fetchProducts, PRODUCTS_PER_PAGE } from '../api/products';
+import { fetchProducts, fetchSimilarProducts, PRODUCTS_PER_PAGE } from '../api/products';
 import { queryKeys } from '../api/queryKeys';
 import type { Product } from '../types/product';
 
@@ -58,5 +58,14 @@ export function useProductsByBrand(brand: string) {
       return fetchProducts({ brand });
     },
     enabled: !!brand,
+  });
+}
+
+export function useSimilarProducts(productId: string | undefined) {
+  return useQuery({
+    queryKey: queryKeys.products.similar(productId || ''),
+    queryFn: () => fetchSimilarProducts(productId!, 8),
+    enabled: !!productId,
+    staleTime: 10 * 60 * 1000,
   });
 }

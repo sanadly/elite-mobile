@@ -32,3 +32,10 @@ export async function fetchProducts(params: FetchProductsParams): Promise<Produc
   );
   return data.products;
 }
+
+export async function fetchSimilarProducts(productId: string, limit = 8): Promise<Product[]> {
+  const data = await apiFetch<{ products: Product[] }>(
+    `/api/mobile/products/similar?productId=${encodeURIComponent(productId)}&limit=${limit}`
+  );
+  return data.products;
+}

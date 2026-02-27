@@ -14,14 +14,20 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "ly.elitestyle.app"
+      "bundleIdentifier": "ly.elitestyle.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleLocalizations": ["en", "ar"],
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#012856"
       },
-      "package": "ly.elitestyle.app"
+      "package": "ly.elitestyle.app",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro",
@@ -30,7 +36,14 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/logo/icon.png",
+          "color": "#012856"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

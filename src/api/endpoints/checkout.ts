@@ -19,7 +19,9 @@ export interface CheckoutData {
   totalEur: number;
   customerId?: string;
   depositAmount?: number;
+  isDifferentRecipient?: boolean;
   couponCode?: string;
+  idempotencyKey?: string;
   shippingFee: number;
 }
 

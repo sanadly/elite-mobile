@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-nati
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 import { colors, typography, fonts, spacing, radius, shadows, commonStyles } from '../../theme';
 import { Product } from '../../types/product';
 import { useRTL } from '../../hooks/useRTL';
@@ -28,8 +29,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const accessibilityLabel = `${product.brand} ${product.model}, ${t('product_card.price')} ${product.price} euros${isImmediateDelivery ? `, ${t('product_card.immediate_delivery')}` : ''}${isReservable ? `, ${t('product_card.available_by_reservation')}` : ''}`;
 
   return (
+    <Animated.View style={styles.container} entering={FadeInUp.duration(400).springify()}>
     <Pressable
-      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.pressable, pressed && styles.pressed]}
       onPress={() => router.push(`/product/${product.id}` as any)}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
@@ -102,11 +104,13 @@ export function ProductCard({ product }: ProductCardProps) {
         <Text style={[styles.price, isRTL && commonStyles.rtlText]}>{'\u20AC'}{product.price.toFixed(2)}</Text>
       </View>
     </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, margin: spacing[2] },
+  pressable: { flex: 1 },
   pressed: { opacity: 0.8 },
   imageContainer: { width: '100%', aspectRatio: 1, backgroundColor: colors.secondary.DEFAULT + '80', borderRadius: radius.lg, overflow: 'hidden', position: 'relative' },
   image: { width: '100%', height: '100%' },

@@ -1,10 +1,13 @@
-export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+
+export type OrderType = 'stock' | 'concierge' | 'mixed';
 
 export interface Order {
   id: string;
   order_number: string;
   created_at: string;
   status: OrderStatus;
+  type?: OrderType;
   total_eur: number;
   shipping_fee: number;
   discount_amount?: number;
@@ -18,6 +21,8 @@ export interface Order {
   };
   payment_method: 'cod';
   coupon_code?: string;
+  tracking_number?: string;
+  courier?: string;
   status_history?: Record<string, string>;
 }
 

@@ -19,6 +19,7 @@ import { colors, typography, fonts, spacing, radius, commonStyles } from '../../
 import { supabase } from '../../src/api/supabase';
 import { useAddress, useCreateAddress, useUpdateAddress } from '../../src/hooks/useAddresses';
 import { useRTL } from '../../src/hooks/useRTL';
+import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 import type { AddressLabel } from '../../src/types/address';
 
 import { TOP_CITIES } from '../../src/utils/cities';
@@ -30,9 +31,12 @@ const LABEL_OPTIONS: { value: AddressLabel; icon: keyof typeof Ionicons.glyphMap
 ];
 
 export default function AddAddressScreen() {
+  const isAuthenticated = useRequireAuth();
   const { t } = useTranslation();
   const isRTL = useRTL();
   const router = useRouter();
+
+  if (!isAuthenticated) return null;
   const { id } = useLocalSearchParams<{ id?: string }>();
   const isEditMode = !!id;
 

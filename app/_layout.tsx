@@ -17,12 +17,18 @@ import { i18nReady } from '../src/lib/i18n';
 import { NetworkBanner } from '../src/components/feedback';
 import { ErrorBoundary } from '../src/components/ui';
 import { colors, fonts } from '../src/theme';
+import { usePushNotifications } from '../src/hooks/usePushNotifications';
 
 // Keep native splash visible until we're ready
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({ duration: 600, fade: true });
 
 const queryClient = new QueryClient();
+
+function PushNotificationSetup() {
+  usePushNotifications();
+  return null;
+}
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
@@ -55,6 +61,7 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <SafeAreaProvider>
           <NetworkBanner />
+          <PushNotificationSetup />
           <Stack
             screenOptions={{
               headerStyle: { backgroundColor: colors.primary.DEFAULT },
@@ -68,6 +75,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="products/index" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false, animation: 'fade' }} />
             <Stack.Screen name="order-success" options={{ headerShown: false }} />
           </Stack>
         </SafeAreaProvider>

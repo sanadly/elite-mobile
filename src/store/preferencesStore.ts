@@ -10,7 +10,10 @@ type Language = 'en' | 'ar';
 interface PreferencesState {
   language: Language;
   isRTL: boolean;
+  hasSeenOnboarding: boolean;
+  _hasHydrated: boolean;
   setLanguage: (language: Language) => Promise<void>;
+  setHasSeenOnboarding: (value: boolean) => void;
 }
 
 export const usePreferencesStore = create<PreferencesState>()(
@@ -18,6 +21,8 @@ export const usePreferencesStore = create<PreferencesState>()(
     (set, get) => ({
       language: 'ar',
       isRTL: true,
+      hasSeenOnboarding: false,
+      _hasHydrated: false,
 
       setLanguage: async (language: Language) => {
         const currentLanguage = get().language;
@@ -43,10 +48,23 @@ export const usePreferencesStore = create<PreferencesState>()(
           await reloadAppAsync('RTL direction changed');
         }
       },
+
+      setHasSeenOnboarding: (value: boolean) => set({ hasSeenOnboarding: value }),
     }),
     {
       name: 'elite-preferences',
       storage: createJSONStorage(() => AsyncStorage),
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        if (version === 0) {
+          // Existing users who already have preferences should skip onboarding
+          return { ...persistedState, hasSeenOnboarding: true };
+        }
+        return persistedState as PreferencesState;
+      },
+      onRehydrateStorage: () => () => {
+        usePreferencesStore.setState({ _hasHydrated: true });
+      },
     }
   )
 );
