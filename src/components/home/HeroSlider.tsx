@@ -93,7 +93,7 @@ export function HeroSlider() {
   }, [slides.length, scrollToIndex]);
 
   const handleSlidePress = (brand: string) => {
-    router.push(`/brand/${encodeURIComponent(brand)}` as any);
+    router.push(`/products?brand=${encodeURIComponent(brand)}` as any);
   };
 
   const renderSlide = ({ item }: { item: (typeof slides)[number] }) => (

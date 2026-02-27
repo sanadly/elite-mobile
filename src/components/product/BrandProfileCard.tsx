@@ -49,7 +49,7 @@ export function BrandProfileCard({ brandName, brand, lang, isRTL, viewAllLabel }
       )}
       <Pressable
         style={[styles.brandLinkRow, isRTL && commonStyles.rowReverse]}
-        onPress={() => router.push(`/brand/${encodeURIComponent(brandName)}` as any)}
+        onPress={() => router.push(`/products?brand=${encodeURIComponent(brandName)}` as any)}
       >
         <Text style={styles.brandLinkText}>{viewAllLabel}</Text>
         <Ionicons
