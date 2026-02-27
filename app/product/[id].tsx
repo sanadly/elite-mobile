@@ -129,6 +129,7 @@ export default function ProductDetailScreen() {
       >
         {/* Image Gallery */}
         <ImageGallery
+          key={selectedVariant}
           images={images}
           selectedVariant={selectedVariant}
           isRTL={isRTL}

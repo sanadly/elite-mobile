@@ -57,8 +57,8 @@ const initI18n = async () => {
     });
 };
 
-// Initialize immediately
-initI18n();
+// Initialize immediately and export promise so layout can await it
+export const i18nReady = initI18n();
 
 export { i18n };
 export default i18n;

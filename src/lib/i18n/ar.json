@@ -298,6 +298,8 @@
       "phone_placeholder": "9XXXXXXXX",
       "city_label": "المدينة",
       "city_placeholder": "اختر مدينتك",
+      "custom_city_label": "أدخل اسم المدينة",
+      "custom_city_placeholder": "اسم المدينة...",
       "birthday_label": "تاريخ الميلاد",
       "birthday_placeholder": "اختر تاريخ ميلادك",
       "birthday_locked": "لا يمكن تغيير تاريخ ميلادك بعد تعيينه. تواصل مع الدعم لتصحيحه.",

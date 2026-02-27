@@ -13,7 +13,7 @@ import {
   Alexandria_700Bold,
 } from '@expo-google-fonts/alexandria';
 import * as SplashScreen from 'expo-splash-screen';
-import '../src/lib/i18n';
+import { i18nReady } from '../src/lib/i18n';
 import { NetworkBanner } from '../src/components/feedback';
 import { ErrorBoundary } from '../src/components/ui';
 import { colors, fonts } from '../src/theme';
@@ -36,8 +36,7 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    // Small delay to ensure i18n is initialized
-    setTimeout(() => setIsReady(true), 100);
+    i18nReady.then(() => setIsReady(true));
   }, []);
 
   useEffect(() => {

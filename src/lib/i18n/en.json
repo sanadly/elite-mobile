@@ -298,6 +298,8 @@
       "phone_placeholder": "9XXXXXXXX",
       "city_label": "City",
       "city_placeholder": "Select your city",
+      "custom_city_label": "Enter city name",
+      "custom_city_placeholder": "City name...",
       "birthday_label": "Date of Birth",
       "birthday_placeholder": "Select your date of birth",
       "birthday_locked": "Your birthday cannot be changed once set. Contact support to correct it.",
