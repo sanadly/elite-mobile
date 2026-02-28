@@ -472,7 +472,72 @@
   "tabs": {
     "shop": "المتجر",
     "cart": "السلة",
-    "account": "الحساب"
+    "account": "الحساب",
+    "dawwarli": "دوّرلي"
+  },
+  "dawwarli": {
+    "title": "دوّرلي",
+    "subtitle": "شفت شي عجبك؟ ابعثلنا الصورة وخلّي الباقي علينا.",
+    "how_it_works": {
+      "step1_title": "ابعثلنا التفاصيل",
+      "step2_title": "إحنا ندورولك",
+      "step3_title": "استلم طلبيتك"
+    },
+    "form": {
+      "images": "صور المنتج",
+      "images_hint": "ارفع من 1 إلى 4 صور للمنتج اللي تبيه (JPG, PNG, WebP)",
+      "images_add": "أضف صور",
+      "images_camera": "الكاميرا",
+      "images_gallery": "المعرض",
+      "product_link": "رابط المنتج (اختياري)",
+      "product_link_placeholder": "لو عندك رابط المنتج، حطه هنا",
+      "description": "وصف المنتج (اختياري)",
+      "description_placeholder": "الماركة، المقاس، اللون، أي تفاصيل تساعدنا نلاقيه",
+      "budget_range": "نطاق الميزانية (اختياري)",
+      "budget_select": "اختر نطاق ميزانيتك",
+      "customer_name": "اسمك",
+      "customer_name_placeholder": "الاسم الأول يكفي",
+      "phone": "رقم الواتساب",
+      "phone_placeholder": "9XXXXXXXX",
+      "city": "المدينة",
+      "city_select": "اختر مدينتك",
+      "city_other_placeholder": "أدخل اسم مدينتك",
+      "notes": "ملاحظات إضافية (اختياري)",
+      "notes_placeholder": "أي تفاصيل إضافية — الاستعجال، اللون المفضل، بدائل مقبولة، إلخ.",
+      "submit": "إرسال الطلب",
+      "submitting": "جاري الإرسال..."
+    },
+    "budget": {
+      "no_budget": "ما يهمني السعر",
+      "under_100": "أقل من €100",
+      "100_200": "€100 - €200",
+      "200_500": "€200 - €500",
+      "500_1000": "€500 - €1,000",
+      "over_1000": "أكثر من €1,000"
+    },
+    "cities": {
+      "tripoli": "طرابلس",
+      "benghazi": "بنغازي",
+      "misrata": "مصراتة",
+      "other": "أخرى"
+    },
+    "success": {
+      "title": "تم استلام طلبك!",
+      "request_number": "رقم طلبك هو",
+      "message": "راح نراجع طلبك ونتواصل معاك على الواتساب خلال 24 ساعة بالسعر والتفاصيل.",
+      "new_request": "إرسال طلب جديد"
+    },
+    "errors": {
+      "images_required": "يرجى رفع صورة واحدة على الأقل",
+      "images_max": "الحد الأقصى 4 صور",
+      "name_required": "الاسم مطلوب",
+      "name_min": "الاسم يجب أن يكون حرفين على الأقل",
+      "phone_required": "رقم الواتساب مطلوب",
+      "phone_invalid": "يرجى إدخال رقم هاتف ليبي صحيح",
+      "city_required": "المدينة مطلوبة",
+      "upload_failed": "فشل رفع الصورة. يرجى المحاولة مرة أخرى.",
+      "submit_failed": "فشل إرسال الطلب. يرجى المحاولة مرة أخرى."
+    }
   },
   "onboarding": {
     "welcome": {
@@ -493,6 +558,12 @@
       "enable": "تفعيل الإشعارات",
       "not_now": "ليس الآن"
     }
+  },
+  "announcement": {
+    "delivery": "توصيل مجاني لزبائننا المميزين",
+    "authentic": "منتجات أصلية 100% مضمونة",
+    "exchange": "استبدال سهل و ممكن خلال 5 أيام",
+    "support": "دعم العملاء متوفر على مدار الساعة"
   },
   "accessibility": {
     "tap_to_view_product": "انقر مرتين لعرض تفاصيل المنتج",

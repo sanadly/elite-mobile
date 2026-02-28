@@ -53,7 +53,6 @@ export default function TabsLayout() {
         tabBarStyle: {
           borderTopColor: colors.border,
           backgroundColor: colors.background,
-          flexDirection: isRTL ? 'row-reverse' : 'row',
         },
         headerStyle: {
           backgroundColor: colors.primary.DEFAULT,
@@ -70,11 +69,11 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="account"
         options={{
-          title: t('tabs.shop'),
+          title: t('tabs.account'),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Ionicons name="person-outline" size={size} color={color} />
           ),
         }}
       />
@@ -88,11 +87,20 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="account"
+        name="dawwarli"
         options={{
-          title: t('tabs.account'),
+          title: t('tabs.dawwarli'),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <Ionicons name="search-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: t('tabs.shop'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
           ),
         }}
       />

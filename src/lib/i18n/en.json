@@ -472,7 +472,72 @@
   "tabs": {
     "shop": "Shop",
     "cart": "Cart",
-    "account": "Account"
+    "account": "Account",
+    "dawwarli": "Dawwarli"
+  },
+  "dawwarli": {
+    "title": "Source It For Me",
+    "subtitle": "Saw something you like? Send us the photo and leave the rest to us.",
+    "how_it_works": {
+      "step1_title": "Send Details",
+      "step2_title": "We Source It",
+      "step3_title": "Get Your Item"
+    },
+    "form": {
+      "images": "Product Images",
+      "images_hint": "Upload 1 to 4 images of the product you want (JPG, PNG, WebP)",
+      "images_add": "Add Photos",
+      "images_camera": "Camera",
+      "images_gallery": "Gallery",
+      "product_link": "Product Link (Optional)",
+      "product_link_placeholder": "If you have a link to the product, paste it here",
+      "description": "Product Description (Optional)",
+      "description_placeholder": "Brand, size, color, any details that help us find it",
+      "budget_range": "Budget Range (Optional)",
+      "budget_select": "Select your budget range",
+      "customer_name": "Your Name",
+      "customer_name_placeholder": "First name is enough",
+      "phone": "WhatsApp Number",
+      "phone_placeholder": "9XXXXXXXX",
+      "city": "City",
+      "city_select": "Select your city",
+      "city_other_placeholder": "Enter your city name",
+      "notes": "Additional Notes (Optional)",
+      "notes_placeholder": "Any extra details — urgency, preferred color, alternatives, etc.",
+      "submit": "Submit Request",
+      "submitting": "Submitting..."
+    },
+    "budget": {
+      "no_budget": "No budget limit",
+      "under_100": "Under €100",
+      "100_200": "€100 - €200",
+      "200_500": "€200 - €500",
+      "500_1000": "€500 - €1,000",
+      "over_1000": "Over €1,000"
+    },
+    "cities": {
+      "tripoli": "Tripoli",
+      "benghazi": "Benghazi",
+      "misrata": "Misrata",
+      "other": "Other"
+    },
+    "success": {
+      "title": "Request Submitted!",
+      "request_number": "Your request number is",
+      "message": "We'll review your request and contact you on WhatsApp within 24 hours with the price and details.",
+      "new_request": "Submit Another Request"
+    },
+    "errors": {
+      "images_required": "Please upload at least one image",
+      "images_max": "Maximum 4 images allowed",
+      "name_required": "Name is required",
+      "name_min": "Name must be at least 2 characters",
+      "phone_required": "WhatsApp number is required",
+      "phone_invalid": "Please enter a valid Libyan phone number",
+      "city_required": "City is required",
+      "upload_failed": "Failed to upload image. Please try again.",
+      "submit_failed": "Failed to submit request. Please try again."
+    }
   },
   "onboarding": {
     "welcome": {
@@ -493,6 +558,12 @@
       "enable": "Enable Notifications",
       "not_now": "Not Now"
     }
+  },
+  "announcement": {
+    "delivery": "Free delivery for our premium customers",
+    "authentic": "100% authentic products guaranteed",
+    "exchange": "Easy exchange possible within 5 days",
+    "support": "Customer support available 24/7"
   },
   "accessibility": {
     "tap_to_view_product": "Double tap to view product details",

@@ -12,6 +12,7 @@ import { SearchBar } from '../../src/components/search/SearchBar';
 import { useRTL } from '../../src/hooks/useRTL';
 import { HomeScreenSkeleton } from '../../src/components/feedback';
 import { RecentlyViewed } from '../../src/components/home/RecentlyViewed';
+import { AnnouncementBar } from '../../src/components/home/AnnouncementBar';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ export default function HomeScreen() {
 
   const renderHeader = () => (
     <View>
+      <AnnouncementBar />
       <HeroSlider />
 
       {/* Search Bar */}
