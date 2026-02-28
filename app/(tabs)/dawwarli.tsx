@@ -24,6 +24,7 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useRTL } from '../../src/hooks/useRTL';
 import { useToast } from '../../src/hooks/useToast';
 import { colors, fonts, radius, commonStyles } from '../../src/theme';
+import { normalizeDigits } from '../../src/utils/text';
 import {
   uploadSourcingImage,
   submitSourcingRequest,
@@ -45,13 +46,6 @@ const CITY_VALUE_MAP: Record<string, string> = {
   tripoli: 'طرابلس',
   benghazi: 'بنغازي',
   misrata: 'مصراتة',
-};
-
-const normalizeDigits = (text: string): string => {
-  const latinized = text.replace(/[٠-٩]/g, (d) =>
-    String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x0030)
-  );
-  return latinized.replace(/[^0-9]/g, '');
 };
 
 const stripPhonePrefix = (phone: string): string =>

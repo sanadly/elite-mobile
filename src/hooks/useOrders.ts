@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { getOrders, getOrderById, subscribeToOrderUpdates } from '../api/endpoints/orders';
 import { useAuthStore } from '../store/authStore';
 import { queryKeys } from '../api/queryKeys';
+import { STALE_TIME } from '../constants/query';
 
 export function useOrders() {
   const { user } = useAuthStore();
@@ -12,7 +13,7 @@ export function useOrders() {
     queryKey: queryKeys.orders.all,
     queryFn: getOrders,
     enabled: !!user,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: STALE_TIME.long,
   });
 
   // Subscribe to real-time updates
@@ -37,6 +38,6 @@ export function useOrder(orderId: string) {
     queryKey: queryKeys.orders.detail(orderId),
     queryFn: () => getOrderById(orderId),
     enabled: !!user && !!orderId,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: STALE_TIME.long,
   });
 }

@@ -9,3 +9,4 @@ export { Row } from './Row';
 export { ErrorBoundary } from './ErrorBoundary';
 export { BackButton } from './BackButton';
 export { ErrorState } from './ErrorState';
+export { PhoneInput } from './PhoneInput';

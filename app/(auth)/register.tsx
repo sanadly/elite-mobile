@@ -16,10 +16,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Input, AuthLanguageToggle } from '../../src/components/ui';
+import { Button, Input, AuthLanguageToggle, PhoneInput } from '../../src/components/ui';
 import { CityPickerModal } from '../../src/components/auth/CityPickerModal';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
+import { useRTL } from '../../src/hooks/useRTL';
 
 import { TOP_CITIES } from '../../src/utils/cities';
 
@@ -39,17 +40,10 @@ export default function RegisterScreen() {
   const [customCity, setCustomCity] = useState('');
 
   const router = useRouter();
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
+  const { t } = useTranslation();
+  const isRTL = useRTL();
   const insets = useSafeAreaInsets();
 
-  const normalizeDigits = (text: string): string => {
-    // Convert Arabic-Indic numerals (٠١٢٣٤٥٦٧٨٩) to Latin (0123456789)
-    const latinized = text.replace(/[٠-٩]/g, (d) =>
-      String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x0030)
-    );
-    return latinized.replace(/[^0-9]/g, '');
-  };
 
 
 
@@ -190,26 +184,12 @@ export default function RegisterScreen() {
           />
 
           {/* Phone with +218 prefix - always LTR */}
-          <View style={styles.phoneFieldContainer}>
-            <Text style={[styles.label, isRTL && commonStyles.rtlText]}>{t('auth.register.phone_label')}</Text>
-            <View style={styles.phoneRow}>
-              <View style={styles.phonePrefix}>
-                <Text style={styles.phonePrefixText}>+218</Text>
-              </View>
-              <View style={styles.phoneInputWrapper}>
-                <Input
-                  placeholder={t('auth.register.phone_placeholder')}
-                  value={phone}
-                  onChangeText={(text) => setPhone(normalizeDigits(text))}
-                  keyboardType="number-pad"
-                  autoComplete="tel"
-                  maxLength={9}
-                  textAlign="left"
-                  style={styles.phoneInput}
-                />
-              </View>
-            </View>
-          </View>
+          <PhoneInput
+            label={t('auth.register.phone_label')}
+            placeholder={t('auth.register.phone_placeholder')}
+            value={phone}
+            onChangeText={setPhone}
+          />
 
           {/* City Picker */}
           <View style={styles.fieldContainer}>
@@ -404,37 +384,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: fonts.regular,
     color: colors.muted.foreground,
-  },
-  phoneFieldContainer: {
-    marginBottom: 0,
-  },
-  phoneRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  phonePrefix: {
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    backgroundColor: colors.secondary.DEFAULT,
-    borderWidth: 1,
-    borderColor: colors.input,
-    borderTopLeftRadius: radius.lg,
-    borderBottomLeftRadius: radius.lg,
-    borderRightWidth: 0,
-  },
-  phonePrefixText: {
-    fontSize: 14,
-    fontFamily: fonts.bold,
-    color: colors.foreground,
-  },
-  phoneInputWrapper: {
-    flex: 1,
-  },
-  phoneInput: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
   },
   pickerButton: {
     height: 44,

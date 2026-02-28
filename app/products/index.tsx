@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
-import { BackButton } from '../../src/components/ui';
+import { BackButton, EmptyState } from '../../src/components/ui';
 import { useFilteredProducts } from '../../src/hooks/useFilteredProducts';
 import { useFilterStore } from '../../src/store/filterStore';
 import { ProductCard } from '../../src/components/product/ProductCard';
@@ -93,20 +93,13 @@ export default function ProductsScreen() {
       return <ProductGridSkeleton count={6} />;
     }
     return (
-      <View style={styles.centerContainer}>
-        <Ionicons name="search-outline" size={48} color={colors.muted.foreground} />
-        <Text style={[styles.emptyText, isRTL && commonStyles.rtlText]}>
-          {search ? t('products.no_results') : t('filters.no_results')}
-        </Text>
-        <Text style={[styles.emptySubtext, isRTL && commonStyles.rtlText]}>
-          {t('products.no_results_subtitle')}
-        </Text>
-        {activeFilterCount() > 0 && (
-          <Pressable onPress={clearAll} style={styles.clearButton}>
-            <Text style={styles.clearButtonText}>{t('filters.clear_filters')}</Text>
-          </Pressable>
-        )}
-      </View>
+      <EmptyState
+        icon="search-outline"
+        title={search ? t('products.no_results') : t('filters.no_results')}
+        subtitle={t('products.no_results_subtitle')}
+        actionLabel={activeFilterCount() > 0 ? t('filters.clear_filters') : undefined}
+        onAction={activeFilterCount() > 0 ? clearAll : undefined}
+      />
     );
   };
 
@@ -204,36 +197,5 @@ const styles = StyleSheet.create({
   footer: {
     padding: spacing[4],
     alignItems: 'center',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: spacing[12],
-    gap: spacing[3],
-  },
-  emptyText: {
-    fontSize: typography.fontSize.lg,
-    fontFamily: fonts.medium,
-    color: colors.foreground,
-    marginTop: spacing[3],
-  },
-  emptySubtext: {
-    fontSize: typography.fontSize.sm,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-  },
-  clearButton: {
-    marginTop: spacing[3],
-    paddingHorizontal: spacing[5],
-    paddingVertical: spacing[3],
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.primary.DEFAULT,
-  },
-  clearButtonText: {
-    fontSize: 14,
-    fontFamily: fonts.medium,
-    color: colors.primary.DEFAULT,
   },
 });

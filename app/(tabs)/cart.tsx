@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCartStore } from '../../src/store/cartStore';
 import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
-import { Card, Button, AvailabilityBadge, EmptyState } from '../../src/components/ui';
+import { Card, Button, AvailabilityBadge, EmptyState, Row } from '../../src/components/ui';
 import { useRTL } from '../../src/hooks/useRTL';
 import { useCartTotals } from '../../src/hooks/useCartTotals';
 import { useAuthStore } from '../../src/store/authStore';
@@ -40,7 +40,7 @@ export default function CartScreen() {
         keyExtractor={(item) => item.variantId}
         renderItem={({ item }) => (
           <Card style={styles.cartItem}>
-            <View style={[styles.itemRow, isRTL && commonStyles.rowReverse]}>
+            <Row style={styles.itemRow}>
               {item.image ? (
                 <Image source={{ uri: item.image }} style={styles.itemImage} />
               ) : (
@@ -54,19 +54,19 @@ export default function CartScreen() {
                 <Text style={[styles.itemDetails, isRTL && commonStyles.rtlText]}>
                   {item.color} • {item.size}
                 </Text>
-                <View style={[styles.badgeRow, isRTL && commonStyles.rowReverse]}>
+                <Row style={styles.badgeRow}>
                   <AvailabilityBadge
                     type={item.isConcierge ? 'reservation' : 'immediate'}
                     size="sm"
                   />
-                </View>
+                </Row>
                 <Text style={[styles.itemPrice, isRTL && commonStyles.rtlText]}>€{item.price.toFixed(2)}</Text>
               </View>
 
               <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); removeItem(item.variantId); }} style={styles.removeButton}>
                 <Ionicons name="trash-outline" size={20} color={colors.destructive.DEFAULT} />
               </Pressable>
-            </View>
+            </Row>
 
             {/* Quantity Controls */}
             <View style={[styles.quantityRow, isRTL && styles.quantityRowRTL]}>
@@ -92,12 +92,12 @@ export default function CartScreen() {
 
       {/* Footer with total and checkout button */}
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing[4]) }]}>
-        <View style={[styles.totalRow, isRTL && commonStyles.rowReverse]}>
+        <Row style={styles.totalRow} justify="space-between">
           <Text style={[styles.totalLabel, isRTL && commonStyles.rtlText]}>
             {t('cart.total')} ({t('cart.item_count', { count: cartCount })})
           </Text>
           <Text style={styles.totalAmount}>€{cartTotal.toFixed(2)}</Text>
-        </View>
+        </Row>
         <Button
           title={t('cart.proceed_to_checkout')}
           onPress={() => user ? router.push('/checkout') : router.push('/(auth)/login')}
@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing[3],
   },
   itemRow: {
-    flexDirection: 'row',
     marginBottom: spacing[3],
   },
   itemImage: {
@@ -159,7 +158,6 @@ const styles = StyleSheet.create({
     color: colors.primary.DEFAULT,
   },
   badgeRow: {
-    flexDirection: 'row',
     marginBottom: spacing[2],
   },
   removeButton: {
@@ -197,8 +195,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing[4],
   },

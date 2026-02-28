@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Input } from '../src/components/ui';
+import { Button, Input, Row } from '../src/components/ui';
 import { useAuthStore } from '../src/store/authStore';
 import { useRequireAuth } from '../src/hooks/useRequireAuth';
 import { deleteAccount } from '../src/api/endpoints/account';
@@ -89,12 +89,12 @@ export default function DeleteAccountScreen() {
 
         <View style={styles.bulletList}>
           {['orders', 'addresses', 'profile', 'loyalty'].map((item) => (
-            <View key={item} style={[styles.bulletItem, isRTL && commonStyles.rowReverse]}>
+            <Row key={item} style={styles.bulletItem} gap={spacing[2]}>
               <Ionicons name="close-circle" size={18} color={colors.destructive.DEFAULT} />
-              <Text style={[styles.bulletText, isRTL ? styles.bulletTextRTL : styles.bulletTextLTR]}>
+              <Text style={[styles.bulletText, isRTL && commonStyles.rtlText]}>
                 {t(`account.delete.lose_${item}`)}
               </Text>
-            </View>
+            </Row>
           ))}
         </View>
 
@@ -159,22 +159,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing[6],
   },
   bulletItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: spacing[3],
   },
   bulletText: {
     fontSize: typography.fontSize.sm,
     fontFamily: fonts.regular,
     color: colors.foreground,
-  },
-  bulletTextLTR: {
-    marginLeft: spacing[2],
-  },
-  bulletTextRTL: {
-    marginRight: spacing[2],
-    textAlign: 'right',
-    writingDirection: 'rtl',
+    flex: 1,
   },
   passwordSection: {
     marginBottom: spacing[6],

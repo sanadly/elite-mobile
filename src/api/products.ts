@@ -33,6 +33,12 @@ export async function fetchProducts(params: FetchProductsParams): Promise<Produc
   return data.products;
 }
 
+export function getProductsNextPageParam(lastPage: Product[], allPages: Product[][]) {
+  return lastPage.length === PRODUCTS_PER_PAGE
+    ? allPages.length * PRODUCTS_PER_PAGE
+    : undefined;
+}
+
 export async function fetchSimilarProducts(productId: string, limit = 8): Promise<Product[]> {
   const data = await apiFetch<{ products: Product[] }>(
     `/api/mobile/products/similar?productId=${encodeURIComponent(productId)}&limit=${limit}`

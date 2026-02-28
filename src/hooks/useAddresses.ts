@@ -9,6 +9,7 @@ import {
 } from '../api/endpoints/addresses';
 import { useAuthStore } from '../store/authStore';
 import { queryKeys } from '../api/queryKeys';
+import { STALE_TIME } from '../constants/query';
 import type { AddressFormData } from '../types/address';
 
 export function useAddresses() {
@@ -18,7 +19,7 @@ export function useAddresses() {
     queryKey: queryKeys.addresses.all,
     queryFn: getAddresses,
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: STALE_TIME.long,
   });
 }
 

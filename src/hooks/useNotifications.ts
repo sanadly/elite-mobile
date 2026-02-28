@@ -10,6 +10,7 @@ import {
 } from '../api/endpoints/notifications';
 import { useAuthStore } from '../store/authStore';
 import { queryKeys } from '../api/queryKeys';
+import { STALE_TIME } from '../constants/query';
 
 /** Invalidate both notification list and unread count caches. */
 function invalidateNotifications(queryClient: QueryClient) {
@@ -25,7 +26,7 @@ export function useNotifications() {
     queryKey: queryKeys.notifications.all,
     queryFn: getNotifications,
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    staleTime: STALE_TIME.medium,
   });
 
   // Subscribe to real-time new notifications
@@ -49,7 +50,7 @@ export function useUnreadCount() {
     queryKey: queryKeys.notifications.unreadCount,
     queryFn: getUnreadCount,
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    staleTime: STALE_TIME.medium,
   });
 }
 

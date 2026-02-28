@@ -3,6 +3,7 @@ import { fetchUserProfile, updateUserProfile, UpdateProfileData } from '../api/e
 import { mapProfileToUserData } from '../utils/profile';
 import { useAuthStore } from '../store/authStore';
 import { queryKeys } from '../api/queryKeys';
+import { STALE_TIME } from '../constants/query';
 
 export function useProfile() {
   const { user } = useAuthStore();
@@ -11,7 +12,7 @@ export function useProfile() {
     queryKey: queryKeys.profile.all,
     queryFn: fetchUserProfile,
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: STALE_TIME.long,
   });
 }
 

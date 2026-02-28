@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, Pressable, Alert }
 import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { EmptyState } from '../../src/components/ui';
 import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
 import { NotificationItem } from '../../src/components/notifications/NotificationItem';
 import {
@@ -149,15 +150,11 @@ export default function NotificationsScreen() {
           );
         }}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Ionicons name="notifications-off-outline" size={64} color={colors.muted.foreground} />
-            <Text style={[styles.emptyTitle, isRTL && commonStyles.rtlText]}>
-              {t('notifications.empty')}
-            </Text>
-            <Text style={[styles.emptySubtitle, isRTL && commonStyles.rtlText]}>
-              {t('notifications.empty_subtitle')}
-            </Text>
-          </View>
+          <EmptyState
+            icon="notifications-off-outline"
+            title={t('notifications.empty')}
+            subtitle={t('notifications.empty_subtitle')}
+          />
         }
       />
     </View>
@@ -194,23 +191,5 @@ const styles = StyleSheet.create({
     color: colors.muted.foreground,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: spacing[16],
-  },
-  emptyTitle: {
-    fontSize: typography.fontSize.xl,
-    fontFamily: fonts.bold,
-    color: colors.foreground,
-    marginTop: spacing[4],
-    marginBottom: spacing[2],
-  },
-  emptySubtitle: {
-    fontSize: typography.fontSize.base,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-    textAlign: 'center',
-    paddingHorizontal: spacing[6],
   },
 });

@@ -4,6 +4,8 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../theme';
+import { Row } from '../ui';
+import { rtlChevron } from '../../hooks/useRTL';
 import type { Brand } from '../../types/brand';
 
 interface BrandProfileCardProps {
@@ -25,7 +27,7 @@ export function BrandProfileCard({ brandName, brand, lang, isRTL, viewAllLabel }
 
   return (
     <View style={styles.brandCard}>
-      <View style={[styles.brandHeader, isRTL && commonStyles.rowReverse]}>
+      <Row style={styles.brandHeader} gap={spacing[3]}>
         {brand?.logo_url && (
           <View style={styles.brandLogoContainer}>
             <Image
@@ -41,7 +43,7 @@ export function BrandProfileCard({ brandName, brand, lang, isRTL, viewAllLabel }
             {brand?.name || brandName}
           </Text>
         </View>
-      </View>
+      </Row>
       {description && (
         <Text style={[styles.brandDescription, isRTL && commonStyles.rtlText]}>
           {description}
@@ -53,7 +55,7 @@ export function BrandProfileCard({ brandName, brand, lang, isRTL, viewAllLabel }
       >
         <Text style={styles.brandLinkText}>{viewAllLabel}</Text>
         <Ionicons
-          name={isRTL ? 'chevron-back' : 'chevron-forward'}
+          name={rtlChevron(isRTL)}
           size={14}
           color={colors.primary.DEFAULT}
         />
@@ -73,9 +75,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing[5],
   },
   brandHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[3],
   },
   brandLogoContainer: {
     width: 48,

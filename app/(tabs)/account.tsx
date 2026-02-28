@@ -7,7 +7,7 @@ import { useAuthStore } from '../../src/store/authStore';
 import { colors, typography, fonts, spacing } from '../../src/theme';
 import { Card, Button } from '../../src/components/ui';
 import { LoyaltyCard } from '../../src/components/loyalty/LoyaltyCard';
-import { useRTL } from '../../src/hooks/useRTL';
+import { useRTL, rtlChevron } from '../../src/hooks/useRTL';
 
 const PRIVACY_POLICY_URL = 'https://elitestyle.ly/privacy-policy';
 
@@ -48,7 +48,7 @@ export default function AccountScreen() {
         <Ionicons name={icon} size={24} color={colors.primary.DEFAULT} />
         <Text style={[styles.menuText, isRTL && styles.menuTextRTL]}>{title}</Text>
       </View>
-      <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.muted.foreground} />
+      <Ionicons name={rtlChevron(isRTL)} size={20} color={colors.muted.foreground} />
     </Pressable>
   );
 

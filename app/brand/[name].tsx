@@ -16,7 +16,7 @@ import { useProductsByBrand } from '../../src/hooks/useProducts';
 import { useBrand } from '../../src/hooks/useBrand';
 import { ProductCard } from '../../src/components/product/ProductCard';
 import { colors, typography, fonts, spacing, radius, shadows, commonStyles } from '../../src/theme';
-import { BackButton } from '../../src/components/ui';
+import { BackButton, Row, EmptyState } from '../../src/components/ui';
 import { useRTL } from '../../src/hooks/useRTL';
 
 const { width } = Dimensions.get('window');
@@ -45,7 +45,7 @@ export default function BrandScreen() {
       {/* Brand Info Card */}
       {brand && (
         <View style={styles.brandCard}>
-          <View style={[styles.brandRow, isRTL && commonStyles.rowReverse]}>
+          <Row style={styles.brandRow} gap={spacing[3]}>
             {brand.logo_url && (
               <View style={styles.brandLogoContainer}>
                 <Image
@@ -61,7 +61,7 @@ export default function BrandScreen() {
                 {brand.name}
               </Text>
             </View>
-          </View>
+          </Row>
           {brandDescription && (
             <Text style={[styles.brandDescription, isRTL && commonStyles.rtlText]}>
               {brandDescription}
@@ -113,14 +113,11 @@ export default function BrandScreen() {
         )}
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={[styles.emptyText, isRTL && commonStyles.rtlText]}>
-              {t('products.no_results')}
-            </Text>
-            <Text style={[styles.emptySubtext, isRTL && commonStyles.rtlText]}>
-              {t('products.no_results_subtitle')}
-            </Text>
-          </View>
+          <EmptyState
+            icon="search-outline"
+            title={t('products.no_results')}
+            subtitle={t('products.no_results_subtitle')}
+          />
         }
         contentContainerStyle={[
           styles.listContent,
@@ -185,9 +182,6 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   brandRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[3],
   },
   brandLogoContainer: {
     width: 56,
@@ -234,20 +228,4 @@ const styles = StyleSheet.create({
     width: '50%',
   },
 
-  // Empty State
-  emptyContainer: {
-    paddingVertical: spacing[16],
-    alignItems: 'center',
-    gap: spacing[2],
-  },
-  emptyText: {
-    fontSize: typography.fontSize.lg,
-    fontFamily: fonts.semibold,
-    color: colors.foreground,
-  },
-  emptySubtext: {
-    fontSize: typography.fontSize.sm,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-  },
 });

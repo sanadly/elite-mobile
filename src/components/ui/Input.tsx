@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput, View, Text, StyleSheet, TextInputProps, ActivityIndicator, StyleProp, ViewStyle } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { colors, fonts, radius, commonStyles } from '../../theme';
+import { useRTL } from '../../hooks/useRTL';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -12,8 +12,7 @@ interface InputProps extends TextInputProps {
 }
 
 export function Input({ label, error, hint, loading, style, containerStyle, ...props }: InputProps) {
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
+  const isRTL = useRTL();
 
   return (
     <View style={[styles.container, containerStyle]}>

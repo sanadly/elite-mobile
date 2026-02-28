@@ -13,7 +13,7 @@ import {
 import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Input } from '../../src/components/ui';
+import { Button, Input, PhoneInput } from '../../src/components/ui';
 import { CityPickerModal } from '../../src/components/auth/CityPickerModal';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
@@ -54,12 +54,6 @@ export default function AddAddressScreen() {
   const [showCityPicker, setShowCityPicker] = useState(false);
   const [customCity, setCustomCity] = useState('');
 
-  const normalizeDigits = (text: string): string => {
-    const latinized = text.replace(/[٠-٩]/g, (d) =>
-      String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x0030)
-    );
-    return latinized.replace(/[^0-9]/g, '');
-  };
 
   useEffect(() => {
     if (existingAddress) {
@@ -167,28 +161,12 @@ export default function AddAddressScreen() {
         />
 
         {/* Phone with +218 prefix */}
-        <View style={styles.phoneFieldContainer}>
-          <Text style={[styles.label, isRTL && commonStyles.rtlText]}>
-            {t('addresses.form.phone_label')}
-          </Text>
-          <View style={styles.phoneRow}>
-            <View style={styles.phonePrefix}>
-              <Text style={styles.phonePrefixText}>+218</Text>
-            </View>
-            <View style={styles.phoneInputWrapper}>
-              <Input
-                placeholder={t('addresses.form.phone_placeholder')}
-                value={phone}
-                onChangeText={(text) => setPhone(normalizeDigits(text))}
-                keyboardType="number-pad"
-                autoComplete="tel"
-                maxLength={9}
-                textAlign="left"
-                style={styles.phoneInput}
-              />
-            </View>
-          </View>
-        </View>
+        <PhoneInput
+          label={t('addresses.form.phone_label')}
+          placeholder={t('addresses.form.phone_placeholder')}
+          value={phone}
+          onChangeText={setPhone}
+        />
 
         {/* City Picker */}
         <View style={styles.fieldContainer}>
@@ -307,37 +285,6 @@ const styles = StyleSheet.create({
   },
   chipTextActive: {
     color: colors.primary.foreground,
-  },
-  phoneFieldContainer: {
-    marginBottom: 0,
-  },
-  phoneRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  phonePrefix: {
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    backgroundColor: colors.secondary.DEFAULT,
-    borderWidth: 1,
-    borderColor: colors.input,
-    borderTopLeftRadius: radius.lg,
-    borderBottomLeftRadius: radius.lg,
-    borderRightWidth: 0,
-  },
-  phonePrefixText: {
-    fontSize: 14,
-    fontFamily: fonts.bold,
-    color: colors.foreground,
-  },
-  phoneInputWrapper: {
-    flex: 1,
-  },
-  phoneInput: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
   },
   pickerButton: {
     height: 44,

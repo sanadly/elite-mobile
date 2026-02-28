@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, Input, Card } from '../../src/components/ui';
+import { Button, Input, Card, PhoneInput, Row, EmptyState } from '../../src/components/ui';
 import { useCartStore } from '../../src/store/cartStore';
 import { useAuthStore } from '../../src/store/authStore';
 import { useCartTotals } from '../../src/hooks/useCartTotals';
@@ -19,13 +19,6 @@ import { useRTL } from '../../src/hooks/useRTL';
 import { useRequireAuth } from '../../src/hooks/useRequireAuth';
 import { useToast } from '../../src/hooks/useToast';
 import { TOP_CITIES } from '../../src/utils/cities';
-
-const normalizeDigits = (text: string): string => {
-  const latinized = text.replace(/[٠-٩]/g, (d) =>
-    String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x0030)
-  );
-  return latinized.replace(/[^0-9]/g, '');
-};
 
 const stripPhonePrefix = (phone: string): string =>
   phone.replace(/^\+218/, '');
@@ -158,11 +151,15 @@ export default function CheckoutScreen() {
 
   if (items.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
+      <>
         <Stack.Screen options={{ title: t('checkout.title') }} />
-        <Text style={styles.emptyText}>{t('cart.empty')}</Text>
-        <Button title={t('cart.continue_shopping')} onPress={() => router.push('/(tabs)')} style={styles.button} />
-      </View>
+        <EmptyState
+          icon="cart-outline"
+          title={t('cart.empty')}
+          actionLabel={t('cart.continue_shopping')}
+          onAction={() => router.push('/(tabs)')}
+        />
+      </>
     );
   }
 
@@ -180,27 +177,13 @@ export default function CheckoutScreen() {
           )} />
 
           <Controller control={control} name="phone" render={({ field: { onChange, value } }) => (
-            <View style={styles.phoneFieldContainer}>
-              <Text style={[styles.inputLabel, isRTL && commonStyles.rtlText]}>{t('checkout.phone_label')}</Text>
-              <View style={styles.phoneRow}>
-                <View style={styles.phonePrefix}>
-                  <Text style={styles.phonePrefixText}>+218</Text>
-                </View>
-                <View style={styles.phoneInputWrapper}>
-                  <Input
-                    placeholder={t('checkout.phone_placeholder')}
-                    value={value}
-                    onChangeText={(text) => onChange(normalizeDigits(text))}
-                    keyboardType="number-pad"
-                    autoComplete="tel"
-                    maxLength={9}
-                    textAlign="left"
-                    style={styles.phoneInput}
-                    error={errors.phone?.message}
-                  />
-                </View>
-              </View>
-            </View>
+            <PhoneInput
+              label={t('checkout.phone_label')}
+              placeholder={t('checkout.phone_placeholder')}
+              value={value}
+              onChangeText={onChange}
+              error={errors.phone?.message}
+            />
           )} />
 
           <Controller control={control} name="city" render={({ field: { onChange, value } }) => (
@@ -241,16 +224,16 @@ export default function CheckoutScreen() {
         <Card style={styles.section}>
           <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('checkout.coupon.label')}</Text>
           {appliedDiscount ? (
-            <View style={[styles.couponApplied, isRTL && commonStyles.rowReverse]}>
+            <Row style={styles.couponApplied}>
               <Text style={[styles.couponAppliedText, isRTL && commonStyles.rtlText]}>
                 {appliedDiscount.code} - {appliedDiscount.type === 'percentage' ? `${appliedDiscount.value}%` : `€${appliedDiscount.value}`} {t('checkout.coupon.off')}
               </Text>
               <Pressable onPress={() => { setAppliedDiscount(null); setCouponCode(''); }}>
                 <Text style={styles.removeCoupon}>{t('checkout.coupon.remove')}</Text>
               </Pressable>
-            </View>
+            </Row>
           ) : (
-            <View style={[styles.couponRow, isRTL && commonStyles.rowReverse]}>
+            <Row style={styles.couponRow}>
               <Input 
                 value={couponCode} 
                 onChangeText={(text) => { setCouponCode(text); setCouponError(''); }} 
@@ -259,23 +242,23 @@ export default function CheckoutScreen() {
                 containerStyle={styles.couponInputContainer} 
               />
               <Button title={t('checkout.coupon.apply')} onPress={handleApplyCoupon} loading={isApplyingCoupon} size="md" style={styles.couponButton} />
-            </View>
+            </Row>
           )}
         </Card>
 
         <Card style={styles.section}>
           <Text style={[styles.sectionTitle, isRTL && commonStyles.rtlText]}>{t('checkout.order_summary')}</Text>
 
-          <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+          <Row style={styles.summaryRow} justify="space-between">
             <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.subtotal')} ({items.length} {t('checkout.items')})</Text>
             <Text style={styles.summaryValue}>€{subtotal.toFixed(2)}</Text>
-          </View>
+          </Row>
 
           {discountAmount > 0 && (
-            <View style={[styles.summaryRow, isRTL && commonStyles.rowReverse]}>
+            <Row style={styles.summaryRow} justify="space-between">
               <Text style={[styles.summaryLabel, isRTL && commonStyles.rtlText]}>{t('checkout.discount')}</Text>
               <Text style={[styles.summaryValue, styles.discountValue]}>-€{discountAmount.toFixed(2)}</Text>
-            </View>
+            </Row>
           )}
 
 
@@ -287,10 +270,10 @@ export default function CheckoutScreen() {
             </View>
           )}
 
-          <View style={[styles.summaryRow, styles.totalRow, isRTL && commonStyles.rowReverse]}>
+          <Row style={[styles.summaryRow, styles.totalRow]} justify="space-between">
             <Text style={[styles.totalLabel, isRTL && commonStyles.rtlText]}>{t('checkout.total')}</Text>
             <Text style={styles.totalValue}>€{total.toFixed(2)}</Text>
-          </View>
+          </Row>
         </Card>
 
         <View style={[styles.checkoutFooter, { paddingBottom: Math.max(insets.bottom, spacing[6]) }]}>
@@ -305,19 +288,10 @@ export default function CheckoutScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing[4] },
-  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing[6] },
-  emptyText: { fontSize: typography.fontSize.lg, color: colors.muted.foreground, fontFamily: fonts.regular, marginBottom: spacing[4] },
-  button: { minWidth: 200 },
   title: { fontSize: 30, fontFamily: fonts.bold, color: colors.foreground, marginBottom: spacing[1] },
   subtitle: { fontSize: 14, color: colors.muted.foreground, fontFamily: fonts.regular, marginBottom: spacing[6] },
   section: { marginBottom: spacing[4] },
   sectionTitle: { fontSize: 18, fontFamily: fonts.semibold, color: colors.foreground, marginBottom: spacing[4] },
-  phoneFieldContainer: { marginBottom: 0 },
-  phoneRow: { flexDirection: 'row', alignItems: 'flex-start' },
-  phonePrefix: { height: 44, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 12, backgroundColor: colors.secondary.DEFAULT, borderWidth: 1, borderColor: colors.input, borderTopLeftRadius: radius.lg, borderBottomLeftRadius: radius.lg, borderRightWidth: 0 },
-  phonePrefixText: { fontSize: 14, fontFamily: fonts.bold, color: colors.foreground },
-  phoneInputWrapper: { flex: 1 },
-  phoneInput: { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
   cityContainer: { marginBottom: spacing[4] },
   inputLabel: { fontSize: 14, fontFamily: fonts.medium, color: colors.foreground, marginBottom: spacing[2] },
   cityScroll: { marginBottom: spacing[1] },
@@ -327,13 +301,13 @@ const styles = StyleSheet.create({
   cityChipText: { fontSize: 14, color: colors.foreground, fontFamily: fonts.regular },
   cityChipTextSelected: { color: colors.primary.foreground, fontFamily: fonts.medium },
   errorText: { fontSize: 12, color: colors.destructive.DEFAULT, marginTop: spacing[1] },
-  couponRow: { flexDirection: 'row', gap: spacing[2], alignItems: 'flex-start' },
+  couponRow: { gap: spacing[2], alignItems: 'flex-start' },
   couponInputContainer: { flex: 1, marginBottom: 0 },
   couponButton: { marginTop: 0 },
-  couponApplied: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing[3], backgroundColor: colors.status.success.bg, borderRadius: radius.md },
+  couponApplied: { justifyContent: 'space-between', alignItems: 'center', padding: spacing[3], backgroundColor: colors.status.success.bg, borderRadius: radius.md },
   couponAppliedText: { fontSize: 14, color: colors.status.success.text, fontFamily: fonts.medium },
   removeCoupon: { fontSize: 14, color: colors.destructive.DEFAULT, fontFamily: fonts.medium },
-  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing[2] },
+  summaryRow: { marginBottom: spacing[2] },
   summaryLabel: { fontSize: 14, color: colors.muted.foreground, fontFamily: fonts.regular },
   summaryValue: { fontSize: 14, color: colors.foreground, fontFamily: fonts.medium },
   discountValue: { color: colors.status.success.text },

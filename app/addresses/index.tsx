@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, fonts, spacing, commonStyles } from '../../src/theme';
-import { Button } from '../../src/components/ui';
+import { Button, EmptyState } from '../../src/components/ui';
 import { AddressCard } from '../../src/components/addresses/AddressCard';
 import { useAddresses, useDeleteAddress, useSetDefaultAddress } from '../../src/hooks/useAddresses';
 import { useRTL } from '../../src/hooks/useRTL';
@@ -68,15 +68,11 @@ export default function AddressListScreen() {
           />
         )}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Ionicons name="location-outline" size={64} color={colors.muted.foreground} />
-            <Text style={[styles.emptyTitle, isRTL && commonStyles.rtlText]}>
-              {t('addresses.empty')}
-            </Text>
-            <Text style={[styles.emptySubtitle, isRTL && commonStyles.rtlText]}>
-              {t('addresses.empty_subtitle')}
-            </Text>
-          </View>
+          <EmptyState
+            icon="location-outline"
+            title={t('addresses.empty')}
+            subtitle={t('addresses.empty_subtitle')}
+          />
         }
         ListFooterComponent={
           <Button
@@ -105,23 +101,6 @@ const styles = StyleSheet.create({
   listContent: {
     padding: spacing[4],
     paddingBottom: spacing[10],
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: spacing[10],
-  },
-  emptyTitle: {
-    fontSize: typography.fontSize.xl,
-    fontFamily: fonts.bold,
-    color: colors.foreground,
-    marginTop: spacing[4],
-    marginBottom: spacing[2],
-  },
-  emptySubtitle: {
-    fontSize: typography.fontSize.base,
-    fontFamily: fonts.regular,
-    color: colors.muted.foreground,
-    textAlign: 'center',
   },
   addButton: {
     marginTop: spacing[2],

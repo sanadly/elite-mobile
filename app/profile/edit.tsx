@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { format, parseISO } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Input } from '../../src/components/ui';
+import { Button, Input, PhoneInput } from '../../src/components/ui';
 import { CityPickerModal } from '../../src/components/auth/CityPickerModal';
 import { colors, typography, fonts, spacing, radius, commonStyles } from '../../src/theme';
 import { supabase } from '../../src/api/supabase';
@@ -44,12 +44,6 @@ export default function EditProfileScreen() {
   const [showCityPicker, setShowCityPicker] = useState(false);
   const [customCity, setCustomCity] = useState('');
 
-  const normalizeDigits = (text: string): string => {
-    const latinized = text.replace(/[٠-٩]/g, (d) =>
-      String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x0030)
-    );
-    return latinized.replace(/[^0-9]/g, '');
-  };
 
   useEffect(() => {
     if (profile) {
@@ -151,26 +145,12 @@ export default function EditProfileScreen() {
         </View>
 
         {/* Phone with +218 prefix */}
-        <View style={styles.phoneFieldContainer}>
-          <Text style={[styles.label, isRTL && commonStyles.rtlText]}>{t('profile.edit.phone_label')}</Text>
-          <View style={styles.phoneRow}>
-            <View style={styles.phonePrefix}>
-              <Text style={styles.phonePrefixText}>+218</Text>
-            </View>
-            <View style={styles.phoneInputWrapper}>
-              <Input
-                placeholder={t('profile.edit.phone_placeholder')}
-                value={phone}
-                onChangeText={(text) => setPhone(normalizeDigits(text))}
-                keyboardType="number-pad"
-                autoComplete="tel"
-                maxLength={9}
-                textAlign="left"
-                style={styles.phoneInput}
-              />
-            </View>
-          </View>
-        </View>
+        <PhoneInput
+          label={t('profile.edit.phone_label')}
+          placeholder={t('profile.edit.phone_placeholder')}
+          value={phone}
+          onChangeText={setPhone}
+        />
 
         {/* City Picker */}
         <View style={styles.fieldContainer}>
@@ -341,37 +321,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     color: colors.muted.foreground,
     marginTop: 4,
-  },
-  phoneFieldContainer: {
-    marginBottom: 0,
-  },
-  phoneRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  phonePrefix: {
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    backgroundColor: colors.secondary.DEFAULT,
-    borderWidth: 1,
-    borderColor: colors.input,
-    borderTopLeftRadius: radius.lg,
-    borderBottomLeftRadius: radius.lg,
-    borderRightWidth: 0,
-  },
-  phonePrefixText: {
-    fontSize: 14,
-    fontFamily: fonts.bold,
-    color: colors.foreground,
-  },
-  phoneInputWrapper: {
-    flex: 1,
-  },
-  phoneInput: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
   },
   pickerButton: {
     height: 44,

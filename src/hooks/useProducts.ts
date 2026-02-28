@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useQuery, useQueryClient, type InfiniteData } from '@tanstack/react-query';
-import { fetchProducts, fetchSimilarProducts, PRODUCTS_PER_PAGE } from '../api/products';
+import { fetchProducts, fetchSimilarProducts, getProductsNextPageParam, PRODUCTS_PER_PAGE } from '../api/products';
+import { STALE_TIME } from '../constants/query';
 import { queryKeys } from '../api/queryKeys';
 import type { Product } from '../types/product';
 
@@ -11,11 +12,7 @@ export function useProducts() {
     queryFn: async ({ pageParam = 0 }) => {
       return fetchProducts({ page: pageParam, limit: PRODUCTS_PER_PAGE });
     },
-    getNextPageParam: (lastPage, pages) => {
-      return lastPage.length === PRODUCTS_PER_PAGE
-        ? pages.length * PRODUCTS_PER_PAGE
-        : undefined;
-    },
+    getNextPageParam: getProductsNextPageParam,
     initialPageParam: 0,
   });
 }
@@ -32,7 +29,7 @@ export function useProduct(id: string) {
       return product;
     },
     enabled: !!id,
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIME.long,
     initialData: () => {
       // Reuse data from the infinite products cache if available (avoids re-fetching 200 products)
       const cached = queryClient.getQueryData<InfiniteData<Product[]>>(queryKeys.products.all);
@@ -66,6 +63,6 @@ export function useSimilarProducts(productId: string | undefined) {
     queryKey: queryKeys.products.similar(productId || ''),
     queryFn: () => fetchSimilarProducts(productId!, 8),
     enabled: !!productId,
-    staleTime: 10 * 60 * 1000,
+    staleTime: STALE_TIME.extended,
   });
 }
