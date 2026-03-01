@@ -1,4 +1,5 @@
 import { supabase } from '../supabase';
+import { apiFetch } from '../client';
 import * as FileSystem from 'expo-file-system';
 
 export type BudgetRange =
@@ -18,6 +19,31 @@ export interface SourcingRequestData {
   budgetRange?: BudgetRange;
   notes?: string;
   imageUrls: string[];
+}
+
+export interface SourcingRequestImage {
+  id: string;
+  imageUrl: string;
+  displayOrder: number;
+}
+
+export interface SourcingRequest {
+  id: string;
+  requestNumber: string;
+  customerName: string;
+  customerCity: string;
+  description?: string;
+  productLink?: string;
+  budgetRange?: string;
+  notes?: string;
+  status: string;
+  salePrice?: number;
+  saleCurrency: string;
+  shippingEstimateDays?: number;
+  images: SourcingRequestImage[];
+  createdAt: string;
+  updatedAt: string;
+  quotedAt?: string;
 }
 
 /**
@@ -49,55 +75,40 @@ export async function uploadSourcingImage(uri: string): Promise<string> {
 }
 
 /**
- * Submit a sourcing request to the database.
+ * Submit a sourcing request via the server API.
+ * Routes through /api/mobile/sourcing for server-side validation and rate limiting.
  */
 export async function submitSourcingRequest(
   data: SourcingRequestData
 ): Promise<{ success: true; requestNumber: string } | { success: false; error: string }> {
   try {
-    // Generate request number via DB function
-    const { data: requestNumber, error: seqError } = await supabase
-      .rpc('generate_sourcing_request_number' as any);
+    const result = await apiFetch<{ success: boolean; requestNumber?: string; error?: string }>(
+      '/api/mobile/sourcing',
+      { body: data },
+    );
 
-    if (seqError) throw seqError;
+    if (result.success && result.requestNumber) {
+      return { success: true, requestNumber: result.requestNumber };
+    }
 
-    // Insert the request
-    const { data: request, error: insertError } = await (supabase as any)
-      .from('sourcing_requests')
-      .insert({
-        request_number: requestNumber,
-        customer_name: data.customerName.trim(),
-        customer_phone: `+218${data.customerPhone}`,
-        customer_city: data.customerCity.trim(),
-        description: data.description?.trim() || null,
-        product_link: data.productLink?.trim() || null,
-        budget_range: data.budgetRange || null,
-        notes: data.notes?.trim() || null,
-        status: 'new',
-      })
-      .select('id, request_number')
-      .single();
-
-    if (insertError) throw insertError;
-
-    // Insert images
-    const imageInserts = data.imageUrls.map((url, index) => ({
-      request_id: request.id,
-      image_url: url,
-      display_order: index,
-    }));
-
-    const { error: imgError } = await (supabase as any)
-      .from('sourcing_request_images')
-      .insert(imageInserts);
-
-    if (imgError) throw imgError;
-
-    return { success: true, requestNumber: request.request_number };
+    return { success: false, error: result.error || 'Failed to submit request' };
   } catch (error: any) {
     console.error('Submit sourcing request error:', error);
     return { success: false, error: error?.message || 'Failed to submit request' };
   }
+}
+
+/**
+ * Fetch the authenticated user's sourcing requests.
+ */
+export async function getSourcingRequests(): Promise<SourcingRequest[]> {
+  const result = await apiFetch<{ success: boolean; requests: SourcingRequest[] }>(
+    '/api/mobile/sourcing',
+    { requireAuth: true },
+  );
+
+  if (!result.success) return [];
+  return result.requests;
 }
 
 /** Decode base64 string to ArrayBuffer for Supabase upload */

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Platform,
   ActionSheetIOS,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
@@ -28,8 +29,24 @@ import { normalizeDigits } from '../../src/utils/text';
 import {
   uploadSourcingImage,
   submitSourcingRequest,
+  getSourcingRequests,
   type BudgetRange,
+  type SourcingRequest,
 } from '../../src/api/endpoints/sourcing';
+import { format } from 'date-fns';
+
+const SOURCING_STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  new:           { label: 'under_review', color: colors.status.pending.text, bg: colors.status.pending.bg },
+  reviewing:     { label: 'under_review', color: colors.status.pending.text, bg: colors.status.pending.bg },
+  quoted:        { label: 'quoted',       color: '#2563eb', bg: '#eff6ff' },
+  accepted:      { label: 'in_progress',  color: '#4f46e5', bg: '#eef2ff' },
+  paid:          { label: 'in_progress',  color: '#4f46e5', bg: '#eef2ff' },
+  ordered:       { label: 'in_progress',  color: '#4f46e5', bg: '#eef2ff' },
+  shipped:       { label: 'shipped',      color: '#7c3aed', bg: '#f5f3ff' },
+  delivered:     { label: 'delivered',     color: colors.status.success.text, bg: colors.status.success.bg },
+  cancelled:     { label: 'closed',       color: colors.muted.foreground, bg: colors.muted.DEFAULT },
+  not_available: { label: 'not_available', color: colors.muted.foreground, bg: colors.muted.DEFAULT },
+};
 
 const BUDGET_OPTIONS: BudgetRange[] = [
   'no_budget',
@@ -76,6 +93,34 @@ export default function DawwarliScreen() {
   const [images, setImages] = useState<{ uri: string; uploading: boolean; url?: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successData, setSuccessData] = useState<{ requestNumber: string } | null>(null);
+
+  // My Requests state
+  const [myRequests, setMyRequests] = useState<SourcingRequest[]>([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchMyRequests = useCallback(async () => {
+    if (!isLoggedIn) return;
+    try {
+      const requests = await getSourcingRequests();
+      setMyRequests(requests);
+    } catch {
+      // Silently fail — tracking is non-critical
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setLoadingRequests(true);
+      fetchMyRequests().finally(() => setLoadingRequests(false));
+    }
+  }, [isLoggedIn, fetchMyRequests]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchMyRequests();
+    setRefreshing(false);
+  }, [fetchMyRequests]);
 
   const schema = useMemo(
     () =>
@@ -258,6 +303,7 @@ export default function DawwarliScreen() {
 
     if (result.success) {
       setSuccessData({ requestNumber: result.requestNumber });
+      fetchMyRequests();
     } else {
       toast.error(t('dawwarli.errors.submit_failed'));
     }
@@ -312,6 +358,11 @@ export default function DawwarliScreen() {
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 24 }]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          isLoggedIn ? (
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />
+          ) : undefined
+        }
       >
         {/* ── Hero Header ── */}
         <View style={styles.hero}>
@@ -354,6 +405,48 @@ export default function DawwarliScreen() {
             </React.Fragment>
           ))}
         </View>
+
+        {/* ── My Requests ── */}
+        {isLoggedIn && myRequests.length > 0 && (
+          <View style={styles.card}>
+            <Text style={[styles.cardLabel, isRTL && commonStyles.rtlText]}>
+              {t('dawwarli.my_requests')}
+            </Text>
+            {myRequests.map((req) => {
+              const statusCfg = SOURCING_STATUS_CONFIG[req.status] || SOURCING_STATUS_CONFIG.new;
+              const firstImage = req.images?.sort((a, b) => a.displayOrder - b.displayOrder)[0];
+              return (
+                <View key={req.id} style={[styles.requestCard, isRTL && styles.requestCardRTL]}>
+                  {firstImage?.imageUrl ? (
+                    <Image source={{ uri: firstImage.imageUrl }} style={styles.requestThumb} />
+                  ) : (
+                    <View style={[styles.requestThumb, styles.requestThumbPlaceholder]}>
+                      <Ionicons name="search" size={18} color={colors.muted.foreground} />
+                    </View>
+                  )}
+                  <View style={styles.requestInfo}>
+                    <Text style={[styles.requestNumber, isRTL && commonStyles.rtlText]}>{req.requestNumber}</Text>
+                    <View style={[styles.requestMeta, isRTL && styles.requestMetaRTL]}>
+                      <View style={[styles.requestStatusBadge, { backgroundColor: statusCfg.bg }]}>
+                        <Text style={[styles.requestStatusText, { color: statusCfg.color }]}>
+                          {t(`dawwarli.status.${statusCfg.label}`)}
+                        </Text>
+                      </View>
+                      <Text style={styles.requestDate}>
+                        {format(new Date(req.createdAt), 'MMM dd')}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
+        {isLoggedIn && loadingRequests && myRequests.length === 0 && (
+          <View style={[styles.card, { alignItems: 'center', paddingVertical: 20 }]}>
+            <ActivityIndicator size="small" color={colors.primary.DEFAULT} />
+          </View>
+        )}
 
         {/* ── Image Upload Card ── */}
         <View style={styles.card}>
@@ -910,5 +1003,55 @@ const styles = StyleSheet.create({
   },
   newRequestBtn: {
     minWidth: 220,
+  },
+
+  // My Requests
+  requestCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
+  },
+  requestCardRTL: {
+    flexDirection: 'row-reverse',
+  },
+  requestThumb: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.md,
+    overflow: 'hidden',
+  },
+  requestThumbPlaceholder: {
+    backgroundColor: colors.muted.DEFAULT,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  requestInfo: {
+    flex: 1,
+    gap: 4,
+  },
+  requestMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  requestMetaRTL: {
+    flexDirection: 'row-reverse',
+  },
+  requestStatusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: radius.full,
+  },
+  requestStatusText: {
+    fontSize: 11,
+    fontFamily: fonts.semibold,
+  },
+  requestDate: {
+    fontSize: 12,
+    fontFamily: fonts.regular,
+    color: colors.muted.foreground,
   },
 });

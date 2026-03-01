@@ -537,6 +537,17 @@
       "city_required": "المدينة مطلوبة",
       "upload_failed": "فشل رفع الصورة. يرجى المحاولة مرة أخرى.",
       "submit_failed": "فشل إرسال الطلب. يرجى المحاولة مرة أخرى."
+    },
+    "my_requests": "طلباتي",
+    "no_requests": "ستظهر طلبات التوفير الخاصة بك هنا",
+    "status": {
+      "under_review": "قيد المراجعة",
+      "quoted": "تم التسعير",
+      "in_progress": "قيد التنفيذ",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
+      "closed": "مغلق",
+      "not_available": "غير متوفر"
     }
   },
   "onboarding": {

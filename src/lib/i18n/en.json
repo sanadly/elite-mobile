@@ -537,6 +537,17 @@
       "city_required": "City is required",
       "upload_failed": "Failed to upload image. Please try again.",
       "submit_failed": "Failed to submit request. Please try again."
+    },
+    "my_requests": "My Requests",
+    "no_requests": "Your sourcing requests will appear here",
+    "status": {
+      "under_review": "Under Review",
+      "quoted": "Quoted",
+      "in_progress": "In Progress",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "closed": "Closed",
+      "not_available": "Not Available"
     }
   },
   "onboarding": {
